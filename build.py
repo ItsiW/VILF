@@ -16,7 +16,7 @@ shutil.rmtree(build_dir, ignore_errors=True)
 build_dir.mkdir(exist_ok=True)
 
 env = Environment(loader=FileSystemLoader("html"))
-template = env.get_template("template.html")
+place_template = env.get_template("place.html")
 
 ## map page
 with open(build_dir / "index.html", "w") as o:
@@ -71,7 +71,7 @@ for place_md in glob.glob("places/*.md"):
     if "osm" not in meta:
         continue
     html = markdown(md.strip())
-    rendered = template.render(
+    rendered = place_template.render(
         **meta,
         taste_text=rating_to_text(meta["taste"]),
         value_text=rating_to_text(meta["value"]),
