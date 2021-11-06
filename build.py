@@ -8,6 +8,8 @@ from jinja2 import FileSystemLoader, Environment
 from pathlib import Path
 import shutil
 
+print("Starting build of TGTG...")
+
 build_dir = Path(".") / "build"
 shutil.rmtree(build_dir, ignore_errors=True)
 build_dir.mkdir(exist_ok=True)
@@ -46,7 +48,6 @@ def format_description(meta):
 
 for place_md in glob.glob("places/*.md"):
     slug = place_md[7:-3]
-    print(slug)
     with open(place_md) as f:
         _, frontmatter, md = f.read().split("---", 2)
     meta = yaml.load(frontmatter, Loader=yaml.Loader)
@@ -80,3 +81,5 @@ geojson = {
 
 with open(build_dir / "places.geojson", "w") as o:
     o.write(json.dumps(geojson))
+
+print("Done building TGTG.")

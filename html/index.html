@@ -7,9 +7,11 @@
 {% block content %}
 <div id="map" style="height: 1100px"></div>
 <script>
+maplibregl.accessToken = "pk.eyJ1IjoiYWFwZWxpIiwiYSI6ImNrdm56dW84ejF4cmwydXFnMTNid2pkdXIifQ.OAdGTs-NsR5znCfS7vmyIQ";
+
 var map = new maplibregl.Map({
-  container: 'map',
-  style: 'https://tiles.stadiamaps.com/styles/alidade_smooth.json',
+  container: "map",
+  style: "mapbox://styles/mapbox/outdoors-v11",
   center: [-73.99525, 40.76041],
   zoom: 12,
   hash: "spot",
