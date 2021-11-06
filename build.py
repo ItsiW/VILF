@@ -20,11 +20,21 @@ template = env.get_template("template.html")
 
 ## map page
 with open(build_dir / "index.html", "w") as o:
-    o.write(env.get_template("index.html").render())
+    o.write(
+        env.get_template("index.html").render(
+            title="The Good Taste Guide",
+            description="Find tasty vegan food around New York City!",
+        )
+    )
 
 ## error page
 with open(build_dir / "error.html", "w") as o:
-    o.write(env.get_template("error.html").render())
+    o.write(
+        env.get_template("error.html").render(
+            title="The Good Taste Guide",
+            description="An error occured.",
+        )
+    )
 
 ## place pages
 geojson_features = []
