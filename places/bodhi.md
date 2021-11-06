@@ -11,7 +11,7 @@ menu: http://www.buddhabodhaikoshervegetarianrestaurantmulberryst.com/menu
 phone: +12122332921
 ---
 
-This place has really fun and interesting food. You can tell they put a lot of time and effort into the preparation of everything. The **handmade noodle beef soup** was really good, and we also tried a bunch of dim sum like the baked meat bun, and some others. The quality was high but none of them were super exceptional on their own, I guess it's more about enjoying the variety. The fried dumplings were bad.
+This is a fun and interesting vegan kosher dim sum restaurant. You can tell they put a lot of time and effort into the preparation of everything. The **handmade noodle beef soup** was really good, and we also tried a bunch of dim sum like the baked meat bun, and some others. The quality was high but none of them were super exceptional on their own, I guess it's more about enjoying the variety. The fried dumplings were bad.
 
 Don't confuse it with the more publicised *Original Buddha Bodai Kosher Vegetarian Restaurant*. From the signage it kinda looks like it was originally an offshoot of that one but has since changed.
 
