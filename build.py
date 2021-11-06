@@ -128,4 +128,7 @@ with open(list_dir / "index.html", "w") as o:
         )
     )
 
+with open(build_dir / "robots.txt", "w") as o:
+    o.write("User-agent: *\nDisallow:\n")
+
 print("Done building tgtg.")
