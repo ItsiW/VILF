@@ -1,6 +1,6 @@
 ---
 name: Uptown Veg
-visited: 2021/10/29
+visited: 2021/10/28
 address: 125th & Madison
 area: Harlem
 taste: 0

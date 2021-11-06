@@ -1,6 +1,6 @@
 ---
 name: Los Tacos No. 1
-visited: 2021/10/30
+visited: 2021/10/29
 address: 43rd & 7th
 area: Midtown
 taste: 2

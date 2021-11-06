@@ -1,6 +1,6 @@
 ---
 name: Xi'an Famous Foods
-visited: 2021/10/29
+visited: 2021/10/28
 address: 54 Willoughby St
 area: Downtown Brooklyn
 taste: 1

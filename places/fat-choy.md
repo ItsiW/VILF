@@ -1,0 +1,13 @@
+---
+name: Fat Choy
+visited: 2021/10/30
+address: 250 Broome St
+area: Lower East Side
+taste: 1
+value: 1
+lat: 40.71813873912506
+lon: -73.98969190385769
+osm: https://www.openstreetmap.org/node/5916553158
+---
+
+There was a lot of hype for this place online but it's just fine. Not super flavourful and you needed to order quite a bit because the servings are small.
