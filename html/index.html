@@ -15,6 +15,12 @@ var map = new maplibregl.Map({
   hash: "spot",
 });
 
+function placeClicked(event) {
+  var feature = event.features[0]
+  console.log(feature)
+  location.href = feature.properties.url
+}
+
 map.on("load", function () {
   map.addSource("places", {
     "type": "geojson",
@@ -33,10 +39,8 @@ map.on("load", function () {
     },
     "filter": ["==", "$type", "Point"]
   });
-});
-</script>
 
-</body>
-</html>
+  map.on("click", "place-markers", placeClicked);
+});
 </script>
 {% endblock %}

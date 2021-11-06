@@ -49,6 +49,7 @@ for place_md in glob.glob("places/*.md"):
         content=html,
     )
     out_dir = build_dir / "places" / slug
+    relative_url = f"/places/{slug}/"
     out_dir.mkdir(exist_ok=True, parents=True)
     with open(out_dir / "index.html", "w") as o:
         o.write(rendered)
@@ -58,7 +59,7 @@ for place_md in glob.glob("places/*.md"):
         "type": "Point",
         "coordinates": [meta["lon"], meta["lat"]]
       },
-      "properties": meta
+      "properties": {**meta, "url": relative_url}
     })
 
 geojson = {
