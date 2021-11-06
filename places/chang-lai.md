@@ -1,0 +1,15 @@
+---
+name: Chang Lai Fishball and Noodles Cart
+visited: 2021/10/31
+address: Grand St and Bowery
+area: Chinatown
+taste: 1
+value: 3
+lat: 40.71851741271005
+lon: -73.99459494156919
+# osm: https://www.openstreetmap.org/node/5916553158
+---
+
+For 3 bucks you can get some cheung fun steamed rice noodles made right in front of you. Great value for money. You get a good portion with scallions some soy and peanut sauce. Hits the spot.
+
+A lot of restaurants in the area make it so not sure who makes it best, or who has better vegan options.
