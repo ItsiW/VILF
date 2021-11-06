@@ -1,0 +1,9 @@
+name: Deploy tgtg
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Starting..."
+      - run: python3 -m pip install -r requirements.txt
+      - run: python3 build.py
