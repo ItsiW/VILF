@@ -14,11 +14,14 @@ build_dir.mkdir(exist_ok=True)
 
 env = Environment(loader=FileSystemLoader("html"))
 template = env.get_template("template.html")
-index_template = env.get_template("index.html")
 
 ## map page
 with open(build_dir / "index.html", "w") as o:
-    o.write(index_template.render())
+    o.write(env.get_template("index.html").render())
+
+## error page
+with open(build_dir / "error.html", "w") as o:
+    o.write(env.get_template("error.html").render())
 
 ## place pages
 geojson_features = []
@@ -35,6 +38,12 @@ def rating_to_text(rating):
     else:
         raise ValueError("Bad rating")
 
+def format_title(meta):
+    return f"{meta['name']} — Tasty vegan food in {meta['area']} — The Good Taste Guide"
+
+def format_description(meta):
+    return f"Read our review on {meta['name']} at {meta['address']} in {meta['area']}, and more tasty vegan food in New York City from The Good Taste Guide!"
+
 for place_md in glob.glob("places/*.md"):
     slug = place_md[7:-3]
     print(slug)
@@ -46,6 +55,8 @@ for place_md in glob.glob("places/*.md"):
         **meta,
         taste_text=rating_to_text(meta["taste"]),
         value_text=rating_to_text(meta["value"]),
+        title=format_title(meta),
+        description=format_description(meta),
         content=html,
     )
     out_dir = build_dir / "places" / slug
