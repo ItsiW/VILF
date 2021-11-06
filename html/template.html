@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>{% block title %}{{ name }} | {{ area }} | The Good Taste Guide{% endblock %}</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,7 +28,7 @@
       padding: 2em;
       display: block;
       margin: 0;
-      background-color: rgb(212, 76, 67);
+      background-color: #d44c43;
     }
     .content {
       padding: 2rem;
@@ -54,8 +55,8 @@
   <section class="content">
     <h2 class="name">{{ name }}</h2>
     <p class="address">{{ address }}, {{ area }}</p>
-    <p class="taste">Taste: {{ taste_text }}</p>
-    <p class="value">Value: {{ value_text }}</p>
+    <p class="taste">Taste: <b>{{ taste_text }}</b></p>
+    <p class="value">Value: <b>{{ value_text }}</b></p>
     <h3>Description</h3>
     {{ content }}
   </section>

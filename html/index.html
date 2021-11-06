@@ -14,5 +14,33 @@ var map = new maplibregl.Map({
   zoom: 12,
   hash: "spot",
 });
+
+function placeClicked(event) {
+  var feature = event.features[0]
+  console.log(feature)
+  location.href = feature.properties.url
+}
+
+map.on("load", function () {
+  map.addSource("places", {
+    "type": "geojson",
+    "data": "/places.geojson"
+  });
+
+  map.addLayer({
+    "id": "place-markers",
+    "type": "circle",
+    "source": "places",
+    "paint": {
+      "circle-radius": 6,
+      "circle-color": "#d44c43",
+      "circle-stroke-width": 2,
+      "circle-stroke-color": "#ffffff"
+    },
+    "filter": ["==", "$type", "Point"]
+  });
+
+  map.on("click", "place-markers", placeClicked);
+});
 </script>
 {% endblock %}

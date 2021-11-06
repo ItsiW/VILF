@@ -1,5 +1,6 @@
 #!/bin/python3
 
+import json
 import yaml
 import glob
 from markdown2 import markdown
@@ -16,12 +17,11 @@ template = env.get_template("template.html")
 index_template = env.get_template("index.html")
 
 ## map page
-
 with open(build_dir / "index.html", "w") as o:
     o.write(index_template.render())
 
 ## place pages
-geo_data = []
+geojson_features = []
 
 def rating_to_text(rating):
     if rating == 0:
@@ -49,6 +49,23 @@ for place_md in glob.glob("places/*.md"):
         content=html,
     )
     out_dir = build_dir / "places" / slug
+    relative_url = f"/places/{slug}/"
     out_dir.mkdir(exist_ok=True, parents=True)
     with open(out_dir / "index.html", "w") as o:
         o.write(rendered)
+    geojson_features.append({
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [meta["lon"], meta["lat"]]
+      },
+      "properties": {**meta, "url": relative_url}
+    })
+
+geojson = {
+  "type": "FeatureCollection",
+  "features": geojson_features
+}
+
+with open(build_dir / "places.geojson", "w") as o:
+    o.write(json.dumps(geojson))
