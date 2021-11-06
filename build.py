@@ -68,8 +68,6 @@ for place_md in glob.glob("places/*.md"):
         _, frontmatter, md = f.read().split("---", 2)
     meta = yaml.load(frontmatter, Loader=yaml.Loader)
     meta["url"] = relative_url
-    if "osm" not in meta:
-        continue
     html = markdown(md.strip())
     rendered = place_template.render(
         **meta,
