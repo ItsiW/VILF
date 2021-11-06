@@ -35,8 +35,12 @@
       display: flex;
       flex-direction: column;
     }
-    a, a:visited, a:hover {
-      text-decoration: none;
+    a, a:visited {
+      text-decoration: dotted underline;
+      color: inherit;
+    }
+    a:hover {
+      text-decoration: underline;
       color: inherit;
     }
     .tgtg {
@@ -45,6 +49,9 @@
       color: #fff;
       font-size: 3rem;
       line-height: 1em;
+    }
+    .tgtg > a {
+      text-decoration: none;
     }
     .subtitle {
       font-size: 1.4rem;
@@ -84,7 +91,7 @@
     }
     .links > a {
       display: inline-block;
-      padding: 0.2rem 2rem;
+      padding: 0.4rem 1.4rem;
       margin: 0.4rem;
       font-size: 1.5em;
       color: #fff;
@@ -101,7 +108,7 @@
 <body>
   <section class="header">
     <div class="left">
-      <h1 class="tgtg">The Good Taste Guide<span class="tm">&trade;</span></h1>
+      <h1 class="tgtg"><a href="/">The Good Taste Guide<span class="tm">&trade;</span></a></h1>
       <p class="subtitle">A definitive vegan companion to New York City</p>
     </div>
     <div class="right">
