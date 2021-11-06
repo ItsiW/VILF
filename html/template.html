@@ -29,6 +29,11 @@
       margin: 0;
       padding: 0;
     }
+    body {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
     .tgtg {
       margin: 0;
       font-family: 'Bowlby One SC', cursive;
@@ -47,6 +52,9 @@
       margin: 0;
       background-color: #d44c43;
     }
+    .footer {
+      height: 2rem;
+    }
     .content {
       padding: 2rem;
     }
@@ -56,9 +64,13 @@
     .address {
       font-size: 1.1em;
     }
+    .content-wrapper {
+      height: 100%;
+    }
     #map {
       padding: 0;
       margin: 0;
+      height: 100%;
     }
     .links > a {
       display: inline-block;
@@ -77,16 +89,18 @@
       <a href="/list/">List</a>
     </p>
   </section>
-  {% block content %}
-  <section class="content">
-    <h2 class="name">{{ name }}</h2>
-    <p class="address">{{ address }}, {{ area }}</p>
-    <p class="taste">Taste: <b>{{ taste_text }}</b></p>
-    <p class="value">Value: <b>{{ value_text }}</b></p>
-    <h3>Description</h3>
-    {{ content }}
-  </section>
-  {% endblock %}
+  <div class="content-wrapper">
+    {% block content %}
+    <section class="content">
+      <h2 class="name">{{ name }}</h2>
+      <p class="address">{{ address }}, {{ area }}</p>
+      <p class="taste">Taste: <b>{{ taste_text }}</b></p>
+      <p class="value">Value: <b>{{ value_text }}</b></p>
+      <h3>Description</h3>
+      {{ content }}
+    </section>
+    {% endblock %}
+  </div>
   <section class="footer">
     &copy; 2021 <a href="https://www.aapelivuorinen.com">Aapeli</a> and <a href="https://itsiweinstock.com">Itsi</a>
   </section>
