@@ -8,7 +8,7 @@ from jinja2 import FileSystemLoader, Environment
 from pathlib import Path
 import shutil
 
-print("Starting build of TGTG...")
+print("Starting build of tgtg...")
 
 build_dir = Path(".") / "build"
 shutil.rmtree(build_dir, ignore_errors=True)
@@ -82,4 +82,4 @@ geojson = {
 with open(build_dir / "places.geojson", "w") as o:
     o.write(json.dumps(geojson))
 
-print("Done building TGTG.")
+print("Done building tgtg.")
