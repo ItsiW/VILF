@@ -14,8 +14,6 @@ osm: https://www.openstreetmap.org/node/2768459581
 
 They have a good **miso ramen** that they can do vegan.
 
-My omni friend despite his lack of morals said it was better than the standard tonkotsu broth, which is fair because that's literally made out of the flesh and fat and bones or some shit of a dead pig.
-
 They have a vegan green curry ramen too but nothing to write home about unless you really like green curry but it doesn't taste too different from the kind of stuff you can make at home with a paste pretty easily.
 
 They have a bunch of vegan sides and stuff too but the ramen is big enough for a big boy like me.
