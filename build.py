@@ -37,7 +37,7 @@ with open(build_dir / "error.html", "w") as o:
     )
 
 ## place pages
-geojson_features = []
+places = []
 
 
 def rating_to_text(rating):
@@ -63,9 +63,13 @@ def format_description(meta):
 
 for place_md in glob.glob("places/*.md"):
     slug = place_md[7:-3]
+    relative_url = f"/places/{slug}/"
     with open(place_md) as f:
         _, frontmatter, md = f.read().split("---", 2)
     meta = yaml.load(frontmatter, Loader=yaml.Loader)
+    meta["url"] = relative_url
+    if "osm" not in meta:
+        continue
     html = markdown(md.strip())
     rendered = template.render(
         **meta,
@@ -76,21 +80,36 @@ for place_md in glob.glob("places/*.md"):
         content=html,
     )
     out_dir = build_dir / "places" / slug
-    relative_url = f"/places/{slug}/"
     out_dir.mkdir(exist_ok=True, parents=True)
     with open(out_dir / "index.html", "w") as o:
         o.write(rendered)
-    geojson_features.append(
+    places.append(meta)
+
+geojson = {
+    "type": "FeatureCollection",
+    "features": [
         {
             "type": "Feature",
-            "geometry": {"type": "Point", "coordinates": [meta["lon"], meta["lat"]]},
-            "properties": {**meta, "url": relative_url},
+            "geometry": {"type": "Point", "coordinates": [place["lon"], place["lat"]]},
+            "properties": place,
         }
-    )
-
-geojson = {"type": "FeatureCollection", "features": geojson_features}
+        for place in places
+    ],
+}
 
 with open(build_dir / "places.geojson", "w") as o:
     o.write(json.dumps(geojson))
+
+## list page
+list_dir = build_dir / "list"
+list_dir.mkdir(exist_ok=True, parents=True)
+with open(list_dir / "index.html", "w") as o:
+    o.write(
+        env.get_template("list.html").render(
+            title="The Good Taste Guide",
+            description="Find tasty vegan food around New York City!",
+            places=places,
+        )
+    )
 
 print("Done building tgtg.")
