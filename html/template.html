@@ -60,13 +60,22 @@
       padding: 0;
       margin: 0;
     }
+    .links > a {
+      display: inline-block;
+      text-decoration: none;
+      font-size: 1.3em;
+    }
   </style>
   {% block extra_head %}{% endblock %}
 </head>
 <body>
   <section class="header">
     <h1 class="tgtg">The Good Taste Guide<span class="tm">&trade;</span></h1>
-    <sub class="subtitle">Some funny line</sub>
+    <p class="subtitle">Some funny line</p>
+    <p class="links">
+      <a href="/">Map</a>
+      <a href="/list/">List</a>
+    </p>
   </section>
   {% block content %}
   <section class="content">
