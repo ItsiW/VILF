@@ -1,0 +1,18 @@
+{% extends "template.html" %}
+{% block title %}The Good Taste Guide{% endblock %}
+{% block extra_head %}
+<script src="https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.js"></script>
+<link href="https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.css" rel="stylesheet" />
+{% endblock %}
+{% block content %}
+<div id="map" style="height: 500px"></div>
+<script>
+var map = new maplibregl.Map({
+  container: 'map', // container id
+  style: 'https://tiles.stadiamaps.com/styles/alidade_smooth.json', // style URL
+  center: [0, 0], // starting position [lng, lat]
+  zoom: 1, // starting zoom
+  hash: "spot",
+});
+</script>
+{% endblock %}
