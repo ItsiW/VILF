@@ -47,14 +47,14 @@
       margin: 0;
       font-family: 'Bowlby One SC', sans-serif;
       color: #fff;
-      font-size: 3rem;
+      font-size: 3em;
       line-height: 1em;
     }
     .tgtg > a {
       text-decoration: none;
     }
     .subtitle {
-      font-size: 1.4rem;
+      font-size: 1.4em;
       color: #fff;
       margin: 0;
     }
@@ -62,6 +62,7 @@
       font-family: Arial, Helvetica, sans-serif;
     }
     .header {
+      font-size: 1rem;
       padding: 1em;
       display: block;
       margin: 0;
@@ -71,6 +72,24 @@
     }
     .header > .left {
       flex-grow: 1;
+    }
+    .links > a {
+      display: inline-block;
+      padding: 0.3em 1.1em;
+      margin: 0.2em;
+      font-size: 1.5em;
+      color: #fff;
+      font-weight: 700;
+      background-color: #ffffff41;
+      border-radius: 5px;
+    }
+    .links > a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 720px) {
+      .header {
+        font-size: 0.6rem;
+      }
     }
     .content {
       padding: 2rem;
@@ -88,19 +107,6 @@
       padding: 0;
       margin: 0;
       height: 100%;
-    }
-    .links > a {
-      display: inline-block;
-      padding: 0.4rem 1.4rem;
-      margin: 0.4rem;
-      font-size: 1.5em;
-      color: #fff;
-      font-weight: 700;
-      background-color: #ffffff41;
-      border-radius: 5px;
-    }
-    .links > a:hover {
-      text-decoration: underline;
     }
   </style>
   {% block extra_head %}{% endblock %}
