@@ -36,6 +36,17 @@ with open(build_dir / "error.html", "w") as o:
         )
     )
 
+## about page
+about_dir = build_dir / "about"
+about_dir.mkdir(exist_ok=True, parents=True)
+with open(about_dir / "index.html", "w") as o:
+    o.write(
+        env.get_template("about.html").render(
+            title="About — The Good Taste Guide",
+            description="Want to know how The Good Taste Guide got started? Find out here!",
+        )
+    )
+
 ## place pages
 places = []
 
