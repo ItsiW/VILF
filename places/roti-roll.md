@@ -18,4 +18,4 @@ These guys do a good **roti roll** at a good price. Curry in a roti that's all w
 
 I'm not sure if they're automatically vegan, but you can request them to be.
 
-Don'tget the veg momos, they're not very good.
+Don't get the veg momos, they're not very good.
