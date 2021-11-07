@@ -21,7 +21,7 @@ place_template = env.get_template("place.html")
 ## map page
 with open(build_dir / "index.html", "w") as o:
     o.write(
-        env.get_template("index.html").render(
+        env.get_template("map.html").render(
             title="The Good Taste Guide",
             description="Find tasty vegan food around New York City!",
         )
