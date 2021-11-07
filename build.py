@@ -59,6 +59,7 @@ places = []
 
 rating_labels = ["Bad", "Inoffensive", "Good", "Phenomenal"]
 rating_colors = ["#ef422b", "#efa72b", "#32af2d", "#2b9aef"]
+faded_color = "#cecece"
 
 
 def rating_to_formatting(rating):
@@ -68,7 +69,7 @@ def rating_to_formatting(rating):
 def rating_html(rating):
     return " ".join(
         [
-            f'<span style="color: {color if rating == ix else "#b1b1b1"}" aria-hidden="{"true" if rating == ix else "false"}">{label}</span>'
+            f'<span style="color: {color if rating == ix else faded_color}" aria-hidden="{"true" if rating == ix else "false"}">{label}</span>'
             for ix, (label, color) in enumerate(zip(rating_labels, rating_colors))
         ]
     )
@@ -85,7 +86,7 @@ def boolean_to_formatting(boolean):
 def boolean_html(boolean):
     return " ".join(
         [
-            f'<span style="color: {color if boolean == ix else "#b1b1b1"}" aria-hidden="{"true" if boolean == ix else "false"}">{label}</span>'
+            f'<span style="color: {color if boolean == ix else faded_color}" aria-hidden="{"true" if boolean == ix else "false"}">{label}</span>'
             for ix, (label, color) in enumerate(zip(boolean_labels, boolean_colors))
         ]
     )
