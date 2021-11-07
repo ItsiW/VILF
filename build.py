@@ -116,8 +116,8 @@ for place_md in glob.glob("places/*.md"):
         o.write(rendered)
     places.append(meta)
 
-# sort by taste desc then alphabetical by name
-places.sort(key=lambda item: (-item["taste"], item["slug"]))
+# sort by taste desc, then value desc, then alphabetical by name
+places.sort(key=lambda item: (-item["taste"], -item["value"], item["slug"]))
 
 geojson = {
     "type": "FeatureCollection",

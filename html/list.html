@@ -8,6 +8,8 @@
   <h2 class="name">The Good Taste Guide List</h2>
   {% for place in places %}
   <h3>{{ place["name"] }}</h3>
+  <p class="address"><a href="geo://?q={{ place["geodata"] }}">{{ place["address"] }}, {{ place["area"] }}</a></p>
+  <p><b style="color: {{ place["taste_color"] }}">{{ place["taste_label"] }}</b> taste. <b style="color: {{ place["value_color"] }}">{{ place["value_label"] }}</b> value.</p>
   <p><a href="{{ place["url"] }} ">Read more...</a></p>
   {% endfor %}
 </section>
