@@ -53,13 +53,15 @@ places = []
 
 def rating_to_formatting(rating):
     if rating == 0:
-        return "<span style='color: red' aria-hidden='true'>Bad</span> Inoffensive Good Phenomenal"
+        return '<span style="color: red" aria-hidden="true">Bad</span> Inoffensive Good Phenomenal'
     elif rating == 1:
-        return "Bad <span style='color: orange' aria-hidden='true'>Inoffensive</span> Good Phenomenal"
+        return 'Bad <span style="color: orange" aria-hidden="true">Inoffensive</span> Good Phenomenal'
     elif rating == 2:
-        return "Bad Inoffensive <span style='color: green' aria-hidden='true'>Good</span> Phenomenal"
+        return 'Bad Inoffensive <span style="color: green" aria-hidden="true">Good</span> Phenomenal'
     elif rating == 3:
-        return "Bad Inoffensive Good <span style='color: blue' aria-hidden='true'>Phenomenal</span>"
+        return 'Bad Inoffensive Good <span style="color: blue" aria-hidden="true">Phenomenal</span>'
+    else:
+        raise ValueError("Bad rating")
 
 
 def format_title(meta):
@@ -94,7 +96,6 @@ for place_md in glob.glob("places/*.md"):
     rendered = place_template.render(
         **meta,
         title=format_title(meta),
-        menu_url=meta["menu"],
         taste_formatting=rating_to_formatting(meta["taste"]),
         value_formatting=rating_to_formatting(meta["value"]),
         phone_number=format_phone_number(meta),
