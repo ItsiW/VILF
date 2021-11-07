@@ -165,6 +165,7 @@ for place_md in glob.glob("places/*.md"):
         o.write(rendered)
     places.append(meta)
 
+geojson_keys = ["url", "taste_color"]
 
 geojson = {
     "type": "FeatureCollection",
@@ -172,7 +173,9 @@ geojson = {
         {
             "type": "Feature",
             "geometry": {"type": "Point", "coordinates": [place["lon"], place["lat"]]},
-            "properties": place,
+            "properties": {
+                key: value for key, value in place.items() if key in geojson_keys
+            },
         }
         # sort reverse of by taste desc, then value desc, then alphabetical by name
         for place in sorted(
