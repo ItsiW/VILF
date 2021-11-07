@@ -1,6 +1,6 @@
 ---
 name: Falafel on Broadway
-cuisine: Arab
+cuisine: Middle Eastern
 drinks: false
 visited: "2021-11-01"
 address: 124th & Broadway

@@ -3,9 +3,13 @@
 <section class="content">
   <h1 class="name">{{ name }}</h1>
   <p class="address"><a href="geo://?q={{ geodata }}">{{ address }}, {{ area }}</a></p>
-  <p>
+  <p class="cuisine">{{ cuisine }} food</p>
+  <p class="restaurant_links">
     {% if menu %}
-    <a href="{{ menu }}" target="_blank">Menu</a> | 
+    <a href="{{ menu }}" target="_blank">Menu</a>
+    {% endif %}
+    {% if menu and phone_display %}
+     | 
     {% endif %}
     {% if phone_display %}
     <a href="tel:{{ phone }}">{{ phone_display }}</a>
