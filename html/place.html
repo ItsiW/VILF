@@ -1,9 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="content">
-  <h2 class="name">{{ name }}</h2>
-  <p class="address">{{ address }}, {{ area }}</p>
-  <p><a href="{{ menu_url }}" target="_blank">Menu</a> | <a href="tel:+1 {{ phone_number }}">{{ phone_number }}</a></p>
+  <h2>{{ name }}</h2>
+  <p class="address"><a href="geo://?q={{ geodata }}">{{ address }}</a>, {{ area }}</p>
+  <p>
+    {% if menu %}
+    <a href="{{ menu }}" target="_blank">Menu</a> | 
+    {% endif %}
+    {% if phone_number %}
+    <a href="tel:+1 {{ phone_number }}">{{ phone_number }}</a>
+    {% endif %}
+  </p>
   <p class="taste">Taste: <b>{{ taste_text }}</b></p>
   <p class="value">Value: <b>{{ value_text }}</b></p>
   <h3>Description</h3>

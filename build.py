@@ -69,13 +69,18 @@ def format_title(meta):
 
 
 def format_description(meta):
-    return f"Read our review on {meta['name']} at {meta['address']} in {meta['area']}, and more tasty vegan food in New York City from The Good Taste Guide!"
+    return f"Read our review on {meta['name']} at {meta['address']} in {meta['area']}, and more tasty vegan {meta['cuisine']} food in New York City from The Good Taste Guide!"
 
 def format_phone_number(meta):
+    if not meta["phone"]:
+        return None
     numstring = str(meta["phone"])
     if numstring[0] == "1":
         numstring = numstring[1:]
     return f"{numstring[0:3]}-{numstring[3:6]}-{numstring[6:10]}"
+
+def format_geodata(meta):
+    return f"{meta['lat']},{meta['lon']}"
 
 for place_md in glob.glob("places/*.md"):
     slug = place_md[7:-3]
@@ -92,6 +97,7 @@ for place_md in glob.glob("places/*.md"):
         title=format_title(meta),
         menu_url=meta["menu"],
         phone_number=format_phone_number(meta),
+        geodata=format_geodata(meta),
         description=format_description(meta),
         content=html,
     )

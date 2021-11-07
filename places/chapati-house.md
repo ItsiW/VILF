@@ -1,5 +1,7 @@
 ---
 name: Chapati House
+cuisine: Indian
+drinks: false
 visited: 2021/11/03
 address: 124th & Broadway
 area: Morningside Heights

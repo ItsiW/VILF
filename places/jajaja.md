@@ -1,5 +1,7 @@
 ---
 name: Jajaja Plantas Mexicana
+cuisine: Mexican
+drinks: true
 visited: 2021/10/31
 address: Carmine & 7th
 area: West Village

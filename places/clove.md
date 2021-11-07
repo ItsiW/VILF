@@ -1,5 +1,7 @@
 ---
 name: Clove
+cuisine: Indian
+drinks: true
 visited: 2021/11/05
 address: 139th & Amsterdam
 area: Hamilton Heights

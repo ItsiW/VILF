@@ -1,5 +1,7 @@
 ---
 name: Fat Choy
+cuisine: Chinese
+drinks: true
 visited: 2021/10/30
 address: 250 Broome St
 area: Lower East Side
