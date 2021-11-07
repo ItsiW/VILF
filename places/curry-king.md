@@ -13,7 +13,7 @@ menu: https://currykinginc.com/product-category/all/vegetarian/
 phone: "+16466697826"
 ---
 
-Another legit North Indian restaurant, across the road from similar restaurant [Doaba Deli](/place/doaba-deli) across the road. $7 gets you 3 curries and a big plate of rice which is cooked with spices and veggies.
+Another legit North Indian restaurant, across the road from similar restaurant [Doaba Deli](/places/doaba-deli/) across the road. $7 gets you 3 curries and a big plate of rice which is cooked with spices and veggies.
 
 The stuff here is much more oily and heavy than the stuff across the road. Like I wouldn't expect to get much done for the rest of the day, and tbh I didn't, but also it was a Saturday so leave me alone.
 
