@@ -59,6 +59,7 @@ rating_labels = ["Bad", "Inoffensive", "Good", "Phenomenal"]
 rating_colors = ["#ef422b", "#efa72b", "#32af2d", "#2b9aef"]
 faded_color = "#cecece"
 
+
 def rating_to_formatting(rating):
     return rating_labels[rating], rating_colors[rating]
 
