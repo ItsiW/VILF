@@ -2,7 +2,7 @@
 name: Chang Lai Fishball and Noodles Cart
 cuisine: Chinese
 drinks: false
-visited: 2021/10/31
+visited: "2021-10-31"
 address: Grand St and Bowery
 area: Chinatown
 taste: 1

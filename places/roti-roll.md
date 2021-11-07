@@ -2,7 +2,7 @@
 name: Roti Roll
 cuisine: Indian
 drinks: false
-visited: 2021/10/29
+visited: "2021-10-29"
 address: 109th & Amsterdam
 area: Upper West Side
 taste: 2
