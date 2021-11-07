@@ -2,10 +2,10 @@
 
 import glob
 import json
+import re
 import shutil
 from datetime import date
 from pathlib import Path
-import re
 
 import yaml
 from jinja2 import Environment, FileSystemLoader
@@ -127,8 +127,10 @@ def custom_strftime(format_, t):
 def format_visited(visited):
     return custom_strftime("{S} %B %Y", date.fromisoformat(visited))
 
+
 def format_blurb(md):
     return " ".join(plain(re.sub(r"\s+", " ", md.strip())).split(" ")[:50]) + "..."
+
 
 for place_md in glob.glob("places/*.md"):
     slug = place_md[7:-3]
