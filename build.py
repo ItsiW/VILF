@@ -10,14 +10,17 @@ import yaml
 from jinja2 import Environment, FileSystemLoader
 from markdown2 import markdown
 
+SITE_URL = "https://thegoodtaste.guide"
+
 print("Starting build of tgtg...")
+
+env = Environment(loader=FileSystemLoader("html"))
+env.globals["SITE_URL"] = SITE_URL
 
 build_dir = Path(".") / "build"
 shutil.rmtree(build_dir, ignore_errors=True)
 build_dir.mkdir(exist_ok=True)
-
-env = Environment(loader=FileSystemLoader("html"))
-place_template = env.get_template("place.html")
+shutil.copytree(Path("static/"), build_dir / "static")
 
 ## map page
 with open(build_dir / "index.html", "w") as o:
@@ -49,6 +52,7 @@ with open(about_dir / "index.html", "w") as o:
     )
 
 ## place pages
+place_template = env.get_template("place.html")
 places = []
 
 
