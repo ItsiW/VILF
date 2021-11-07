@@ -50,18 +50,15 @@ with open(about_dir / "index.html", "w") as o:
 ## place pages
 places = []
 
-
-def rating_to_text(rating):
+def rating_to_formatting(rating):
     if rating == 0:
-        return "Bad"
+        return "<span style='color: red'>Bad</span> Inoffensive Good Phenomenal"
     elif rating == 1:
-        return "Inoffensive"
+        return "Bad <span style='color: orange'>Inoffensive</span> Good Phenomenal"
     elif rating == 2:
-        return "Good"
+        return "Bad Inoffensive <span style='color: green'>Good</span> Phenomenal"
     elif rating == 3:
-        return "Phenomenal"
-    else:
-        raise ValueError("Bad rating")
+        return "Bad Inoffensive Good <span style='color: blue'>Phenomenal</span>"
 
 
 def format_title(meta):
@@ -71,6 +68,7 @@ def format_title(meta):
 def format_description(meta):
     return f"Read our review on {meta['name']} at {meta['address']} in {meta['area']}, and more tasty vegan {meta['cuisine']} food in New York City from The Good Taste Guide!"
 
+
 def format_phone_number(meta):
     if not meta["phone"]:
         return None
@@ -79,8 +77,10 @@ def format_phone_number(meta):
         numstring = numstring[1:]
     return f"{numstring[0:3]}-{numstring[3:6]}-{numstring[6:10]}"
 
+
 def format_geodata(meta):
     return f"{meta['lat']},{meta['lon']}"
+
 
 for place_md in glob.glob("places/*.md"):
     slug = place_md[7:-3]
@@ -92,10 +92,10 @@ for place_md in glob.glob("places/*.md"):
     html = markdown(md.strip())
     rendered = place_template.render(
         **meta,
-        taste_text=rating_to_text(meta["taste"]),
-        value_text=rating_to_text(meta["value"]),
         title=format_title(meta),
         menu_url=meta["menu"],
+        taste_formatting=rating_to_formatting(meta["taste"]),
+        value_formatting=rating_to_formatting(meta["value"]),
         phone_number=format_phone_number(meta),
         geodata=format_geodata(meta),
         description=format_description(meta),

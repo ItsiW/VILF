@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="content">
-  <h2>{{ name }}</h2>
-  <p class="address"><a href="geo://?q={{ geodata }}">{{ address }}</a>, {{ area }}</p>
+  <h2 class="name">{{ name }}</h2>
+  <p class="address"><a href="geo://?q={{ geodata }}">{{ address }}, {{ area }}</a></p>
   <p>
     {% if menu %}
     <a href="{{ menu }}" target="_blank">Menu</a> | 
@@ -11,8 +11,8 @@
     <a href="tel:+1 {{ phone_number }}">{{ phone_number }}</a>
     {% endif %}
   </p>
-  <p class="taste">Taste: <b>{{ taste_text }}</b></p>
-  <p class="value">Value: <b>{{ value_text }}</b></p>
+  <p class='taste'>Taste: <b style='color: #b1b1b1'>{{ taste_formatting }}</b></p>
+  <p class='value'>Value: <b style='color: #b1b1b1'>{{ value_formatting }}</b></p>
   <h3 class="notes">Notes</h3>
   {{ content }}
 </section>
