@@ -10,7 +10,7 @@ value: 1
 lat: 40.7574218
 lon: -73.9878145
 menu: https://www.lostacos1.com/menus/
-phone: +12125744696
+phone: "+12125744696"
 osm: https://www.openstreetmap.org/node/5987980586
 ---
 

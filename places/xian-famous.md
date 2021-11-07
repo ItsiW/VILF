@@ -10,7 +10,7 @@ value: 2
 lat: 40.6920975
 lon: -73.9866977
 menu: https://www.xianfoods.com/menu
-phone: +12127862068
+phone: "+12127862068"
 osm: https://www.openstreetmap.org/node/8851723958
 ---
 

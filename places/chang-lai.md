@@ -10,7 +10,7 @@ value: 3
 lat: 40.71851741271005
 lon: -73.99459494156919
 menu:
-phone: +19173783991
+phone: "+19173783991"
 ---
 
 For 3 bucks you can get some cheung fun steamed **rice noodle rolls** made right in front of you. Great value for money. You get a good portion with scallions some soy and peanut sauce. Hits the spot.

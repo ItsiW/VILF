@@ -10,7 +10,7 @@ value: 1
 lat: 40.8055163
 lon: -73.9405433
 menu:
-phone: +12129872660
+phone: "+12129872660"
 osm: https://www.openstreetmap.org/node/3661038140
 ---
 

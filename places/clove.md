@@ -10,7 +10,7 @@ value: 0
 lat: 40.82130279750301
 lon: -73.95072299775583
 menu: https://www.seamless.com/menu/clove-1592-amsterdam-ave-new-york/308759
-phone: +16469186644
+phone: "+16469186644"
 ---
 
 This is an Indian restaurant that ended up being far too sweet and expensive. The food was alright to start off with but they made it too sweet, and the sauces on the side were too sweet as well (though tasty).

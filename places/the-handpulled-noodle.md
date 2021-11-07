@@ -10,7 +10,7 @@ value: 2
 lat: 40.82839815464435
 lon: -73.94869390053442
 menu: https://thehandpullednoodle.com/
-phone: +19172620213
+phone: "+19172620213"
 ---
 
 This place has the chew. We got the **lagman noodles in a cumin stirfry with seitan** and it was good. The seitan is in these satisfying huge strips and  soaks up all the sauce.

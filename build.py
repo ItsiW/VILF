@@ -77,13 +77,14 @@ def format_description(meta):
 
 
 def format_phone_number(meta):
-    if "phone" not in meta or not meta["phone"]:
-        return None
-    numstring = str(meta["phone"])
-    if numstring[0] == "1":
-        numstring = numstring[1:]
-    return f"{numstring[0:3]}-{numstring[3:6]}-{numstring[6:10]}"
+    if not "phone" in meta:
+        return
+    number = meta["phone"]
+    assert len(number) == 12
+    assert number[:2] == "+1"
+    return f"({number[2:5]}) {number[5:8]}-{number[8:12]}"
 
+assert format_phone_number({"phone": "+12345678987"}) == "(234) 567-8987"
 
 def format_geodata(meta):
     return f'{meta["lat"]},{meta["lon"]}'

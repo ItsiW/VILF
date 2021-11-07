@@ -7,14 +7,14 @@
     {% if menu %}
     <a href="{{ menu }}" target="_blank">Menu</a> | 
     {% endif %}
-    {% if phone_number %}
-    <a href="tel:+1 {{ phone_number }}">{{ phone_number }}</a>
+    {% if phone_display %}
+    <a href="tel:{{ phone }}">{{ phone_display }}</a>
     {% endif %}
   </p>
   <p class="taste">Taste: <b>{{ taste_html }}</b></p>
   <p class="value">Value: <b>{{ value_html }}</b></p>
   <h3 class="notes">Notes</h3>
   {{ content }}
-  <p class="sampling_date">Sampled {{ visited }}.</p>
+  <p class="sampling_date">Last sampled {{ visited }}</p>
 </section>
 {% endblock %}

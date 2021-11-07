@@ -10,7 +10,7 @@ value: 1
 lat: 40.81537
 lon: -73.95885
 menu: https://125.jinramen.com/shop/
-phone: +16465592862
+phone: "+16465592862"
 osm: https://www.openstreetmap.org/node/2768459581
 ---
 

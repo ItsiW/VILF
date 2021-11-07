@@ -10,7 +10,7 @@ value: 1
 lat: 40.71813873912506
 lon: -73.98969190385769
 menu: https://www.fatchoynyc.com/menu
-phone: +13477785889
+phone: "+13477785889"
 osm: https://www.openstreetmap.org/node/5916553158
 ---
 
