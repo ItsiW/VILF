@@ -11,7 +11,7 @@
   <h2 class="name"><a href="{{ place["url"] }}">{{ place["name"] }}</a></h2>
   <p class="list_info address">{{ place["address"] }}, {{ place["area"] }}</p>
   <p class="list_info"><b style="color: {{ place["taste_color"] }}">{{ place["taste_label"] }}</b> taste. <b style="color: {{ place["value_color"] }}">{{ place["value_label"] }}</b> value.</p>
-  <p class="blurb">{{ place["blurb"] }}</p>
+  <p class="blurb last_element">{{ place["blurb"] }}</p>
   {% endfor %}
 </section>
 {% endblock %}
