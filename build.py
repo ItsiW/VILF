@@ -67,6 +67,22 @@ def rating_html(rating):
         ]
     )
 
+boolean_labels = ["Nah", "Yeah"]
+boolean_colors = ["#ef422b", "#2b9aef"]
+
+
+def boolean_to_formatting(boolean):
+    return boolean_labels[boolean], boolean_colors[boolean]
+
+
+def boolean_html(boolean):
+    return " ".join(
+        [
+            f'<span style="color: {color if boolean == ix else "#b1b1b1"}" aria-hidden="{"true" if boolean == ix else "false"}">{label}</span>'
+            for ix, (label, color) in enumerate(zip(boolean_labels, boolean_colors))
+        ]
+    )
+
 
 def format_title(meta):
     return f'{meta["name"]} — Tasty vegan food in {meta["area"]} — The Good Taste Guide'
@@ -102,6 +118,7 @@ for place_md in glob.glob("places/*.md"):
     meta["phone_display"] = format_phone_number(meta)
     meta["taste_label"], meta["taste_color"] = rating_to_formatting(meta["taste"])
     meta["value_label"], meta["value_color"] = rating_to_formatting(meta["value"])
+    meta["drinks_label"], meta["drinks_color"] = boolean_to_formatting(int(meta["drinks"]))
     html = markdown(md.strip())
     rendered = place_template.render(
         **meta,
@@ -109,6 +126,7 @@ for place_md in glob.glob("places/*.md"):
         description=format_description(meta),
         taste_html=rating_html(meta["taste"]),
         value_html=rating_html(meta["value"]),
+        drinks_html=boolean_html(meta["drinks"]),
         content=html,
     )
     out_dir = build_dir / "places" / slug

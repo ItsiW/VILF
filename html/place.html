@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="content">
-  <h2 class="name">{{ name }}</h2>
+  <h1 class="name">{{ name }}</h1>
   <p class="address"><a href="geo://?q={{ geodata }}">{{ address }}, {{ area }}</a></p>
   <p>
     {% if menu %}
@@ -11,8 +11,9 @@
     <a href="tel:{{ phone }}">{{ phone_display }}</a>
     {% endif %}
   </p>
-  <p class="taste">Taste: <b>{{ taste_html }}</b></p>
-  <p class="value">Value: <b>{{ value_html }}</b></p>
+  <p class="mono_info">Taste: <b>{{ taste_html }}</b></p>
+  <p class="mono_info">Value: <b>{{ value_html }}</b></p>
+  <p class="mono_info drinks">Booze: <b>{{ drinks_html }}</b></p>
   <h3 class="notes">Notes</h3>
   {{ content }}
   <p class="sampling_date">Last sampled {{ visited }}</p>
