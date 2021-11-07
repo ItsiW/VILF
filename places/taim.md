@@ -1,6 +1,6 @@
 ---
 name: Taïm
-cuisine: Israeli
+cuisine: Middle Eastern
 drinks: false
 visited: "2021-11-02"
 address: 45 Spring St
