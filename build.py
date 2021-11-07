@@ -19,8 +19,7 @@ env.globals["SITE_URL"] = SITE_URL
 
 build_dir = Path(".") / "build"
 shutil.rmtree(build_dir, ignore_errors=True)
-build_dir.mkdir(exist_ok=True)
-shutil.copytree(Path("static/"), build_dir / "static")
+shutil.copytree(Path("static/"), build_dir)
 
 ## map page
 with open(build_dir / "index.html", "w") as o:
