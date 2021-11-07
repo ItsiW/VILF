@@ -125,7 +125,7 @@ def custom_strftime(format_, t):
 
 
 def format_visited(visited):
-    return custom_strftime("{S} %B %Y", date.fromisoformat(visited))
+    return custom_strftime("{S} %B %Y", visited)
 
 
 def format_blurb(md):
@@ -142,7 +142,9 @@ for place_md in glob.glob("places/*.md"):
     meta["slug"] = slug
     meta["geodata"] = format_geodata(meta)
     meta["phone_display"] = format_phone_number(meta)
-    meta["visited_display"] = format_visited(meta["visited"])
+    visited = date.fromisoformat(meta["visited"])
+    meta["visited_display"] = format_visited(visited)
+    meta["review_age"] = (date.today() - visited).days
     meta["taste_label"], meta["taste_color"] = rating_to_formatting(meta["taste"])
     meta["value_label"], meta["value_color"] = rating_to_formatting(meta["value"])
     meta["drinks_label"], meta["drinks_color"] = boolean_to_formatting(meta["drinks"])
@@ -163,8 +165,7 @@ for place_md in glob.glob("places/*.md"):
         o.write(rendered)
     places.append(meta)
 
-# sort by taste desc, then value desc, then alphabetical by name
-places.sort(key=lambda item: (-item["taste"], -item["value"], item["slug"]))
+geojson_keys = ["url", "taste_color"]
 
 geojson = {
     "type": "FeatureCollection",
@@ -172,9 +173,16 @@ geojson = {
         {
             "type": "Feature",
             "geometry": {"type": "Point", "coordinates": [place["lon"], place["lat"]]},
-            "properties": place,
+            "properties": {
+                key: value for key, value in place.items() if key in geojson_keys
+            },
         }
-        for place in reversed(places)
+        # sort reverse of by taste desc, then value desc, then alphabetical by name
+        for place in sorted(
+            places,
+            key=lambda item: (-item["taste"], -item["value"], item["slug"]),
+            reverse=True,
+        )
     ],
 }
 
@@ -189,16 +197,14 @@ with open(best_dir / "index.html", "w") as o:
         env.get_template("best.html").render(
             title="The Good Taste Guide",
             description="Find tasty vegan food around New York City!",
-            places=places,
+            # sort by taste desc, then value desc, then alphabetical by name
+            places=sorted(
+                places, key=lambda item: (-item["taste"], -item["value"], item["slug"])
+            ),
         )
     )
 
 ## latest page
-latest_places = places.copy()
-latest_places.sort(key=lambda item: (item["slug"]), reverse=False)
-latest_places.sort(key=lambda item: (item["visited"]), reverse=True)
-
-
 latest_dir = build_dir / "latest"
 latest_dir.mkdir(exist_ok=True, parents=True)
 with open(latest_dir / "index.html", "w") as o:
@@ -206,7 +212,16 @@ with open(latest_dir / "index.html", "w") as o:
         env.get_template("latest.html").render(
             title="Latest Reviews from The Good Taste Guide",
             description="Find tasty vegan food around New York City!",
-            places=latest_places,
+            # sort by age then standard
+            places=sorted(
+                places,
+                key=lambda item: (
+                    item["review_age"],
+                    -item["taste"],
+                    -item["value"],
+                    item["slug"],
+                ),
+            ),
         )
     )
 
