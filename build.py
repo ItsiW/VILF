@@ -52,7 +52,7 @@ places = []
 
 
 rating_labels = ["Bad", "Inoffensive", "Good", "Phenomenal"]
-rating_colors = ["#93261c", "#93771c", "#1c934e", "#1c5093"]
+rating_colors = ["#ef422b", "#efa72b", "#32af2d", "#2b9aef"]
 
 
 def rating_to_formatting(rating):
@@ -60,10 +60,12 @@ def rating_to_formatting(rating):
 
 
 def rating_html(rating):
-    out = ""
-    for ix, (label, color) in enumerate(zip(rating_labels, rating_colors)):
-        out += f'<span style="color: {color if rating == ix else "#b1b1b1"}" aria-hidden="{"true" if rating == ix else "false"}">{label}</span> '
-    return out
+    return " ".join(
+        [
+            f'<span style="color: {color if rating == ix else "#b1b1b1"}" aria-hidden="{"true" if rating == ix else "false"}">{label}</span> '
+            for ix, (label, color) in enumerate(zip(rating_labels, rating_colors))
+        ]
+    )
 
 
 def format_title(meta):
@@ -94,6 +96,7 @@ for place_md in glob.glob("places/*.md"):
         _, frontmatter, md = f.read().split("---", 2)
     meta = yaml.load(frontmatter, Loader=yaml.Loader)
     meta["url"] = relative_url
+    meta["slug"] = slug
     meta["geodata"] = format_geodata(meta)
     meta["phone_display"] = format_phone_number(meta)
     meta["taste_label"], meta["taste_color"] = rating_to_formatting(meta["taste"])
@@ -113,6 +116,9 @@ for place_md in glob.glob("places/*.md"):
         o.write(rendered)
     places.append(meta)
 
+# sort by taste desc then alphabetical by name
+places.sort(key=lambda item: (-item["taste"], item["slug"]))
+
 geojson = {
     "type": "FeatureCollection",
     "features": [
@@ -121,7 +127,7 @@ geojson = {
             "geometry": {"type": "Point", "coordinates": [place["lon"], place["lat"]]},
             "properties": place,
         }
-        for place in places
+        for place in reversed(places)
     ],
 }
 
