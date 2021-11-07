@@ -3,12 +3,12 @@
 import glob
 import json
 import shutil
+from datetime import date
 from pathlib import Path
 
 import yaml
 from jinja2 import Environment, FileSystemLoader
 from markdown2 import markdown
-import datetime as dt
 
 print("Starting build of tgtg...")
 
@@ -68,6 +68,7 @@ def rating_html(rating):
         ]
     )
 
+
 boolean_labels = ["Nah", "Yeah"]
 boolean_colors = ["#ef422b", "#2b9aef"]
 
@@ -101,20 +102,25 @@ def format_phone_number(meta):
     assert number[:2] == "+1"
     return f"({number[2:5]}) {number[5:8]}-{number[8:12]}"
 
+
 assert format_phone_number({"phone": "+12345678987"}) == "(234) 567-8987"
+
 
 def format_geodata(meta):
     return f'{meta["lat"]},{meta["lon"]}'
 
-def suffix(d):
-    return 'th' if 11<=d<=13 else {1:'st',2:'nd',3:'rd'}.get(d%10, 'th')
 
-def custom_strftime(format, t):
-    return t.strftime(format).replace('{S}', str(t.day) + suffix(t.day))
+def suffix(d):
+    return "th" if 11 <= d <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(d % 10, "th")
+
+
+def custom_strftime(format_, t):
+    return t.strftime(format_).replace("{S}", str(t.day) + suffix(t.day))
+
 
 def format_visited(visited):
-    return custom_strftime('{S} %B %Y', dt.date.fromisoformat(visited))
-    
+    return custom_strftime("{S} %B %Y", date.fromisoformat(visited))
+
 
 for place_md in glob.glob("places/*.md"):
     slug = place_md[7:-3]
@@ -129,7 +135,7 @@ for place_md in glob.glob("places/*.md"):
     meta["visited_display"] = format_visited(meta["visited"])
     meta["taste_label"], meta["taste_color"] = rating_to_formatting(meta["taste"])
     meta["value_label"], meta["value_color"] = rating_to_formatting(meta["value"])
-    meta["drinks_label"], meta["drinks_color"] = boolean_to_formatting(int(meta["drinks"]))
+    meta["drinks_label"], meta["drinks_color"] = boolean_to_formatting(meta["drinks"])
     html = markdown(md.strip())
     rendered = place_template.render(
         **meta,
