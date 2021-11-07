@@ -2,7 +2,7 @@
 name: Taïm
 cuisine: Israeli
 drinks: false
-visited: 2021/11/02
+visited: "2021-11-02"
 address: 45 Spring St
 area: Nolita
 taste: 2

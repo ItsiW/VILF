@@ -2,7 +2,7 @@
 name: Bodhi
 cuisine: Chinese
 drinks: true
-visited: 2021/11/02
+visited: "2021-11-02"
 address: 77 Mulberry ST
 area: Chinatown
 taste: 2

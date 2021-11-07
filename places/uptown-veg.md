@@ -2,7 +2,7 @@
 name: Uptown Veg
 cuisine: American
 drinks: false
-visited: 2021/10/28
+visited: "2021-10-28"
 address: 125th & Madison
 area: Harlem
 taste: 0

@@ -2,7 +2,7 @@
 name: The Handpulled Noodle
 cuisine: Chinese
 drinks: false
-visited: 2021/11/04
+visited: "2021-11-04"
 address: 148th & Broadway
 area: Hamilton Heights
 taste: 2

@@ -8,6 +8,7 @@ from pathlib import Path
 import yaml
 from jinja2 import Environment, FileSystemLoader
 from markdown2 import markdown
+import datetime as dt
 
 print("Starting build of tgtg...")
 
@@ -105,6 +106,15 @@ assert format_phone_number({"phone": "+12345678987"}) == "(234) 567-8987"
 def format_geodata(meta):
     return f'{meta["lat"]},{meta["lon"]}'
 
+def suffix(d):
+    return 'th' if 11<=d<=13 else {1:'st',2:'nd',3:'rd'}.get(d%10, 'th')
+
+def custom_strftime(format, t):
+    return t.strftime(format).replace('{S}', str(t.day) + suffix(t.day))
+
+def format_visited(visited):
+    return custom_strftime('{S} %B %Y', dt.date.fromisoformat(visited))
+    
 
 for place_md in glob.glob("places/*.md"):
     slug = place_md[7:-3]
@@ -116,6 +126,7 @@ for place_md in glob.glob("places/*.md"):
     meta["slug"] = slug
     meta["geodata"] = format_geodata(meta)
     meta["phone_display"] = format_phone_number(meta)
+    meta["visited_display"] = format_visited(meta["visited"])
     meta["taste_label"], meta["taste_color"] = rating_to_formatting(meta["taste"])
     meta["value_label"], meta["value_color"] = rating_to_formatting(meta["value"])
     meta["drinks_label"], meta["drinks_color"] = boolean_to_formatting(int(meta["drinks"]))

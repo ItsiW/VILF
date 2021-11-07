@@ -2,7 +2,7 @@
 name: Falafel on Broadway
 cuisine: Arab
 drinks: false
-visited: 2021/11/01
+visited: "2021-11-01"
 address: 124th & Broadway
 area: Morningside Heights
 taste: 1
