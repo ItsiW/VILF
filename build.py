@@ -50,6 +50,7 @@ with open(about_dir / "index.html", "w") as o:
 ## place pages
 places = []
 
+
 def rating_to_formatting(rating):
     if rating == 0:
         return "<span style='color: red' aria-hidden='true'>Bad</span> Inoffensive Good Phenomenal"
