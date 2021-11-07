@@ -62,18 +62,18 @@ def rating_to_formatting(rating):
 def rating_html(rating):
     return " ".join(
         [
-            f'<span style="color: {color if rating == ix else "#b1b1b1"}" aria-hidden="{"true" if rating == ix else "false"}">{label}</span> '
+            f'<span style="color: {color if rating == ix else "#b1b1b1"}" aria-hidden="{"true" if rating == ix else "false"}">{label}</span>'
             for ix, (label, color) in enumerate(zip(rating_labels, rating_colors))
         ]
     )
 
 
 def format_title(meta):
-    return f"{meta['name']} — Tasty vegan food in {meta['area']} — The Good Taste Guide"
+    return f'{meta["name"]} — Tasty vegan food in {meta["area"]} — The Good Taste Guide'
 
 
 def format_description(meta):
-    return f"Read our review on {meta['name']} at {meta['address']} in {meta['area']}, and more tasty vegan {meta['cuisine']} food in New York City from The Good Taste Guide!"
+    return f'Read our review on {meta["name"]} at {meta["address"]} in {meta["area"]}, and more tasty vegan {meta["cuisine"]} food in New York City from The Good Taste Guide!'
 
 
 def format_phone_number(meta):
@@ -86,7 +86,7 @@ def format_phone_number(meta):
 
 
 def format_geodata(meta):
-    return f"{meta['lat']},{meta['lon']}"
+    return f'{meta["lat"]},{meta["lon"]}'
 
 
 for place_md in glob.glob("places/*.md"):
