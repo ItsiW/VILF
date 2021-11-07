@@ -11,8 +11,8 @@
     <a href="tel:+1 {{ phone_number }}">{{ phone_number }}</a>
     {% endif %}
   </p>
-  <p class='taste'>Taste: <b style='color: #b1b1b1' aria-hidden="false">{{ taste_formatting }}</b></p>
-  <p class='value'>Value: <b style='color: #b1b1b1' aria-hidden="true">{{ value_formatting }}</b></p>
+  <p class='taste'>Taste: <b>{{ taste_html }}</b></p>
+  <p class='value'>Value: <b>{{ value_html }}</b></p>
   <h3 class="notes">Notes</h3>
   {{ content }}
 </section>

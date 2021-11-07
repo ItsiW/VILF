@@ -51,17 +51,19 @@ with open(about_dir / "index.html", "w") as o:
 places = []
 
 
+rating_labels = ["Bad", "Inoffensive", "Good", "Phenomenal"]
+rating_colors = ["#93261c", "#93771c", "#1c934e", "#1c5093"]
+
+
 def rating_to_formatting(rating):
-    if rating == 0:
-        return '<span style="color: red" aria-hidden="true">Bad</span> Inoffensive Good Phenomenal'
-    elif rating == 1:
-        return 'Bad <span style="color: orange" aria-hidden="true">Inoffensive</span> Good Phenomenal'
-    elif rating == 2:
-        return 'Bad Inoffensive <span style="color: green" aria-hidden="true">Good</span> Phenomenal'
-    elif rating == 3:
-        return 'Bad Inoffensive Good <span style="color: blue" aria-hidden="true">Phenomenal</span>'
-    else:
-        raise ValueError("Bad rating")
+    return rating_labels[rating], rating_colors[rating]
+
+
+def rating_html(rating):
+    out = ""
+    for ix, (label, color) in enumerate(zip(rating_labels, rating_colors)):
+        out += f'<span style="color: {color if rating == ix else "#b1b1b1"}" aria-hidden="{"true" if rating == ix else "false"}">{label}</span> '
+    return out
 
 
 def format_title(meta):
@@ -73,7 +75,7 @@ def format_description(meta):
 
 
 def format_phone_number(meta):
-    if not meta["phone"]:
+    if "phone" not in meta or not meta["phone"]:
         return None
     numstring = str(meta["phone"])
     if numstring[0] == "1":
@@ -92,15 +94,17 @@ for place_md in glob.glob("places/*.md"):
         _, frontmatter, md = f.read().split("---", 2)
     meta = yaml.load(frontmatter, Loader=yaml.Loader)
     meta["url"] = relative_url
+    meta["geodata"] = format_geodata(meta)
+    meta["phone_display"] = format_phone_number(meta)
+    meta["taste_label"], meta["taste_color"] = rating_to_formatting(meta["taste"])
+    meta["value_label"], meta["value_color"] = rating_to_formatting(meta["value"])
     html = markdown(md.strip())
     rendered = place_template.render(
         **meta,
         title=format_title(meta),
-        taste_formatting=rating_to_formatting(meta["taste"]),
-        value_formatting=rating_to_formatting(meta["value"]),
-        phone_number=format_phone_number(meta),
-        geodata=format_geodata(meta),
         description=format_description(meta),
+        taste_html=rating_html(meta["taste"]),
+        value_html=rating_html(meta["value"]),
         content=html,
     )
     out_dir = build_dir / "places" / slug
