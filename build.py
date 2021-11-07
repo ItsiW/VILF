@@ -67,7 +67,7 @@ def rating_to_formatting(rating):
 
 
 def rating_html(rating):
-    return " ".join(
+    return "&nbsp;".join(
         [
             f'<span style="color: {color if rating == ix else faded_color}" aria-hidden="{"true" if rating == ix else "false"}">{label}</span>'
             for ix, (label, color) in enumerate(zip(rating_labels, rating_colors))
