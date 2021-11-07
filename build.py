@@ -5,10 +5,12 @@ import json
 import shutil
 from datetime import date
 from pathlib import Path
+import re
 
 import yaml
 from jinja2 import Environment, FileSystemLoader
 from markdown2 import markdown
+from mdplain import plain
 
 SITE_URL = "https://thegoodtaste.guide"
 
@@ -124,6 +126,8 @@ def custom_strftime(format_, t):
 def format_visited(visited):
     return custom_strftime("{S} %B %Y", date.fromisoformat(visited))
 
+def format_blurb(md):
+    return " ".join(plain(re.sub(r"\s+", " ", md.strip())).split(" ")[:50]) + "..."
 
 for place_md in glob.glob("places/*.md"):
     slug = place_md[7:-3]
@@ -140,6 +144,7 @@ for place_md in glob.glob("places/*.md"):
     meta["value_label"], meta["value_color"] = rating_to_formatting(meta["value"])
     meta["drinks_label"], meta["drinks_color"] = boolean_to_formatting(meta["drinks"])
     html = markdown(md.strip())
+    meta["blurb"] = format_blurb(md)
     rendered = place_template.render(
         **meta,
         title=format_title(meta),
@@ -173,15 +178,32 @@ geojson = {
 with open(build_dir / "places.geojson", "w") as o:
     o.write(json.dumps(geojson))
 
-## list page
-list_dir = build_dir / "list"
-list_dir.mkdir(exist_ok=True, parents=True)
-with open(list_dir / "index.html", "w") as o:
+## best page
+best_dir = build_dir / "best"
+best_dir.mkdir(exist_ok=True, parents=True)
+with open(best_dir / "index.html", "w") as o:
     o.write(
-        env.get_template("list.html").render(
+        env.get_template("best.html").render(
             title="The Good Taste Guide",
             description="Find tasty vegan food around New York City!",
             places=places,
+        )
+    )
+
+## latest page
+latest_places = places.copy()
+latest_places.sort(key=lambda item: (item["slug"]), reverse=False)
+latest_places.sort(key=lambda item: (item["visited"]), reverse=True)
+
+
+latest_dir = build_dir / "latest"
+latest_dir.mkdir(exist_ok=True, parents=True)
+with open(latest_dir / "index.html", "w") as o:
+    o.write(
+        env.get_template("latest.html").render(
+            title="Latest Reviews from The Good Taste Guide",
+            description="Find tasty vegan food around New York City!",
+            places=latest_places,
         )
     )
 
