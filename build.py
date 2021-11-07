@@ -52,13 +52,13 @@ places = []
 
 def rating_to_formatting(rating):
     if rating == 0:
-        return "<span style='color: red'>Bad</span> Inoffensive Good Phenomenal"
+        return "<span style='color: red' aria-hidden='true'>Bad</span> Inoffensive Good Phenomenal"
     elif rating == 1:
-        return "Bad <span style='color: orange'>Inoffensive</span> Good Phenomenal"
+        return "Bad <span style='color: orange' aria-hidden='true'>Inoffensive</span> Good Phenomenal"
     elif rating == 2:
-        return "Bad Inoffensive <span style='color: green'>Good</span> Phenomenal"
+        return "Bad Inoffensive <span style='color: green' aria-hidden='true'>Good</span> Phenomenal"
     elif rating == 3:
-        return "Bad Inoffensive Good <span style='color: blue'>Phenomenal</span>"
+        return "Bad Inoffensive Good <span style='color: blue' aria-hidden='true'>Phenomenal</span>"
 
 
 def format_title(meta):
