@@ -6,7 +6,7 @@ visited: "2021-11-07"
 address: 109th & Columbus
 area: Upper West Side
 taste: 1
-sgfi: some really nice vegan Caribbean sides put together on a plate
+sgfi: some really nice vegan Caribbean sides put together on a plate.
 value: 2
 lat: 40.8009490830816
 lon: -73.96141107284558

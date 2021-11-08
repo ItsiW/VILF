@@ -6,7 +6,7 @@ visited: "2021-11-05"
 address: 139th & Amsterdam
 area: Hamilton Heights
 taste: 1
-sgfi: very manic server and alright food that they've made too sweet
+sgfi: very manic server and alright food that they've made too sweet.
 value: 0
 lat: 40.82130279750301
 lon: -73.95072299775583

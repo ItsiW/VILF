@@ -6,7 +6,7 @@ visited: "2021-11-02"
 address: 77 Mulberry St
 area: Chinatown
 taste: 1
-sgfi: good handmade noodle soup and fun, high-effort dim sum
+sgfi: good handmade noodle soup and fun, high-effort dim sum.
 value: 1
 lat: 40.71636146510938
 lon: -73.99916977960955

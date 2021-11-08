@@ -6,7 +6,7 @@ visited: "2021-10-30"
 address: 250 Broome St
 area: Lower East Side
 taste: 1
-sgfi: it's fine but nothing exceptional. fresh but needs more flavour
+sgfi: it's fine but nothing exceptional. fresh but needs more flavour.
 value: 1
 lat: 40.71813873912506
 lon: -73.98969190385769
