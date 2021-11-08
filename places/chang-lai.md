@@ -6,6 +6,7 @@ visited: "2021-10-31"
 address: Grand St and Bowery
 area: Chinatown
 taste: 1
+sgfi: handmade steam noodles right in front of you that's very cheap
 value: 3
 lat: 40.71851741271005
 lon: -73.99459494156919

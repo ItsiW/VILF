@@ -57,16 +57,17 @@ place_template = env.get_template("place.html")
 places = []
 
 
-rating_labels = ["Bad", "Inoffensive", "Good", "Phenomenal"]
+taste_labels = ["Bad", "SGFI", "Good", "Phenomenal"]
+value_labels = ["Bad", "Fine", "Good", "Phenomenal"]
 rating_colors = ["#ef422b", "#efa72b", "#32af2d", "#2b9aef"]
 faded_color = "#cecece"
 
 
-def rating_to_formatting(rating):
+def rating_to_formatting(rating, rating_labels):
     return rating_labels[rating], rating_colors[rating]
 
 
-def rating_html(rating):
+def rating_html(rating, rating_labels):
     return "&nbsp;".join(
         [
             f'<span style="color: {color if rating == ix else faded_color}" aria-hidden="{"true" if rating == ix else "false"}">{label}</span>'
@@ -145,8 +146,8 @@ for place_md in glob.glob("places/*.md"):
     visited = date.fromisoformat(meta["visited"])
     meta["visited_display"] = format_visited(visited)
     meta["review_age"] = (date.today() - visited).days
-    meta["taste_label"], meta["taste_color"] = rating_to_formatting(meta["taste"])
-    meta["value_label"], meta["value_color"] = rating_to_formatting(meta["value"])
+    meta["taste_label"], meta["taste_color"] = rating_to_formatting(meta["taste"], taste_labels)
+    meta["value_label"], meta["value_color"] = rating_to_formatting(meta["value"], value_labels)
     meta["drinks_label"], meta["drinks_color"] = boolean_to_formatting(meta["drinks"])
     html = markdown(md.strip())
     meta["blurb"] = format_blurb(md)
@@ -154,8 +155,8 @@ for place_md in glob.glob("places/*.md"):
         **meta,
         title=format_title(meta),
         description=format_description(meta),
-        taste_html=rating_html(meta["taste"]),
-        value_html=rating_html(meta["value"]),
+        taste_html=rating_html(meta["taste"], taste_labels),
+        value_html=rating_html(meta["value"], value_labels),
         drinks_html=boolean_html(meta["drinks"]),
         content=html,
     )

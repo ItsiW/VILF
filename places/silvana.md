@@ -6,6 +6,7 @@ visited: "2021-11-04"
 address: 116th and Frederick Douglass Blvd
 area: Harlem
 taste: 1
+sgfi: decent range of decent middle eastern options, cool music bar
 value: 1
 lat: 40.804440186025666
 lon: -73.95590491364491

@@ -5,7 +5,8 @@ drinks: true
 visited: "2021-10-31"
 address: Carmine & 7th
 area: West Village
-taste: 2
+taste: 1
+sgfi: solid nachos, high effort and interesting tacos, and cheap drinks
 value: 1
 lat: 40.729876421179746
 lon: -74.00461495608205

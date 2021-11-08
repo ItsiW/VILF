@@ -5,8 +5,9 @@ drinks: true
 visited: "2021-11-07"
 address: 109th & Columbus
 area: Upper West Side
-taste: 2
-value: 1
+taste: 1
+sgfi: some really nice vegan Caribbean sides put together on a plate
+value: 2
 lat: 40.8009490830816
 lon: -73.96141107284558
 menu: https://www.google.com/maps/place/Freda's+Cuisine/@40.80102,-73.9615731,3a,75y,90t/data=!3m8!1e2!3m6!1sAF1QipMfckSErnHXIC0ELaqWbUonsj17oK4HCzqtYh02!2e10!3e12!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipMfckSErnHXIC0ELaqWbUonsj17oK4HCzqtYh02%3Dw398-h298-k-no!7i1280!8i958!4m7!3m6!1s0x89c2f622cee298df:0x10ce0d05e0ebc24!8m2!3d40.8009495!4d-73.9614107!14m1!1BCgIYIQ#

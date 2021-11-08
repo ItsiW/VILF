@@ -6,6 +6,7 @@ visited: "2021-11-01"
 address: 124th & Broadway
 area: Morningside Heights
 taste: 1
+sgfi: solid but not exceptional middle eastern
 value: 2
 lat: 40.814474247544595
 lon: -73.95951494128815

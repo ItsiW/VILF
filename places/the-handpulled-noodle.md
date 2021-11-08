@@ -5,8 +5,9 @@ drinks: false
 visited: "2021-11-04"
 address: 148th & Broadway
 area: Hamilton Heights
-taste: 2
-value: 2
+taste: 1
+sgfi: this place has the chew.
+value: 1
 lat: 40.82839815464435
 lon: -73.94869390053442
 menu: https://thehandpullednoodle.com/
