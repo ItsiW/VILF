@@ -17,7 +17,7 @@ This is an Indian restaurant that ended up being far too sweet and expensive. Th
 
 If you go, make sure you ask for no yoghurt before they bring it out as a side.
 
-We needed 3 curries, bread and rice between 2 of us and it ended up racking up to over $60 in the end before drinks. 
+We needed 3 curries, bread and rice between 2 of us and it ended up racking up to over $60 in the end before drinks. He gave us some vegan **garlic paratha** and that was probably the highlight.
 
 The server was a very manic and talkative man who I personally think added to the experience but know is probably not for everyone. 
 

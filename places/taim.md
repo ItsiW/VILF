@@ -13,4 +13,4 @@ menu: https://taimfalafel.com/menu/
 phone: "+12122190600"
 ---
 
-I wouldn't say that the actual falafel is all that good but the collection of the whole pita is good for a good price. Good sauces and stuff. I'd probably pick one of the other options like cauliflower or eggplant as the main next time.
+I wouldn't say that the actual falafel is all that good but the collection of the whole **pita** is good for a good price. Good sauces and stuff. I'd probably pick one of the other options like cauliflower or eggplant as the main next time.

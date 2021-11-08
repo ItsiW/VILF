@@ -13,8 +13,8 @@ menu: https://www.beyondmenu.com/55707/new-york/spicy-moon-vegan-szechuan-new-yo
 phone: "+16465901390"
 ---
 
-Be warned this is a very high variance menu. They try to do a lot of stuff here and some is way better than the rest. In general, everything is lacking the spice you'd expect from a a Sichuan place, it's a bit too approachable. My mouth remains un-numbed.
+Be warned this is a high variance menu. They try to do a lot of stuff here; there's a lot of great stuff and some duds. In general, everything is lacking the spice you'd expect from a a Sichuan place, it's a bit too approachable. My mouth remains un-numbed, but I am happy.
 
-The cold sesame noodles are great, we had to order more. For $12 you could do that as a meal and be pretty happy. There were a lot of good items like the dan dan noodles and very crispy scallion pancakes. The wontons in chilli oil would be way better if they were more spicy, it's a bit lacking but still prety satisfying. The fried veg dumplings and mapo tofu were pretty mediocre compared to good stuff that's out there. We were encouraged to get the orange hen of the woods mushroom, and it was outright confusing and way overpriced.
+The **cold sesame noodles** are excellent, we had to order more. For $12 you could do that as a meal and be pretty happy. There were a lot of good items like the **dan dan noodles** and very crispy **scallion pancakes**. The **wontons in chilli oil** would be way better if they were more spicy, it's a bit lacking but still prety satisfying. The fried veg dumplings and mapo tofu were pretty mediocre compared to good stuff that's out there. We were encouraged to get the orange hen of the woods mushroom, and it was outright confusing and way overpriced.
 
-In general there's some solid execution of some standards, and some misses. We only got through about a quarter of the menu if that, so we'll be back to try more and see if there's other good stuff.
+All in all, great place if you shy away from the duds. We only got through about a quarter of the menu if that, so we'll be back to try more and see if there's other good stuff.

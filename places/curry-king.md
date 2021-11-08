@@ -17,4 +17,4 @@ Another legit North Indian restaurant, across the road from similar restaurant [
 
 The stuff here is much more oily and heavy than the stuff across the road. Like I wouldn't expect to get much done for the rest of the day, and tbh I didn't, but also it was a Saturday so leave me alone.
 
-They do some things well. Top notch spinach, chickpea and eggplant curries. The garlic roti was alright, for $3 it was not great value compared to the rest of the meal but nothing to complain about.
+They do some things well. Top notch **spinach**, **chickpea** and **eggplant** curries. The garlic roti was alright, for $3 it was not great value compared to the rest of the meal but nothing to complain about.

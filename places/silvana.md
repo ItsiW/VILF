@@ -13,7 +13,7 @@ menu: www.silvana-nyc.com/menu.php
 phone: "+16466924935"
 ---
 
-Hipstery places are fine as long as the food is up to scratch. The falafel was more crunchy than crispy and not my favourite. You can get hummus and tahina elsewhere. Their crispy eggplant is good but it doesn't make up for the rest and everything took a bit too long to be made.
+Hipstery places are fine as long as the food is up to scratch. The falafel was more crunchy than crispy and not my favourite. You can get hummus and tahina elsewhere. Their **crispy eggplant** is good but it doesn't make up for the rest and everything took a bit too long to be made.
 
 I'll be back to try the rest of the menu because I'm a slut for middle eastern but I think we can do better. They do have a vegan shawarma though so curious to try it.
 
