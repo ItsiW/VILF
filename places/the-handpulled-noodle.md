@@ -14,6 +14,6 @@ menu: https://thehandpullednoodle.com/
 phone: "+19172620213"
 ---
 
-This place has the chew. We got the **lagman noodles in a cumin stirfry with seitan** and it was good. The seitan is in these satisfying huge strips and  soaks up all the sauce.
+A good place to go if you're craving that handmade noodle texture. We got the **lagman noodles in a cumin stirfry with seitan** and it was good. The seitan is in these satisfying huge strips and  soaks up all the sauce.
 
 We got the veggie dumplings and scallion pancake too but they weren't amazing, but come here for the noodles. You can see them stretch them out at the back.
