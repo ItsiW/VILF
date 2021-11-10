@@ -57,7 +57,7 @@ place_template = env.get_template("place.html")
 places = []
 
 
-taste_labels = ["Bad", "SGFI", "Good", "Phenomenal"]
+taste_labels = ["DNR", "SGFI", "Good", "Phenomenal"]
 value_labels = ["Bad", "Fine", "Good", "Phenomenal"]
 rating_colors = ["#ef422b", "#efa72b", "#32af2d", "#2b9aef"]
 faded_color = "#cecece"

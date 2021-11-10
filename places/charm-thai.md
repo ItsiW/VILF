@@ -6,7 +6,7 @@ visited: "2021-11-09"
 address: 126th & Amsterdam
 area: Morningside Heights
 taste: 1
-sgfi: pretty tasty mock duck salad
+sgfi: pretty tasty mock duck salad.
 value: 1
 lat: 40.81387704069643
 lon: -73.95612384405642

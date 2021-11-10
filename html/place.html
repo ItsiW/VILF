@@ -21,8 +21,13 @@
     {% if sgfi %}
     <p><b class="sgfi">Something Going For It</b>: {{ sgfi }}</p>
     {% endif %}
+    {% if taste==0 %}
+    <p><b class="dnr">Do Not Recommend</b></p>
+    {% endif %}
   <h3 class="notes">Remarks</h3>
   {{ content }}
   <p class="sampling_date">Last sampled {{ visited_display }}.</p>
+  <p class="contact-us"><b>Complaints, compliments, suggestions or want to hang out and get some food?</b>
+  <p class="contact-us"><b><a href="mailto:tgtg@itsiweinstock.com">Chuck us an email...</a></b></p>
 </section>
 {% endblock %}
