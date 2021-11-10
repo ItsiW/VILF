@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="content">
-  <h1>Latest Reviews</h1>
+  <h1 class="name">Latest Reviews</h1>
   {% for place in places %}
   <p class="list_info small_date first_element">{{ place["visited_display"] }}</p>
   <h2 class="name"><a href="{{ place["url"] }}">{{ place["name"] }}</a></h2>
