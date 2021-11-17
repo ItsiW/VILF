@@ -8,6 +8,7 @@ area: Bedford-Stuyvesant
 taste: 2
 value: 3
 lat: 40.680425330655694
+lon: -73.947958474722
 menu: https://www.zmenu.com/a-and-a-bake-and-doubles-shop-brooklyn-online-menu/
 phone: "+13474250016"
 ---
