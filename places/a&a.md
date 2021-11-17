@@ -16,4 +16,4 @@ A doubles is chickpea curry in two small pieces of deep fried flatbread. Don't c
 
 I think probably what you want to go here for though is the vegie fry bake. This is a more substantial fried bread with any number of their vegan fillings. I got cabbage one day which was really tasty (like fried with peppers and stuff) and okra another, also really good. In a sandwhich city with not too many vegan sandwhich options, this stuff is really good.
 
-Highly recommend if you're in the area, I wouldn't be travelling just for it but it's solid. You can get away with a lot of food for like $6 as well so there's that.
+Highly recommend if you're in the area, I wouldn't be travelling just for it but it's solid. You can get away with a lot of food for like $6 cash as well so there's that.
