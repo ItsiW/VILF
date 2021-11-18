@@ -8,8 +8,8 @@ area: Upper West Side
 taste: 1
 sgfi: good baba ganoush & baklava and other decent handmade middle eastern standards.
 value: 2
-lat: 40.71851741271005
-lon: -73.99459494156919
+lat: 40.8011640097098
+lon: -73.96482211608024
 menu: https://zaadrestaurants.com/new-york-manhattan-zaad-food-menu
 phone: "+16468612061"
 ---
