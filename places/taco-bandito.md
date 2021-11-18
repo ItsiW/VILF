@@ -2,7 +2,7 @@
 name: Taco Bandito
 cuisine: Mexican
 drinks: false
-visited: "2021-10-13"
+visited: "2021-11-13"
 address: 26th & 8th
 area: Chelsea
 taste: 1

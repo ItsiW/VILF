@@ -2,7 +2,7 @@
 name: Zaad
 cuisine: Middle Eastern
 drinks: false
-visited: "2021-10-13"
+visited: "2021-11-13"
 address: 107th & Amsterdam
 area: Upper West Side
 taste: 1
