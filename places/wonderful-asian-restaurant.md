@@ -13,6 +13,6 @@ menu: https://themenustar4.com/webspace/menus.php?code=orderwonderfulasianrestau
 phone: "+19292343777"
 ---
 
-Not wonderful. Maybe Asian. Definitely food.
+Not wonderful. Maybe Asian. Definitely restaurant.
 
 I got a mapo tofu and it'd never seen a mapo before in it's life. 
