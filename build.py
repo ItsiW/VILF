@@ -44,11 +44,15 @@ with open(build_dir / "error.html", "w") as o:
 ## about page
 about_dir = build_dir / "about"
 about_dir.mkdir(exist_ok=True, parents=True)
+with open("./about.md") as f:
+    _, frontmatter, md = f.read().split("---", 2)
+meta = yaml.load(frontmatter, Loader=yaml.Loader)
+html = markdown(md.strip())
 with open(about_dir / "index.html", "w") as o:
     o.write(
         env.get_template("about.html").render(
-            title="About — The Good Taste Guide",
-            description="Want to know how The Good Taste Guide got started? Find out here!",
+            **meta,
+            content=html,
         )
     )
 
