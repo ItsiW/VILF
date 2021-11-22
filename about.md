@@ -24,7 +24,9 @@ There is a similar <span class="mono-info-about dnr">Bad</span> <span class="mon
 
 ### Credits
 
-All reviews are provided by Editor-in-Chief [Itsi Weinstock](https://itsiweinstock.com), in consultation with friends, buddies, colleagues, and aquaintences. The website was primarily built by Senior Taste Augmentation Engineer [Aapeli Vuorinen](https://www.aapelivuorinen.com). The code is open source with an MIT license and can be found on our [GitHub repository](https://github.com/aapeliv/tgtg).
+All reviews are provided by Editor-in-Chief [Itsi Weinstock](https://itsiweinstock.com), along with a rotating cast of friends, buddies, colleagues, and acquaintances. 
+
+The website was built by Senior Taste Augmentation Engineer [Aapeli Vuorinen](https://www.aapelivuorinen.com). The code is open source with an MIT license and can be found on our [GitHub repository](https://github.com/aapeliv/tgtg).
 
 ### Contact
 
@@ -35,3 +37,5 @@ Yes, we will hang out with you at your favorite place and add it to the map.
 ### Disclaimer
 
 All opinions, despite how good they are, should not be construed to be fact.
+
+Where providing factual information such as menus, addresses, alcohol availability etc. we have sourced our information from either the restaurant being reviewed or third party information providors where necessary. Please contact us if you would like anything to be corrected.
