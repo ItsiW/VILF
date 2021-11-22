@@ -17,6 +17,6 @@ Really good food here, great option to take non-vegans to, especially if they've
 
 It's on the pricier end, but a platter for 3 can feed 4 people for around $80 after tax and tips. 
 
-It gets phenominal value IF you go on a sunday night, when jazz players from Jiulliard and the Manhattan School of Music put on free shows in the restaurant. 
+It gets phenominal value IF you go on a sunday night, when jazz players from Jiulliard and the Manhattan School of Music put on free shows in the restaurant. It's a good night out.
 
 

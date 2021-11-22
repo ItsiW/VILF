@@ -7,8 +7,8 @@ address: 125th & Broadway
 area: Morningside Heights
 taste: 0
 value: 1
-lat: 40.81540916093881
-lon: -73.95887361636034
+lat: 40.81717136019468
+lon: -73.95327555314579
 menu: https://www.rairaiken-ny.com/about-rairaiken
 phone: "+19176393342"
 ---
