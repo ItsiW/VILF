@@ -7,8 +7,8 @@ address: 107th & Amsterdam
 area: Upper West Side
 taste: 2
 value: 2
-lat: 40.680425330655694
-lon: -73.96563477528882
+lat: 40.800848818833096
+lon: -73.96563656699621
 menu: https://www.banhny.com
 phone: "+19176393151"
 ---
