@@ -17,7 +17,7 @@ We mostly target food under $20 per person and we don't review pizza, bagels or 
 
 - <span class="mono-info-about phenomenal">Phenomenal</span>: Amazing food, you should travel for this. We only give this out rarely.
 - <span class="mono-info-about good">Good</span>: We recommend this. Go with some friends and order some things, you'll have a good time.
-- <span class="mono-info-about sgfi">SGFI</span>: Something Going For It. While not everything was great, there's certain items or experiences that are worth checking it out for.
+- <span class="mono-info-about sgfi">SGFI</span>: Something Going For It. While not everything was great, there's certain items or experiences that are worth checking it out for. We'd probably go back at some point.
 - <span class="mono-info-about dnr">DNR</span>: Do Not Recommend. Sometimes really bad but not always. Mostly means we wouldn't go there again.
 
 There is a similar <span class="mono-info-about dnr">Bad</span> <span class="mono-info-about sgfi">Fine</span> <span class="mono-info-about good">Good</span> <span class="mono-info-about phenomenal">Phenomenal</span> classification for value. Note that value is not the same thing as price, it's how we feel about the price relative to the experience, adjusted for how absolutely inafordable everything is in New York.
