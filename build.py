@@ -86,7 +86,7 @@ def rating_to_formatting(rating, rating_labels):
 def rating_html(rating, rating_labels):
     return "&nbsp;".join(
         [
-            f'<span style="color: {color if rating == ix else faded_color}" aria-hidden="{"true" if rating == ix else "false"}">{label}</span>'
+            f'<span style="color: {color if rating == ix else faded_color}" aria-hidden="{"false" if rating == ix else "true"}">{label}</span>'
             for ix, (label, color) in enumerate(zip(rating_labels, rating_colors))
         ]
     )
@@ -103,7 +103,7 @@ def boolean_to_formatting(boolean):
 def boolean_html(boolean):
     return " ".join(
         [
-            f'<span style="color: {color if boolean == ix else faded_color}" aria-hidden="{"true" if boolean == ix else "false"}">{label}</span>'
+            f'<span style="color: {color if boolean == ix else faded_color}" aria-hidden="{"false" if boolean == ix else "true"}">{label}</span>'
             for ix, (label, color) in enumerate(zip(boolean_labels, boolean_colors))
         ]
     )
