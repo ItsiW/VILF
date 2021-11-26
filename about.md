@@ -11,7 +11,7 @@ Simply put, we want to find vegan food that anyone would want to eat, whether th
 
 Our philosophy is that vegan food can be, and is, competitive with non-vegan food. Good food is good food. However, people tend to overrate vegan restaurants (usually coming from a good place), which can make it hard to find high quality stuff. A lot of food out there isn't amazing, and that includes vegan stuff. We want to hold them to a higher standard.
 
-We mostly target food under $20 per person and we don't review pizza, bagels or burgers.
+We mostly target food under $20 per person and we don't review pizza, bagels or burgers. Or desserts. Grow up.
 
 ### Ratings Guide
 
