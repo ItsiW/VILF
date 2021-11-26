@@ -110,7 +110,7 @@ def boolean_html(boolean):
 
 
 def format_title(meta):
-    return f'{meta["name"]} — Tasty vegan food in {meta["area"]} — The Good Taste Guide'
+    return f'{meta["name"]} — Tasty vegan food in {meta["area"]}, New York — The Good Taste Guide'
 
 
 def format_description(meta):
