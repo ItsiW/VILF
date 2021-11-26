@@ -14,6 +14,6 @@ menu: https://www.allmenus.com/ny/new-york/48860-jerusalem-restaurant/menu/
 phone: "+12128652295"
 ---
 
-Very fresh and tasty falafel sandwich in a pita. I got mine with baba ganoush for $7 cash. The falafel wasn't super crispy but it was very tasty, packed with coriander seeds, and came with good salad.
+Very fresh and tasty **falafel sandwich** in a pita. I got mine with baba ganoush for $7 cash. The falafel wasn't super crispy but it was very tasty, packed with coriander seeds, and came with good salad.
 
 I'll probably be back to try the hummus and baba ganoush by itself, it might be deserving a higher rating.

@@ -14,6 +14,6 @@ menu: https://taqueriayfondany.com/menu
 phone: "+12125310383"
 ---
 
-They have 3 vegan tacos: beans, cactus and mix veg. The mix veg one with brocolli and some other stuff wasn't amazing but the other two were fine. The people running the place are nice, and you can go for lunch and get 3 for $10 plus tax. I sat down and he gave me free homemade tortilla chips and green salsa.
+They have 3 vegan tacos: **beans**, **cactus** and mix veg. The mix veg one with brocolli and some other stuff wasn't amazing but the other two were fine. The people running the place are nice, and you can go for lunch and get 3 for $10 plus tax. I sat down and he gave me free homemade tortilla chips and green salsa.
 
 Each is served on 2 sizeable wheat tortillas so it's pretty filling. Very down to earth but not exceptional. Might be back to try other things for snacks

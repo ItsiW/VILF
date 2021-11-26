@@ -14,6 +14,6 @@ menu: https://zaadrestaurants.com/new-york-manhattan-zaad-food-menu
 phone: "+16468612061"
 ---
 
-It strikes you as a drunk college late night kebab shop, but the stuff has a pretty good standard. Everything is handmade and solid. The falafel isn't the crispiest but has good spices in it. The baba ganoush was good, had a strong tahina presence.
+It strikes you as a drunk college late night kebab shop, but the stuff has a pretty good standard. Everything is handmade and solid. The **falafel** isn't the crispiest but has good spices in it. The **baba ganoush** was good, had a strong tahina presence.
 
-I'm not one for desserts but it's a pretty good baklava that's apparently vegan. We all know how hard it is to find good baklava. Good crisp to it.
+I'm not one for desserts but it's a pretty good **baklava** that's apparently vegan. We all know how hard it is to find good baklava. Good crisp to it.

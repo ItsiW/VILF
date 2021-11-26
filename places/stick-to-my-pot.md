@@ -13,8 +13,8 @@ menu: https://www.sticktomypot.com/menu-2/
 phone: "+16468222003"
 ---
 
-Normally I like my veggie dumplings with a green chive-like filling, but this is like my first time I liked a mixed veg situation, they had a lot of mala flavour and stuff. And great texture. First actually good dumplings I've had in New York.
+Normally I like my **veggie dumplings** with a green chive-like filling, but this is like my first time I liked a mixed veg situation, they had a lot of mala flavour and stuff. And great texture. First actually good dumplings I've had in New York.
 
-The scallion pancakes are top tier. Get one.
+The **scallion pancakes** are top tier. Get one.
 
 They have some cheap (like $4) scallion oil noodles, they're not amazing but good filler. The portions here are kinda small so it's not a terrible idea.

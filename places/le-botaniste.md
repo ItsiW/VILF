@@ -16,6 +16,6 @@ phone: "+16469984605"
 
 Before you complain, yes various "bowls" of a mix of cuisines definitely constitutes American food.
 
-I'm not one for bowl culture but this place is better than it initially seems. The whole menu is vegan. For two people it came to about $30 after tax. We tried the chili and vegetable tagine (read: spiced veg soup) and they were both solid. The sour cream that came with the chili was sour creamy enough for my omnivore friend.
+I'm not one for bowl culture but this place is better than it initially seems. The whole menu is vegan. For two people it came to about $30 after tax. We tried the **chili** and vegetable tagine (read: spiced veg soup) and they were both solid. The sour cream that came with the chili was sour creamy enough for my omnivore friend.
 
 All in all pretty good, nothing exceptional. It's a chain so I'll be back if I need something quick and I'm close to one. Also they've got a lot of natural wines which is fun.

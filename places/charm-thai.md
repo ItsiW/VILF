@@ -14,4 +14,4 @@ menu: https://www.seamless.com/menu/charm-thai-1346-amsterdam-ave-new-york/14150
 phone: "+16467264548"
 ---
 
-Look, this is a pretty standard Thai takeout joint, stuff isn't amazing. It's fine. But the mock duck salad is good. Really spicy lime-heavy coriander salady thing, and the mock duck is crispy. Maybe the papaya salad is good? Idk, someone email me about it.
+Look, this is a pretty standard Thai takeout joint, stuff isn't amazing. It's fine. But the **mock duck salad** is good. Really spicy lime-heavy coriander salady thing, and the mock duck is crispy. Maybe the papaya salad is good? Idk, someone email me about it.

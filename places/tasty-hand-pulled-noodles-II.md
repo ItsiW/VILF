@@ -14,7 +14,7 @@ menu: http://www.tastyhandpullednoodles2.com/menu
 phone: "+19173882351"
 ---
 
-We got the veg dumpling noodle soup with veggie broth and the pan fried noodles with tofu. The soup was a bit flavourless, but the dumplings were nice enough with their seasoned dumpling sauce. There was plenty of good chilli oil so it was fine enough in the end. 
+We got the veg dumpling noodle soup with veggie broth and the **pan fried noodles with tofu**. The soup was a bit flavourless, but the dumplings were nice enough with their seasoned dumpling sauce. There was plenty of good chilli oil so it was fine enough in the end. 
 
 The noodles are on the softer end, not something chewy if that's what you're expecting. they only had thin and a bit thicker ones available at the time, but I'd try out some of the bigger ones in the future.
 
