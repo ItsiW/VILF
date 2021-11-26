@@ -2,7 +2,7 @@
 name: Tasty Hand-Pulled Noodles II
 cuisine: Chinese
 drinks: false
-visited: "2021-11-23"
+visited: "2021-11-25"
 address: 45th & 9th
 area: Hell's Kitchen
 taste: 1
