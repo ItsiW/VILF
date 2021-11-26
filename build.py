@@ -11,6 +11,7 @@ import yaml
 from jinja2 import Environment, FileSystemLoader
 from markdown2 import markdown
 from mdplain import plain
+from PIL import Image
 
 SITE_URL = "https://thegoodtaste.guide"
 
@@ -21,6 +22,35 @@ env.globals["SITE_URL"] = SITE_URL
 
 build_dir = Path(".") / "build"
 shutil.rmtree(build_dir, ignore_errors=True)
+
+# scale, crop and store standardised images
+food_image_target_size = (1920, 1080)
+jpg_quality = 75
+for raw_jpg in glob.glob("raw/food/*.jpg"):
+    static_fp = Path(f"img/food/{raw_jpg[9:-4]}.jpg")
+    # if previously stored, skip
+    if (Path("static/") / static_fp).exists():
+        continue
+    with Image.open(raw_jpg) as im:
+        assert im.size[0] / im.size[1] <= 16 / 9
+        im = im.resize(
+            (
+                food_image_target_size[0],
+                int(food_image_target_size[0] * im.size[1] / im.size[0]),
+            )
+        )
+        pixels_to_crop = int((im.size[1] - food_image_target_size[1]) / 2)
+        (left, upper, right, lower) = (
+            0,
+            pixels_to_crop,
+            food_image_target_size[0],
+            food_image_target_size[1] + pixels_to_crop,
+        )
+        im_cropped = im.crop((left, upper, right, lower))
+        im_cropped.save(
+            fp=Path("static/") / static_fp, format="JPEG", quality=jpg_quality
+        )
+
 shutil.copytree(Path("static/"), build_dir)
 
 sitemap = []
@@ -118,7 +148,7 @@ def format_description(meta):
 
 
 def format_phone_number(meta):
-    if not "phone" in meta:
+    if "phone" not in meta:
         return
     number = meta["phone"]
     assert len(number) == 12
@@ -149,6 +179,11 @@ def format_blurb(md):
     return " ".join(plain(re.sub(r"\s+", " ", md.strip())).split(" ")[:50]) + "..."
 
 
+def get_fp_food_image(slug):
+    static_fp = f"/img/food/{slug}.jpg"
+    return static_fp if Path(f"static{static_fp}").exists() else None
+
+
 for place_md in glob.glob("places/*.md"):
     slug = place_md[7:-3]
     assert re.match(r"^[0-9a-z-]+$", slug), "Bad filename for " + place_md
@@ -172,6 +207,7 @@ for place_md in glob.glob("places/*.md"):
     meta["drinks_label"], meta["drinks_color"] = boolean_to_formatting(meta["drinks"])
     html = markdown(md.strip())
     meta["blurb"] = format_blurb(md)
+    meta["food_image_path"] = get_fp_food_image(slug)
     rendered = place_template.render(
         **meta,
         title=format_title(meta),

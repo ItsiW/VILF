@@ -24,6 +24,9 @@
     {% if taste==0 %}
     <p><b class="dnr">Do Not Recommend</b></p>
     {% endif %}
+    {% if food_image_path %}
+    <img src="{{ food_image_path }}" alt="Vegan {{ cuisine }} food at {{ name }} in {{ area }}, New York" class="food-image"> 
+    {% endif %}
   <h3 class="notes">Remarks</h3>
   {{ content }}
   <p class="sampling-date">Last sampled {{ visited_display }}.</p>
