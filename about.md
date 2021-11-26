@@ -3,7 +3,7 @@ title: "About — The Good Taste Guide"
 description: "Want to know how The Good Taste Guide got started? Find out here!"
 ---
 
-## About The Good Taste Guide
+# About The Good Taste Guide
 
 We assume you're here because you want to find good vegan food to eat in New York — actually good vegan food. We have the good taste, and The Good Taste Guide is here to help!
 
@@ -13,7 +13,7 @@ Our philosophy is that vegan food can be, and is, competitive with non-vegan foo
 
 We mostly target food under $20 per person and we don't review pizza, bagels or burgers. Or desserts. Grow up.
 
-### Ratings Guide
+## Ratings Guide
 
 - <span class="mono-info-about phenomenal">Phenomenal</span>: Amazing food, you should travel for this. We only give this out rarely.
 - <span class="mono-info-about good">Good</span>: We recommend this. Go with some friends and order some things, you'll have a good time.
@@ -22,20 +22,22 @@ We mostly target food under $20 per person and we don't review pizza, bagels or 
 
 There is a similar <span class="mono-info-about dnr">Bad</span> <span class="mono-info-about sgfi">Fine</span> <span class="mono-info-about good">Good</span> <span class="mono-info-about phenomenal">Phenomenal</span> classification for value. Note that value is not the same thing as price, it's how we feel about the price relative to the experience, adjusted for how absolutely inafordable everything is in New York.
 
-### Credits
+## Credits
 
 All reviews are provided by Editor-in-Chief [Itsi Weinstock](https://itsiweinstock.com), along with a rotating cast of friends, buddies, colleagues, and acquaintances. 
 
 The website was built by Senior Taste Augmentation Engineer [Aapeli Vuorinen](https://www.aapelivuorinen.com). The code is open source with an MIT license and can be found on our [GitHub repository](https://github.com/aapeliv/tgtg).
 
-### Contact
+## Contact
 
 [Email us all complaints, comments, and suggestions.](mailto:contact@thegoodtaste.guide)
 
 Yes, we will hang out with you at your favorite place and add it to the map.
 
-### Disclaimer
+## Disclaimer
 
 All opinions, despite how good they are, should not be construed to be fact.
 
 Where providing factual information such as menus, addresses, alcohol availability etc. we have sourced our information from either the restaurant being reviewed or third party information providors where necessary. Please contact us if you would like anything to be corrected.
+
+If I have accidentally included any non-vegan items here by mistake, please let me know and I will remove it immediately.
