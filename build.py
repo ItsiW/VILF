@@ -151,6 +151,7 @@ def format_blurb(md):
 
 for place_md in glob.glob("places/*.md"):
     slug = place_md[7:-3]
+    assert re.match(r"^[0-9a-z-]+$", slug), "Bad filename for " + place_md
     relative_url = f"/places/{slug}/"
     with open(place_md) as f:
         _, frontmatter, md = f.read().split("---", 2)
