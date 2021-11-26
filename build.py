@@ -23,6 +23,8 @@ build_dir = Path(".") / "build"
 shutil.rmtree(build_dir, ignore_errors=True)
 shutil.copytree(Path("static/"), build_dir)
 
+sitemap = []
+
 ## map page
 with open(build_dir / "index.html", "w") as o:
     o.write(
@@ -31,6 +33,11 @@ with open(build_dir / "index.html", "w") as o:
             description="Find tasty vegan food around New York City!",
         )
     )
+sitemap.append(
+    {
+        "url": f"{SITE_URL}/",
+    }
+)
 
 ## error page
 with open(build_dir / "error.html", "w") as o:
@@ -55,6 +62,11 @@ with open(about_dir / "index.html", "w") as o:
             content=html,
         )
     )
+sitemap.append(
+    {
+        "url": f"{SITE_URL}/about/",
+    }
+)
 
 ## place pages
 place_template = env.get_template("place.html")
@@ -139,6 +151,7 @@ def format_blurb(md):
 
 for place_md in glob.glob("places/*.md"):
     slug = place_md[7:-3]
+    assert re.match(r"^[0-9a-z-]+$", slug), "Bad filename for " + place_md
     relative_url = f"/places/{slug}/"
     with open(place_md) as f:
         _, frontmatter, md = f.read().split("---", 2)
@@ -150,8 +163,12 @@ for place_md in glob.glob("places/*.md"):
     visited = date.fromisoformat(meta["visited"])
     meta["visited_display"] = format_visited(visited)
     meta["review_age"] = (date.today() - visited).days
-    meta["taste_label"], meta["taste_color"] = rating_to_formatting(meta["taste"], taste_labels)
-    meta["value_label"], meta["value_color"] = rating_to_formatting(meta["value"], value_labels)
+    meta["taste_label"], meta["taste_color"] = rating_to_formatting(
+        meta["taste"], taste_labels
+    )
+    meta["value_label"], meta["value_color"] = rating_to_formatting(
+        meta["value"], value_labels
+    )
     meta["drinks_label"], meta["drinks_color"] = boolean_to_formatting(meta["drinks"])
     html = markdown(md.strip())
     meta["blurb"] = format_blurb(md)
@@ -169,6 +186,14 @@ for place_md in glob.glob("places/*.md"):
     with open(out_dir / "index.html", "w") as o:
         o.write(rendered)
     places.append(meta)
+
+    sitemap.append(
+        {
+            "url": f"{SITE_URL}{relative_url}",
+            "lastmod": visited,
+        }
+    )
+
 
 geojson_keys = ["url", "taste_color"]
 
@@ -208,6 +233,14 @@ with open(best_dir / "index.html", "w") as o:
             ),
         )
     )
+sitemap.insert(
+    2,
+    {
+        "url": f"{SITE_URL}/best/",
+        "changefreq": "daily",
+    },
+)
+
 
 ## latest page
 latest_dir = build_dir / "latest"
@@ -227,6 +260,27 @@ with open(latest_dir / "index.html", "w") as o:
                     item["slug"],
                 ),
             ),
+        )
+    )
+sitemap.insert(
+    2,
+    {
+        "url": f"{SITE_URL}/latest/",
+        "changefreq": "daily",
+    },
+)
+
+with open(build_dir / "sitemap.xml", "w") as o:
+    o.write(
+        env.get_template("sitemap.xml").render(
+            urls=[
+                (
+                    item.get("url"),
+                    item.get("lastmod", date.today()),
+                    item.get("changefreq"),
+                )
+                for item in sitemap
+            ]
         )
     )
 
