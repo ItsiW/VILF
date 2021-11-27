@@ -183,6 +183,23 @@
       font-style: italic;
       color: #4b4b4b;
     }
+    .map-popup, .name-popup, .description-popup, .mono-info-popup, .popup {
+      margin: 0;
+      padding: 0;
+    }
+    .map-popup {
+      max-width : 9rem;
+    }
+    .name-popup{
+      color: #d44c43;
+    }
+    .description-popup{
+      margin-bottom: 0.6rem;
+    }
+    .mono-info-popup {
+      font-family: 'Courier New', Courier, monospace;
+    }
+    .mapboxgl-popup-content
   </style>
   {% block extra_head %}{% endblock %}
   <link rel="preconnect" href="https://fonts.googleapis.com">
