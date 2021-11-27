@@ -29,6 +29,21 @@ map.addControl(
     })
 );
 
+function placeHTML(properties) {
+  return `
+  <div class="map-popup">
+    <h3 class="name-popup">${properties.name}</h3>
+    <div class="description-popup">
+      <p class="popup"><b>${properties.cuisine}</b> food</p>
+      <p class="popup">in <em>${properties.area}</em></p>
+    </div>
+    <p class="mono-info-popup">Taste: <b style="color: ${properties.taste_color}">${properties.taste_label}</b></p>
+    <p class="mono-info-popup">Value: <b style="color: ${properties.value_color}">${properties.value_label}</b></p>
+    <p class="mono-info-popup">Booze: <b style="color: ${properties.drinks_color}">${properties.drinks_label}</b></p>
+  </div>
+  `;
+}
+
 function placeClicked(event) {
   var feature = event.features[0]
   console.log(feature)
@@ -56,16 +71,29 @@ map.on("load", function () {
 
   map.on("click", "place-markers", placeClicked);
 
+  const popup = new maplibregl.Popup({ 
+    offset: 9, 
+    closeButton: false, 
+  });
+
   // Change the cursor to a pointer when
   // the mouse is over the states layer.
-  map.on('mouseenter', 'place-markers', () => {
-  map.getCanvas().style.cursor = 'pointer';
+  map.on('mouseenter', 'place-markers', (e) => {
+    map.getCanvas().style.cursor = 'pointer';
+    var feature = e.features[0]
+    popup
+      .setLngLat(feature.geometry.coordinates)
+      .setHTML(
+        placeHTML(feature.properties)
+      )
+      .addTo(map);
   });
   
   // Change the cursor back to a pointer
   // when it leaves the states layer.
   map.on('mouseleave', 'place-markers', () => {
-  map.getCanvas().style.cursor = '';
+    map.getCanvas().style.cursor = '';
+    popup.remove();
   });
 
 });
