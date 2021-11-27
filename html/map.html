@@ -55,6 +55,19 @@ map.on("load", function () {
   });
 
   map.on("click", "place-markers", placeClicked);
+
+  // Change the cursor to a pointer when
+  // the mouse is over the states layer.
+  map.on('mouseenter', 'place-markers', () => {
+  map.getCanvas().style.cursor = 'pointer';
+  });
+  
+  // Change the cursor back to a pointer
+  // when it leaves the states layer.
+  map.on('mouseleave', 'place-markers', () => {
+  map.getCanvas().style.cursor = '';
+  });
+
 });
 </script>
 {% endblock %}
