@@ -231,7 +231,19 @@ for place_md in glob.glob("places/*.md"):
     )
 
 
-geojson_keys = ["name", "cuisine", "area", "drinks", "url", "taste_color", "taste_label", "value_color", "value_label", "drinks_color", "drinks_label"]
+geojson_keys = [
+    "name",
+    "cuisine",
+    "area",
+    "drinks",
+    "url",
+    "taste_color",
+    "taste_label",
+    "value_color",
+    "value_label",
+    "drinks_color",
+    "drinks_label",
+]
 
 geojson = {
     "type": "FeatureCollection",
