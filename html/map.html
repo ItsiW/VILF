@@ -89,7 +89,8 @@ map.on("load", function () {
 
   const popup = new maplibregl.Popup({ 
     offset: 9, 
-    closeButton: false, 
+    closeButton: false,
+    maxWidth: "12rem",
   });
 
   // Change the cursor to a pointer when
