@@ -1,8 +1,8 @@
 ---
 name: Wiki Wiki
 cuisine: Hawaiian
-drinks: false
-visited: "2021-11-26"
+drinks: true
+visited: "2021-11-27"
 address: Dekalb Market Hall
 area: Downtown Brooklyn
 taste: 1

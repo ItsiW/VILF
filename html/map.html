@@ -30,6 +30,22 @@ map.addControl(
 );
 
 function placeHTML(properties) {
+  if (properties.food_image_path == "null") {
+    return `${_placeHTMLbody(properties)}`;
+  }
+  return `
+    ${_placeHTMLimage(properties)}
+    ${_placeHTMLbody(properties)}
+  `;
+}
+
+function _placeHTMLimage(properties) {
+  return `
+    <img src="${properties.food_image_path }" alt="Vegan ${properties.cuisine } food at ${properties.name} in ${properties.area}, New York" class="food-image-popup">
+  `;
+}
+
+function _placeHTMLbody(properties) {
   return `
   <div class="map-popup">
     <h3 class="name-popup">${properties.name}</h3>
