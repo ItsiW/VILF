@@ -30,7 +30,8 @@ map.addControl(
 );
 
 function placeHTML(properties) {
-  if (properties.food_image_path == "null") {
+  // don't show image if unavailable or on mobile
+  if (properties.food_image_path == "null" || (screen && screen.width <= 720)) {
     return `${_placeHTMLbody(properties)}`;
   }
   return `
@@ -60,13 +61,38 @@ function _placeHTMLbody(properties) {
   `;
 }
 
-function placeClicked(event) {
-  var feature = event.features[0]
-  console.log(feature)
-  if (screen && screen.width <= 720) {
+// desktop click logic
+// open in new window
+function placeClickedDesktop(event) {
+  var feature = event.features[0];
+  window.open(feature.properties.url, '_blank');
+}
+
+// mobile click logic
+// open in same window if the press time is < waitTimeMS
+const waitTimeMS = 250;
+
+// Set up variables for click not to occur
+var mouseIsDown = false;
+
+window.addEventListener('mousedown', function() {
+  mouseIsDown = false;
+  clearTimeout(this.downTimer);
+  this.downTimer = setTimeout(function() {
+      mouseIsDown = true;
+  }, waitTimeMS);
+});
+
+window.addEventListener('mouseup', function() {
+  clearTimeout(this.downTimer);
+});
+
+function placeClickedMobile(event) {
+  var feature = event.features[0];
+  console.log(feature);
+  if (!(mouseIsDown)){
+    // opun url
     location.href = feature.properties.url;
-  } else {
-    window.open(feature.properties.url, '_blank');
   }
 }
 
@@ -89,33 +115,54 @@ map.on("load", function () {
     "filter": ["==", "$type", "Point"]
   });
 
-  map.on("click", "place-markers", placeClicked);
-
   const popup = new maplibregl.Popup({ 
     offset: 9, 
     closeButton: false,
     maxWidth: "12rem",
   });
 
-  // Change the cursor to a pointer when
-  // the mouse is over the states layer.
-  map.on('mouseenter', 'place-markers', (e) => {
-    map.getCanvas().style.cursor = 'pointer';
-    var feature = e.features[0]
+  function createPopup(event) {
+    feature = event.features[0]
     popup
       .setLngLat(feature.geometry.coordinates)
       .setHTML(
         placeHTML(feature.properties)
       )
       .addTo(map);
-  });
-  
-  // Change the cursor back to a pointer
-  // when it leaves the states layer.
-  map.on('mouseleave', 'place-markers', () => {
-    map.getCanvas().style.cursor = '';
-    popup.remove();
-  });
+  }
+
+  if (screen && screen.width > 720) {
+    map.on("click", "place-markers", placeClickedDesktop);
+
+    // Change the cursor to a pointer when
+    // the mouse is over the states layer.
+    // Add popup.
+    map.on('mouseenter', 'place-markers', (e) => {
+      map.getCanvas().style.cursor = 'pointer';
+      createPopup(e);
+    });
+      
+    // Change the cursor back to a pointer
+    // when it leaves the states layer.
+    // Remove popup.
+    map.on('mouseleave', 'place-markers', () => {
+      map.getCanvas().style.cursor = '';
+      popup.remove();
+    });
+  } else {
+    // From mobile logic, only open url if pressed for < waitTimeMS
+    map.on('click', 'place-markers', placeClickedMobile)
+
+    // Open popup on mousedown
+    map.on('mousedown', 'place-markers', (e) => {
+      createPopup(e)
+    });
+    
+    // Close popup on mouseup
+    map.on('mouseup', 'place-markers', (e) => {
+      popup.remove()
+    });
+  }
 
 });
 </script>
