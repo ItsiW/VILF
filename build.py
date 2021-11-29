@@ -241,8 +241,6 @@ geojson_keys = [
     "taste_label",
     "value_color",
     "value_label",
-    "drinks_color",
-    "drinks_label",
     "food_image_path"
 ]
 
