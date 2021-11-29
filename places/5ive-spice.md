@@ -2,7 +2,7 @@
 name: 5ive Spice
 cuisine: Vietnamese
 drinks: false
-visited: "2021-11-29"
+visited: "2021-11-28"
 address: 52 5th Ave
 area: Park Slope
 taste: 1
