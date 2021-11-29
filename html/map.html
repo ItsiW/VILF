@@ -63,7 +63,11 @@ function _placeHTMLbody(properties) {
 function placeClicked(event) {
   var feature = event.features[0]
   console.log(feature)
-  location.href = feature.properties.url
+  if (screen && screen.width <= 720) {
+    location.href = feature.properties.url;
+  } else {
+    window.open(feature.properties.url, '_blank');
+  }
 }
 
 map.on("load", function () {

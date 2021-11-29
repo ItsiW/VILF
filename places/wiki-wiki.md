@@ -14,4 +14,4 @@ menu: https://www.wikiwikinomnom.com/
 phone: "+19293682794"
 ---
 
-They've got a pretty large vegan menu. I got the spicy miso ramen. It was pretty rich and not watery, fairly solid. But a ramen can only be so good when having it out of a plastic bowl in a depressing mall.
+They've got a pretty large vegan menu. I got the **spicy miso ramen**. It was pretty rich and not watery, fairly solid. But a ramen can only be so good when having it out of a plastic bowl in a depressing mall.
