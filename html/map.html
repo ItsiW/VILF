@@ -5,31 +5,7 @@
 {% endblock %}
 {% block content %}
 
-<style>
-  .legend {
-    background-color: #ffffff;
-    border-radius: 3px;
-    top: 7rem;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    font: 12px/20px 'Lato', sans-serif;
-    padding: 0.1rem .3rem 0.1rem .3rem;
-    position: absolute;
-    left: 0.5rem;
-    z-index: 1;
-  }
-
-  .legend-text {
-    padding: 0;
-    margin: 0;
-  }
-</style>
-
 <div id="map"></div>
-
-<div id="state-legend" class="legend">
-  <p class="legend-text"><b class="mono-info-popup">Open:</b> click</p>
-  <p class="legend-text"><b class="mono-info-popup">Info:</b> press</p>
-</div>
 
 <script>
 maplibregl.accessToken = "pk.eyJ1IjoiYWFwZWxpIiwiYSI6ImNrdm56dW84ejF4cmwydXFnMTNid2pkdXIifQ.OAdGTs-NsR5znCfS7vmyIQ";
