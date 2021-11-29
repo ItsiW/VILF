@@ -29,6 +29,13 @@ map.addControl(
     })
 );
 
+// Add navigation control to the map
+map.addControl(
+  new maplibregl.NavigationControl({
+    visualizePitch: true
+  })
+);
+
 function placeHTML(properties) {
   // don't show image if unavailable or on mobile
   if (properties.food_image_path == "null" || (screen && screen.width <= 720)) {
