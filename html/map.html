@@ -154,12 +154,12 @@ map.on("load", function () {
     map.on('click', 'place-markers', placeClickedMobile)
 
     // Open popup on mousedown
-    map.on('mousedown', 'place-markers', (e) => {
+    map.on('touchstart', 'place-markers', (e) => {
       createPopup(e)
     });
     
     // Close popup on mouseup
-    map.on('mouseup', 'place-markers', (e) => {
+    map.on('touchend', 'place-markers', (e) => {
       popup.remove()
     });
   }
