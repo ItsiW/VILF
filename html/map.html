@@ -70,12 +70,12 @@ function placeClickedDesktop(event) {
 
 // mobile click logic
 // open in same window if the press time is < waitTimeMS
-const waitTimeMS = 250;
+const waitTimeMS = 100;
 
 // Set up variables for click not to occur
 var mouseIsDown = false;
 
-window.addEventListener('mousedown', function() {
+window.addEventListener('touchstart', function() {
   mouseIsDown = false;
   clearTimeout(this.downTimer);
   this.downTimer = setTimeout(function() {
@@ -83,7 +83,7 @@ window.addEventListener('mousedown', function() {
   }, waitTimeMS);
 });
 
-window.addEventListener('mouseup', function() {
+window.addEventListener('touchend', function() {
   clearTimeout(this.downTimer);
 });
 
