@@ -2,7 +2,7 @@
 name: Greene Bites
 cuisine: American
 drinks: true
-visited: "2021-11-25"
+visited: "2021-11-29"
 address: 116 Dekalb Ave
 area: Fort Greene
 taste: 2
@@ -18,3 +18,5 @@ Guys the **vegan chopped cheese** here is fucked. It is such a greasy, rich expe
 Is it just me? Is this a normal thing that's available at other places?
 
 I'll try everything else and report back.
+
+- Reuben: not amazing, wouldn't go for it
