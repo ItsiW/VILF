@@ -140,12 +140,19 @@ map.on("load", function () {
     "data": "/places.geojson"
   });
 
+  // radius of points larger for mobile
+  if (screen && screen.width > 720) {
+    var radius = 7;
+  } else {
+    var radius = 9;
+  }
+
   map.addLayer({
     "id": "place-markers",
     "type": "circle",
     "source": "places",
     "paint": {
-      "circle-radius": 7,
+      "circle-radius": radius,
       "circle-color": ["get", "taste_color"],
       "circle-stroke-width": 1,
       "circle-stroke-color": "#000000"
