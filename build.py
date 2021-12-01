@@ -230,6 +230,11 @@ for place_md in glob.glob("places/*.md"):
         }
     )
 
+unique_fields = ["name", "geodata", "menu", "phone", "blurb"]
+
+for unique_field in unique_fields:
+    field_list = [place[unique_field] for place in places if place[unique_field] is not None]
+    assert len(set(field_list)) == len(field_list), f"Reused {unique_field} field"
 
 geojson_keys = [
     "name",
