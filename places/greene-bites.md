@@ -2,7 +2,7 @@
 name: Greene Bites
 cuisine: American
 drinks: true
-visited: "2021-11-29"
+visited: "2021-12-01"
 address: 116 Dekalb Ave
 area: Fort Greene
 taste: 2
@@ -19,4 +19,5 @@ Is it just me? Is this a normal thing that's available at other places?
 
 I'll try everything else and report back.
 
+- The **falafels** are quite good. I'd get them by themselves though, they kinda get lost in the wrap
 - Reuben: not amazing, wouldn't go for it
