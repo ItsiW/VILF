@@ -255,8 +255,6 @@ for field in unique_fields:
 geojson_keys = [
     "name",
     "cuisine",
-    "area",
-    "drinks",
     "url",
     "taste_color",
     "taste_label",
