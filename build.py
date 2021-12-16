@@ -158,7 +158,7 @@ def format_description(meta):
 
 
 def format_phone_number(meta):
-    if "phone" not in meta:
+    if meta["phone"] is None:
         return
     number = meta["phone"]
     assert len(number) == 12
@@ -215,7 +215,7 @@ for place_md in glob.glob("places/*.md"):
     meta["review_age"] = (date.today() - visited).days
     meta["taste_label"], meta["taste_color"] = rating_to_formatting(
         meta["taste"], taste_labels
-    )
+    ) 
     meta["value_label"], meta["value_color"] = rating_to_formatting(
         meta["value"], value_labels
     )
