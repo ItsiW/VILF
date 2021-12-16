@@ -71,7 +71,7 @@ map.addControl(
 
 function placeHTML(properties) {
   // don't show image if unavailable or on mobile
-  if (properties.food_image_path == "null" || (screen && screen.width <= 720)) {
+  if (properties.food_thumb_path == "null" || (screen && screen.width <= 720)) {
     return `${_placeHTMLbody(properties)}`;
   }
   return `
@@ -82,7 +82,7 @@ function placeHTML(properties) {
 
 function _placeHTMLimage(properties) {
   return `
-    <img src="${properties.food_image_path }" alt="Vegan ${properties.cuisine } food at ${properties.name} in ${properties.area}, New York" class="food-image-popup">
+    <img src="${properties.food_thumb_path }" alt="Vegan ${properties.cuisine} food at ${properties.name} in ${properties.area}, New York" class="food-image-popup">
   `;
 }
 

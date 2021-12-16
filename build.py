@@ -25,11 +25,15 @@ shutil.rmtree(build_dir, ignore_errors=True)
 
 # scale, crop and store standardised images
 food_image_target_size = (1920, 1080)
+food_thumb_target_size = (426, 240)
 jpg_quality = 75
+
+
 for raw_jpg in glob.glob("raw/food/*.jpg"):
     static_fp = Path(f"img/food/{raw_jpg[9:-4]}.jpg")
+    thumb_fp = Path(f"img/thumb/{raw_jpg[9:-4]}.jpg")
     # if previously stored, skip
-    if (Path("static/") / static_fp).exists():
+    if (Path("static/") / static_fp).exists() & (Path("static/") / thumb_fp).exists():
         continue
     with Image.open(raw_jpg) as im:
         assert im.size[0] / im.size[1] <= 16 / 9
@@ -50,6 +54,12 @@ for raw_jpg in glob.glob("raw/food/*.jpg"):
         im_cropped.save(
             fp=Path("static/") / static_fp, format="JPEG", quality=jpg_quality
         )
+
+        # thumbnails for images on map
+        im_thumb = im_cropped.resize(
+            (food_thumb_target_size[0], food_thumb_target_size[1])
+        )
+        im_thumb.save(fp=Path("static/") / thumb_fp, format="JPEG", quality=jpg_quality)
 
 shutil.copytree(Path("static/"), build_dir)
 
@@ -184,6 +194,11 @@ def get_fp_food_image(slug):
     return static_fp if Path(f"static{static_fp}").exists() else None
 
 
+def get_fp_food_thumb(slug):
+    static_fp = f"/img/thumb/{slug}.jpg"
+    return static_fp if Path(f"static{static_fp}").exists() else None
+
+
 for place_md in glob.glob("places/*.md"):
     slug = place_md[7:-3]
     assert re.match(r"^[0-9a-z-]+$", slug), "Bad filename for " + place_md
@@ -208,6 +223,7 @@ for place_md in glob.glob("places/*.md"):
     html = markdown(md.strip())
     meta["blurb"] = format_blurb(md)
     meta["food_image_path"] = get_fp_food_image(slug)
+    meta["food_thumb_path"] = get_fp_food_thumb(slug)
     rendered = place_template.render(
         **meta,
         title=format_title(meta),
@@ -246,7 +262,7 @@ geojson_keys = [
     "taste_label",
     "value_color",
     "value_label",
-    "food_image_path",
+    "food_thumb_path",
 ]
 
 geojson = {
