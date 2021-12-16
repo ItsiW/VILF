@@ -13,7 +13,7 @@ menu:
 phone:
 ---
 
-This nut stand has brought me so much joy. Maybe I just haven't seen them anywhere else, but this lady sells pieces of coconut. And it's $2 a bag. And it's just so good. I'm not even a big coconut person.
+This nut stand has brought me so much joy. Maybe I just haven't seen them anywhere else, but this lady sells **pieces of coconut**. And it's $2 a bag. And it's just so good. I'm not even a big coconut person.
 
 I think the problem with a lot of other candied nuts is that they're too sweet. But these are big chunks, so the surface area to volume ratio is down, and so it's just right. They're these warm, meaty chunks, and they're so juicy when you bight into them. And the cross section is just beautiful.
 
