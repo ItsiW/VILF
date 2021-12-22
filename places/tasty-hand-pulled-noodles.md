@@ -2,7 +2,7 @@
 name: Tasty Hand-Pulled Noodles
 cuisine: Chinese
 drinks: false
-visited: "2021-20-18"
+visited: "2021-12-18"
 address: 1 Doyers St
 area: Chinatown
 taste: 0
