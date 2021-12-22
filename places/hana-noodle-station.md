@@ -16,7 +16,7 @@ phone: "+19293784473"
 
 Now these are some of the best **veggie dumplings** I've had in the city, but friends, we have a pandemic on our hands. And that pandemic is fried dumplings served in takeaway containers with lids. 
 
-The process for making fried dumplings is to take the raw dumpling, fry the bottom, and liquid and put a lid on the pot to steam them, then take the lid off, evaporate off the water and re-crisp the bottom. Why ANYONE would then ENCASE those dumplings in a takeaway container, thereby RE-STEAMING them due to their residual heat, is beyond me.
+The process for making fried dumplings is to take the raw dumpling, fry the bottom, add liquid and put a lid on the pot to steam them, then take the lid off, evaporate off the water and re-crisp the bottom. Why ANYONE would then ENCASE those dumplings in a takeaway container, thereby RE-STEAMING them due to their residual heat, is beyond me.
 
 Now I don't mean to be unreasonable here. You can't expect to order takeaway fried dumplings and hope to have a good experience, they need to be transported. As a matter of principle I only ever get steamed or boiled dumplings takeaway. But when I go somewhere to eat there, that's when it gets my goat. And it happens far too often.
 
