@@ -2,6 +2,7 @@
 
 import glob
 import json
+import os
 import re
 import shutil
 from datetime import date
@@ -60,6 +61,14 @@ for raw_jpg in glob.glob("raw/food/*.jpg"):
             (food_thumb_target_size[0], food_thumb_target_size[1])
         )
         im_thumb.save(fp=Path("static/") / thumb_fp, format="JPEG", quality=jpg_quality)
+
+shutil.rmtree("static/img/memes", ignore_errors=True)
+os.makedirs("static/img/memes")
+for meme_id, raw_meme in enumerate(glob.glob("raw/memes/*")):
+    fp = Path(f"img/memes/{meme_id}.jpg")
+    with Image.open(raw_meme) as im:
+        im.save(fp=Path("static/") / fp, format="JPEG", quality=jpg_quality)
+n_memes = meme_id + 1
 
 shutil.copytree(Path("static/"), build_dir)
 
@@ -215,7 +224,7 @@ for place_md in glob.glob("places/*.md"):
     meta["review_age"] = (date.today() - visited).days
     meta["taste_label"], meta["taste_color"] = rating_to_formatting(
         meta["taste"], taste_labels
-    ) 
+    )
     meta["value_label"], meta["value_color"] = rating_to_formatting(
         meta["value"], value_labels
     )
@@ -232,6 +241,7 @@ for place_md in glob.glob("places/*.md"):
         value_html=rating_html(meta["value"], value_labels),
         drinks_html=boolean_html(meta["drinks"]),
         content=html,
+        n_memes=n_memes,
     )
     out_dir = build_dir / "places" / slug
     out_dir.mkdir(exist_ok=True, parents=True)
