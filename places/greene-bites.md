@@ -21,3 +21,4 @@ I'll try everything else and report back.
 
 - The **falafels** are quite good. I'd get them by themselves though, they kinda get lost in the wrap
 - Reuben: not amazing, wouldn't go for it
+- The lentil soup is my go-to for a cheap meal. $5 and get a side of toasted bagel. That's dinner my friends. Quality is variable but always does the trick.

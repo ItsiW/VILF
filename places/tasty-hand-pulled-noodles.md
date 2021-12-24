@@ -18,3 +18,5 @@ The same menu as [Tasty Hand-Pulled Noodles II](/places/tasty-hand-pulled-noodle
 Also got the pan fried dumplings, and the veggie version is just kinda raw cabbage filling... not the best.
 
 There's better in the area!
+
+I'm rating this worse than the other one in Hell's Kitchen only because everything was served in plastic. Come on. There's partly an environmental angle to this, but also it's just unpleasant.
