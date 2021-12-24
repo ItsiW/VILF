@@ -34,23 +34,23 @@
   <p class="contact-us"><b><a href="mailto:contact@thegoodtaste.guide">Chuck us an email...</a></b></p>
   <h3 class="meme-name">Andy's Meme Corner</h3>
   <div id="memeContainer"></div>
-
-  <script>
-    function insertRandomMeme() {
-      const n_memes = {{ n_memes }};
-      var img = document.createElement("IMG");
-      const id = Math.floor(Math.random() * n_memes);
-      const src = `/img/memes/${id}.jpg`;
-      img.setAttribute("src", src)
-      if (screen && screen.width > 800) {
-        img.setAttribute("height", 450)
-      } else {
-        img.setAttribute("width", screen.width - 32)
-      }
-      elem = document.getElementById("memeContainer")
-      elem.appendChild(img)
-    }
-    insertRandomMeme()
-  </script>
 </section>
+
+<script>
+  function insertRandomMeme() {
+    const n_memes = {{ n_memes }};
+    var img = document.createElement("IMG");
+    const id = Math.floor(Math.random() * n_memes);
+    const src = `/img/memes/${id}.jpg`;
+    img.setAttribute("src", src)
+    if (screen && screen.width > 800) {
+      img.setAttribute("height", 450)
+    } else {
+      img.setAttribute("width", screen.width - 32)
+    };
+    elem = document.getElementById("memeContainer")
+    elem.appendChild(img)
+  }
+  insertRandomMeme();
+</script>
 {% endblock %}

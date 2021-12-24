@@ -29,13 +29,14 @@ food_image_target_size = (1920, 1080)
 food_thumb_target_size = (426, 240)
 jpg_quality = 75
 
+shutil.rmtree("static/img", ignore_errors=True)
+os.makedirs("static/img/food")
+os.makedirs("static/img/thumb")
+os.makedirs("static/img/memes")
 
 for raw_jpg in glob.glob("raw/food/*.jpg"):
     static_fp = Path(f"img/food/{raw_jpg[9:-4]}.jpg")
     thumb_fp = Path(f"img/thumb/{raw_jpg[9:-4]}.jpg")
-    # if previously stored, skip
-    if (Path("static/") / static_fp).exists() & (Path("static/") / thumb_fp).exists():
-        continue
     with Image.open(raw_jpg) as im:
         assert im.size[0] / im.size[1] <= 16 / 9
         im = im.resize(
@@ -62,8 +63,6 @@ for raw_jpg in glob.glob("raw/food/*.jpg"):
         )
         im_thumb.save(fp=Path("static/") / thumb_fp, format="JPEG", quality=jpg_quality)
 
-shutil.rmtree("static/img/memes", ignore_errors=True)
-os.makedirs("static/img/memes")
 for meme_id, raw_meme in enumerate(glob.glob("raw/memes/*")):
     fp = Path(f"img/memes/{meme_id}.jpg")
     with Image.open(raw_meme) as im:
