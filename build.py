@@ -66,6 +66,8 @@ for raw_jpg in glob.glob("raw/food/*.jpg"):
 for meme_id, raw_meme in enumerate(glob.glob("raw/memes/*")):
     fp = Path(f"img/memes/{meme_id}.jpg")
     with Image.open(raw_meme) as im:
+        if im.mode == "RGBA":
+            im = im.convert('RGB')
         im.save(fp=Path("static/") / fp, format="JPEG", quality=jpg_quality)
 n_memes = meme_id + 1
 
