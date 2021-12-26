@@ -26,8 +26,6 @@ There is a similar <span class="mono-info-about dnr">Bad</span> <span class="mon
 
 All reviews are provided by Editor-in-Chief [Itsi Weinstock](https://itsiweinstock.com), along with a rotating cast of friends, buddies, colleagues, and acquaintances. 
 
-The website was built by Senior Taste Augmentation Engineer [Aapeli Vuorinen](https://www.aapelivuorinen.com). The code is open source with an MIT license and can be found on our [GitHub repository](https://github.com/aapeliv/tgtg).
-
 Memes are provided by Staff Meme Connoisseur [Andrew](https://www.reddit.com/r/vegancirclejerk/). Memes are stolen without remorse.
 
 ## Contact
