@@ -10,8 +10,8 @@ sgfi: Middle Eastern grocer with good prepared foods
 value: 2
 lat: 40.69004791792655
 lon: -73.99306278667264
-menu: https://www.seamless.com/menu/clove-1592-amsterdam-ave-new-york/308759
-phone: "+16469186644"
+menu: http://places.singleplatform.com/damascus-bread--pastry-shop/menu?ref=google
+phone: "+17186257070"
 ---
 
 A Middle Eastern grocer next to the more famous [Sahadi's](/places/sahadis). There were a lot of people speaking Arabic coming through here which was a good sign.
