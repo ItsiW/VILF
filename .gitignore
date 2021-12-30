@@ -1,3 +1,4 @@
 build/
 venv/
-static/img
+static/img/
+meme_sorting/
