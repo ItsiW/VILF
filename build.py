@@ -257,7 +257,7 @@ for place_md in glob.glob("places/*.md"):
         }
     )
 
-unique_fields = ["name", "geodata", "menu", "phone", "blurb"]
+unique_fields = ["name", "lat", "lon", "menu", "phone", "blurb"]
 
 for field in unique_fields:
     field_list = [place[field] for place in places if place[field] is not None]

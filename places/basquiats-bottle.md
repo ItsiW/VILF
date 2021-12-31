@@ -2,7 +2,7 @@
 name: Basquiat's Bottle
 cuisine: Mexican
 drinks: true
-visited: "2021-11-28"
+visited: "2021-12-28"
 address: 1198 Fulton St
 area: Bedford-Stuyversant
 taste: 1
