@@ -6,7 +6,7 @@ visited: "2021-12-27"
 address: 92 Court St
 area: Downtown Brooklyn
 taste: 1
-sfgi: solid banh mi
+sgfi: solid banh mi
 value: 2
 lat: 40.69112711819462
 lon: -73.99191033569346
