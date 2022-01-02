@@ -14,6 +14,6 @@ menu: https://www.popseatrite.com/menu
 phone: "+19176757202"
 ---
 
-I got a double impossible burger and a donut. I don't know why. I don't like burgers or donuts.
+I got a double **impossible burger** and a donut. I don't know why. I don't like burgers or donuts.
 
 $14 Seems expensive for a burger though.

@@ -16,4 +16,4 @@ phone: "+12129895518"
 
 Sometimes things are so cheap that it's hard to call them bad.
 
-You can get absolutely edible ingredients in a soggy (or crispy) tortilla for a couple bucks quickly.
+You can get **absolutely edible** ingredients in a soggy (or crispy) tortilla for a couple bucks quickly.

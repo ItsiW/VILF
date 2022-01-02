@@ -17,4 +17,4 @@ I was very drunk and this place is a fever dream of a venue. Come for the Thai s
 
 Plenty of vegan options, tasty big portions of all your regular Thai restaurant foods you know and love. And they can do everything with a mock duck that is fine. 
 
-We got the red curry and some noodle thing I don't quite remember the name of but yummy!
+We got the **red curry** and **some noodle thing** I don't quite remember the name of but yummy!

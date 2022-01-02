@@ -16,6 +16,6 @@ phone: "+17183894680"
 
 Why have I been hearing such good things about this place? Have none of you ever had good freshly made falafel?? Like it's all fine but nothing was made to order and it was kinda just cold. Especially for the falafel, mousakah and fried cauliflower, it'd benefit from being fresh or at least hot.
 
-We got the big mixed veg plate which was big enough for two. Came with all the dips and salads. Nothing was outstanding, but it was all fine. They also use pretty low quality pita which is disappointing. Also got the spinach triangle which also would really benefit from being made to order.
+We got the big **mixed veg plate** which was big enough for two. Came with all the dips and salads. Nothing was outstanding, but it was all fine. They also use pretty low quality pita which is disappointing. Also got the spinach triangle which also would really benefit from being made to order.
 
 Come to this place because it's cheap and scratches the itch.

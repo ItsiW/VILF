@@ -15,4 +15,4 @@ phone: "+13477785889"
 osm: https://www.openstreetmap.org/node/5916553158
 ---
 
-There was a lot of hype for this place online but it's just fine. Not super flavourful and you needed to order quite a bit because the servings are small.
+There was a lot of hype for this place online but it's just fine. Not super flavourful and you needed to order quite a bit because the servings are small. I liked the **noodle rolls** they had a nice char flavour.
