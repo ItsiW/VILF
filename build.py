@@ -226,6 +226,8 @@ for place_md in glob.glob("places/*.md"):
     if meta["taste"] == 1:
         assert "sgfi" in meta, f"{meta['slug']} missing sgfi"
         assert meta["sgfi"] is not None, f"{meta['slug']} missing sgfi"
+    if meta["taste"] >= 1:
+        assert "**" in md, f"highlight food in {meta['slug']}"
     meta["taste_label"], meta["taste_color"] = rating_to_formatting(
         meta["taste"], taste_labels
     )
