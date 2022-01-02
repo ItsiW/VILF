@@ -1,5 +1,5 @@
 ---
-name: Sammy's Halal Food 
+name: Mia Halal Food 
 cuisine: Middle Eastern
 drinks: false
 visited: "2021-12-30"
