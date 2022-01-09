@@ -2,7 +2,7 @@
 name: 5ive Spice
 cuisine: Vietnamese
 drinks: false
-visited: "2021-11-28"
+visited: "2022-01-02"
 address: 52 5th Ave
 area: Park Slope
 taste: 2
@@ -18,3 +18,4 @@ This is nominally a taco and banh mi shop, but none of the tacos are vegan and t
 However, for $4 extra bucks (with a banh mi) you can get a decently sized side of **brussel sprouts** which were really good, like worth coming back for alone. They're really well caramelised with great garnishes and a kinda tangy sauce. Apologies for not taking a photo of that but it's really good. I also got the **broccoli** another time which is sauteed and drenched in a garlic-scallion-soy dressing situation which is really nice.
 
 This is a place that clearly puts a lot of effort into the stuff they do and at a pretty good price point for the quality.
+Sorry it's taken me a bit of time to get back to you.
