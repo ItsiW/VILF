@@ -16,4 +16,4 @@ phone: "+12126284442"
 
 They've got all the nice thai staples. My friend took me there for the chive dumplings which are apparently top shit but they were out. We got the **papaya salad** which is always good, but on the lower end of how good papaya salad can be, and **massamun curry and roti** which was very tasty but the ratio of roti to curry was dispicable. We needed to go crawl back to them asking for extra rice. 
 
-I'll be back I imagine, solid neighbourhood joint.
+I'll be back I imagine, solid neighbourhood joint. Also it's byo so fun times abound.
