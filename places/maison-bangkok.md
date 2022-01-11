@@ -7,7 +7,7 @@ address: 77th & 1st
 area: Upper East Side
 taste: 1
 sgfi: nice thai staples with clearly marked vegan menu
-value: 2
+value: 1
 lat: 40.7719249134533
 lon: -73.95357771226233
 menu: https://themenustar3.com/webspace/menus.php?code=ordermaisonbangkok.com

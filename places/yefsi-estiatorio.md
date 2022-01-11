@@ -5,8 +5,7 @@ drinks: true
 visited: "2022-01-07"
 address: 78th & York Ave
 area: Upper East Side
-taste: 1
-sgfi: great Greek fava and other mezes
+taste: 2
 value: 1
 lat: 40.77099664710866
 lon: -73.95093431539776
