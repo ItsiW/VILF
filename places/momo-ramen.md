@@ -10,7 +10,7 @@ sgfi: pleasant ramen lunch deal
 value: 2
 lat: 40.68060793856224
 lon: -73.97778089927924
-menu: https://themenustar3.com/webspace/menus.php?code=ordermaisonbangkok.com
+menu: https://www.seamless.com/menu/momo-ramen-160-havemeyer-st-brooklyn/1171617
 phone: "+17186224813"
 ---
 
