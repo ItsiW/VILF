@@ -14,7 +14,7 @@ menu: https://www.trycaviar.com/store/hana-noodle-brooklyn-991801/?cav_medium=wi
 phone: "+19293784473"
 ---
 
-Now these are some of the best **veggie dumplings** I've had in the city, but friends, we have a pandemic on our hands. And that pandemic is fried dumplings served in takeaway containers with lids. 
+Now these are theoretically some of the best **veggie dumplings** I've had in the city, but friends, we have a pandemic on our hands. And that pandemic is fried dumplings served in takeaway containers with lids. 
 
 The process for making fried dumplings is to take the raw dumpling, fry the bottom, add liquid and put a lid on the pot to steam them, then take the lid off, evaporate off the water and re-crisp the bottom. Why ANYONE would then ENCASE those dumplings in a takeaway container, thereby RE-STEAMING them due to their residual heat, is beyond me.
 
@@ -23,3 +23,5 @@ Now I don't mean to be unreasonable here. You can't expect to order takeaway fri
 I got noodles and dumplings and they put the lid on the dumplings and by the time both dishes were ready, they were soggy as shit. The real tragedy is how good they taste, and they gotta go and throw that all away.
 
 Now the **noodles**. Great noodles. They hand-pull them there. Great texture, really good stuff. The veggie soup was in salty water territory unfortunately. And the stir fried versions I went back for didn't have much flavour either, but they were pretty satisfying. They have this "bean meat" which is like compacted tofu skin, that's pretty good. I'll try a few other things there like the sesame noodles and see how that goes down.
+
+A theoretically great place let down by poor execution.

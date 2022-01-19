@@ -2,7 +2,7 @@
 name: Paulie Gee's Slice Shop
 cuisine: Italian
 drinks: false
-visited: "2022-01-16"
+visited: "2022-01-13"
 address: 110 Franklin St
 area: Greenpoint
 taste: 2
