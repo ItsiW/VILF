@@ -2,7 +2,7 @@
 {% block content %}
 <section class="content">
   <h1 class="name">{{ name }}</h1>
-  <p class="address"><a href="geo://?q={{ geodata }}">{{ address }}, {{ area }}</a></p>
+  <p class="address"><a href="geo://?q={{ geodata }}">{{ address }}, <b>{{ area }}</b></a></p>
   <p class="cuisine">{{ cuisine }} food</p>
   <p class="restaurant-links">
     {% if menu %}
