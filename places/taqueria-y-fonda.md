@@ -3,7 +3,7 @@ name: Taqueria Y Fonda
 cuisine: Mexican
 drinks: true
 visited: "2021-11-22"
-address: 108th & Amsterdam
+address: W 108th & Amsterdam
 area: Upper West Side
 taste: 1
 sgfi: homey freshly prepared and filling tacos

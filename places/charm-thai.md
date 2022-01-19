@@ -3,7 +3,7 @@ name: Charm Thai
 cuisine: Thai
 drinks: false
 visited: "2021-11-09"
-address: 126th & Amsterdam
+address: W 126th & Amsterdam
 area: Morningside Heights
 taste: 1
 sgfi: pretty tasty mock duck salad.

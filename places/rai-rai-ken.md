@@ -3,7 +3,7 @@ name: Rai Rai Ken
 cuisine: Japanese
 drinks: true
 visited: "2021-11-20"
-address: 125th & Broadway
+address: W 125th & Broadway
 area: Morningside Heights
 taste: 0
 value: 1

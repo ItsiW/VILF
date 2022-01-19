@@ -3,7 +3,7 @@ name: Han Dynasty
 cuisine: Chinese
 drinks: False
 visited: "2021-12-19"
-address: 85th & Broadway
+address: W 85th & Broadway
 area: Upper West Side
 taste: 2
 value: 2

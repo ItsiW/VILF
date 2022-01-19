@@ -3,7 +3,7 @@ name: Excellent Dumpling House
 cuisine: Chinese
 drinks: true
 visited: "2021-11-12"
-address: 23rd & 7th
+address: W 23rd & 7th
 area: Chelsea
 taste: 0
 value: 1

@@ -3,7 +3,7 @@ name: Le Botaniste
 cuisine: American
 drinks: yes
 visited: "2021-11-22"
-address: 67th & Columbus
+address: W 67th & Columbus
 area: Upper West Side
 taste: 1
 sgfi: surprisingly tasty bowls of misc food, it's all vegan

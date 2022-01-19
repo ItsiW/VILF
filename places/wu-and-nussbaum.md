@@ -3,7 +3,7 @@ name: Wu and Nussbaum
 cuisine: Chinese
 drinks: true
 visited: "2021-12-02"
-address: 113th & Broadway
+address: W 113th & Broadway
 area: Morningside Heights
 taste: 1
 sgfi: Bomb ass dan dan noodles

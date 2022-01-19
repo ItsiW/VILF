@@ -3,7 +3,7 @@ name: Freda's
 cuisine: Caribbean
 drinks: true
 visited: "2021-11-07"
-address: 109th & Columbus
+address: W 109th & Columbus
 area: Upper West Side
 taste: 1
 sgfi: some really nice vegan Caribbean sides put together on a plate.

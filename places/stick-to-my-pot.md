@@ -3,7 +3,7 @@ name: Stick To My Pot
 cuisine: Chinese
 drinks: false
 visited: "2021-11-18"
-address: 35th & 7th
+address: W 35th & 7th
 area: Midtown
 taste: 2
 value: 2

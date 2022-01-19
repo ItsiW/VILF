@@ -3,7 +3,7 @@ name: Silvana
 cuisine: Middle Eastern
 drinks: true
 visited: "2021-11-04"
-address: 116th and Frederick Douglass Blvd
+address: W 116th and Frederick Douglass Blvd
 area: Harlem
 taste: 1
 sgfi: decent range of decent middle eastern options, cool music bar.

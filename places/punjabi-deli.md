@@ -3,7 +3,7 @@ name: Punjabi Deli
 cuisine: Indian
 drinks: false
 visited: "2022-01-13"
-address: E Houston & A
+address: E Houston & Ave A
 area: East Village
 taste: 2
 value: 2

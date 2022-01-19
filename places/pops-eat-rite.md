@@ -3,7 +3,7 @@ name: Pop's Eat-Rite
 cuisine: American
 drinks: false
 visited: "2021-11-18"
-address: 8th & Avenue A
+address: E 8th & Ave A
 area: East Village
 taste: 1
 sgfi: probably good if you like burgers, idk?

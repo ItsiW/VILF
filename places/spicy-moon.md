@@ -3,7 +3,7 @@ name: Spicy Moon Vegan Szechuan
 cuisine: Chinese
 drinks: true
 visited: "2021-11-07"
-address: 3rd & LaGuardia Pl
+address: W 3rd & LaGuardia Pl
 area: West Village
 taste: 2
 value: 1

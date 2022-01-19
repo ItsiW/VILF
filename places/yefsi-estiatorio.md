@@ -3,7 +3,7 @@ name: Yefsi Estiatorio
 cuisine: Greek
 drinks: true
 visited: "2022-01-07"
-address: 78th & York Ave
+address: E 78th & York Ave
 area: Upper East Side
 taste: 2
 value: 1

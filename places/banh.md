@@ -3,7 +3,7 @@ name: Bánh
 cuisine: Vietnamese
 drinks: true
 visited: "2021-11-19"
-address: 107th & Amsterdam
+address: W 107th & Amsterdam
 area: Upper West Side
 taste: 2
 value: 2

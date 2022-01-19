@@ -3,7 +3,7 @@ name: Los Tacos No. 1
 cuisine: Mexican
 drinks: false
 visited: "2021-10-29"
-address: 43rd & 7th
+address: W 43rd & 7th
 area: Midtown
 taste: 2
 value: 1

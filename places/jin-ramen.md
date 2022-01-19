@@ -3,7 +3,7 @@ name: Jin Ramen
 cuisine: Japanese
 drinks: true
 visited: "2021-10-26"
-address: 125th & Broadway
+address: W 125th & Broadway
 area: Morningside Heights
 taste: 2
 value: 1

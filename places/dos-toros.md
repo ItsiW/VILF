@@ -3,7 +3,7 @@ name: Dos Toros
 cuisine: Mexican
 drinks: false
 visited: "2021-11-09"
-address: 114th & Broadway
+address: W 114th & Broadway
 area: Morningside Heights
 taste: 0
 value: 2

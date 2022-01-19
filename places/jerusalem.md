@@ -3,7 +3,7 @@ name: Jerusalem
 cuisine: Middle Eastern
 drinks: false
 visited: "2021-11-23"
-address: 104th & Broadway
+address: W 104th & Broadway
 area: Upper West Side
 taste: 1
 sgfi: Solid fresh Palestinian falafel pita at a good price

@@ -3,7 +3,7 @@ name: Jajaja Plantas Mexicana
 cuisine: Mexican
 drinks: true
 visited: "2021-10-31"
-address: Carmine & 7th
+address: Carmine & 7th Ave
 area: West Village
 taste: 1
 sgfi: solid nachos, high effort and interesting tacos, and cheap drinks.

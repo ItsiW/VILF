@@ -3,7 +3,7 @@ name: Massawa
 cuisine: Ethiopian
 drinks: true
 visited: "2021-11-21"
-address: 121st & Amsterdam
+address: W 121st & Amsterdam
 area: Morningside Heights
 taste: 2
 value: 3
