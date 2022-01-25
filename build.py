@@ -7,6 +7,7 @@ import re
 import shutil
 from datetime import date
 from pathlib import Path
+from tqdm import tqdm
 
 import yaml
 from jinja2 import Environment, FileSystemLoader
@@ -34,7 +35,7 @@ os.makedirs("static/img/food")
 os.makedirs("static/img/thumb")
 os.makedirs("static/img/memes")
 
-for raw_jpg in glob.glob("raw/food/*.jpg"):
+for raw_jpg in tqdm(glob.glob("raw/food/*.jpg"), desc="processing food images"):
     static_fp = Path(f"img/food/{raw_jpg[9:-4]}.jpg")
     thumb_fp = Path(f"img/thumb/{raw_jpg[9:-4]}.jpg")
     with Image.open(raw_jpg) as im:
@@ -63,7 +64,7 @@ for raw_jpg in glob.glob("raw/food/*.jpg"):
         )
         im_thumb.save(fp=Path("static/") / thumb_fp, format="JPEG", quality=jpg_quality)
 
-for meme_id, raw_meme in enumerate(glob.glob("raw/memes/*")):
+for meme_id, raw_meme in enumerate(tqdm(glob.glob("raw/memes/*"), desc="processing memes")):
     fp = Path(f"img/memes/{meme_id}.jpg")
     with Image.open(raw_meme) as im:
         if im.mode == "RGBA":
