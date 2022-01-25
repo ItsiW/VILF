@@ -3,3 +3,4 @@ markdown2
 mdplain
 pillow
 pyyaml
+tqdm
