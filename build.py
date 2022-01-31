@@ -30,39 +30,43 @@ food_image_target_size = (1920, 1080)
 food_thumb_target_size = (426, 240)
 jpg_quality = 75
 
-shutil.rmtree("static/img", ignore_errors=True)
-os.makedirs("static/img/food")
-os.makedirs("static/img/thumb")
-os.makedirs("static/img/memes")
+for img_type in ["food", "thumb", "memes"]:
+    path = "static/img/" + img_type
+    if not os.path.exists(path):
+        os.makedirs(path)
 
 for raw_jpg in tqdm(glob.glob("raw/food/*.jpg"), desc="processing food images"):
     static_fp = Path(f"img/food/{raw_jpg[9:-4]}.jpg")
     thumb_fp = Path(f"img/thumb/{raw_jpg[9:-4]}.jpg")
-    with Image.open(raw_jpg) as im:
-        assert im.size[0] / im.size[1] <= 16 / 9
-        im = im.resize(
-            (
-                food_image_target_size[0],
-                int(food_image_target_size[0] * im.size[1] / im.size[0]),
+    if not (
+        (Path("static") / static_fp).exists()
+        & (Path("static") / thumb_fp).exists()
+    ):
+        with Image.open(raw_jpg) as im:
+            assert im.size[0] / im.size[1] <= 16 / 9
+            im = im.resize(
+                (
+                    food_image_target_size[0],
+                    int(food_image_target_size[0] * im.size[1] / im.size[0]),
+                )
             )
-        )
-        pixels_to_crop = int((im.size[1] - food_image_target_size[1]) / 2)
-        (left, upper, right, lower) = (
-            0,
-            pixels_to_crop,
-            food_image_target_size[0],
-            food_image_target_size[1] + pixels_to_crop,
-        )
-        im_cropped = im.crop((left, upper, right, lower))
-        im_cropped.save(
-            fp=Path("static/") / static_fp, format="JPEG", quality=jpg_quality
-        )
+            pixels_to_crop = int((im.size[1] - food_image_target_size[1]) / 2)
+            (left, upper, right, lower) = (
+                0,
+                pixels_to_crop,
+                food_image_target_size[0],
+                food_image_target_size[1] + pixels_to_crop,
+            )
+            im_cropped = im.crop((left, upper, right, lower))
+            im_cropped.save(
+                fp=Path("static/") / static_fp, format="JPEG", quality=jpg_quality
+            )
 
-        # thumbnails for images on map
-        im_thumb = im_cropped.resize(
-            (food_thumb_target_size[0], food_thumb_target_size[1])
-        )
-        im_thumb.save(fp=Path("static/") / thumb_fp, format="JPEG", quality=jpg_quality)
+            # thumbnails for images on map
+            im_thumb = im_cropped.resize(
+                (food_thumb_target_size[0], food_thumb_target_size[1])
+            )
+            im_thumb.save(fp=Path("static/") / thumb_fp, format="JPEG", quality=jpg_quality)
 
 for meme_id, raw_meme in enumerate(tqdm(glob.glob("raw/memes/*"), desc="processing memes")):
     fp = Path(f"img/memes/{meme_id}.jpg")
@@ -82,6 +86,7 @@ with open(build_dir / "index.html", "w") as o:
         env.get_template("map.html").render(
             title="The Good Taste Guide",
             description="Find tasty vegan food around New York City!",
+            thumbnails=[f"img/thumb/{file}" for file in os.listdir("static/img/thumb/")]
         )
     )
 sitemap.append(
@@ -278,6 +283,7 @@ geojson_keys = [
     "value_color",
     "value_label",
     "food_thumb_path",
+    "food_image_path",
 ]
 
 geojson = {
