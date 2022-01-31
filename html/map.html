@@ -216,6 +216,10 @@ map.on("load", function () {
     map.on('touchend', 'place-markers', (e) => {
       popup.remove()
     });
+
+    map.on('boxzoomstart', (e) =>{
+      popup.remove()
+    });
   }
 
 });
