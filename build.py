@@ -39,8 +39,7 @@ for raw_jpg in tqdm(glob.glob("raw/food/*.jpg"), desc="processing food images"):
     static_fp = Path(f"img/food/{raw_jpg[9:-4]}.jpg")
     thumb_fp = Path(f"img/thumb/{raw_jpg[9:-4]}.jpg")
     if not (
-        (Path("static") / static_fp).exists()
-        & (Path("static") / thumb_fp).exists()
+        (Path("static") / static_fp).exists() & (Path("static") / thumb_fp).exists()
     ):
         with Image.open(raw_jpg) as im:
             assert im.size[0] / im.size[1] <= 16 / 9
@@ -66,13 +65,17 @@ for raw_jpg in tqdm(glob.glob("raw/food/*.jpg"), desc="processing food images"):
             im_thumb = im_cropped.resize(
                 (food_thumb_target_size[0], food_thumb_target_size[1])
             )
-            im_thumb.save(fp=Path("static/") / thumb_fp, format="JPEG", quality=jpg_quality)
+            im_thumb.save(
+                fp=Path("static/") / thumb_fp, format="JPEG", quality=jpg_quality
+            )
 
-for meme_id, raw_meme in enumerate(tqdm(glob.glob("raw/memes/*"), desc="processing memes")):
+for meme_id, raw_meme in enumerate(
+    tqdm(glob.glob("raw/memes/*"), desc="processing memes")
+):
     fp = Path(f"img/memes/{meme_id}.jpg")
     with Image.open(raw_meme) as im:
         if im.mode == "RGBA":
-            im = im.convert('RGB')
+            im = im.convert("RGB")
         im.save(fp=Path("static/") / fp, format="JPEG", quality=jpg_quality)
 n_memes = meme_id + 1
 
@@ -86,7 +89,9 @@ with open(build_dir / "index.html", "w") as o:
         env.get_template("map.html").render(
             title="The Good Taste Guide",
             description="Find tasty vegan food around New York City!",
-            thumbnails=[f"img/thumb/{file}" for file in os.listdir("static/img/thumb/")]
+            thumbnails=[
+                f"img/thumb/{file}" for file in os.listdir("static/img/thumb/")
+            ],
         )
     )
 sitemap.append(
