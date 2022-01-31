@@ -283,6 +283,7 @@ geojson_keys = [
     "value_color",
     "value_label",
     "food_thumb_path",
+    "food_image_path",
 ]
 
 geojson = {

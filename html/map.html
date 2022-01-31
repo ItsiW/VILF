@@ -176,6 +176,10 @@ map.on("load", function () {
         placeHTML(feature.properties)
       )
       .addTo(map);
+    
+    // preload image for page
+    var img = new Image();
+    img.src = feature.properties.food_image_path;
   }
 
   if (screen && screen.width > 720) {
