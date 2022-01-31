@@ -2,7 +2,7 @@
 name: Pak Punjab Deli
 cuisine: Indian
 drinks: false
-visited: "2022-12-21"
+visited: "2021-12-21"
 address: E 3rd & 2nd
 area: East Village
 taste: 2

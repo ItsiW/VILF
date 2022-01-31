@@ -172,8 +172,8 @@ def format_phone_number(meta):
     if meta["phone"] is None:
         return
     number = meta["phone"]
-    assert len(number) == 12
-    assert number[:2] == "+1"
+    assert len(number) == 12, meta["slug"]
+    assert number[:2] == "+1", meta["slug"]
     return f"({number[2:5]}) {number[5:8]}-{number[8:12]}"
 
 
