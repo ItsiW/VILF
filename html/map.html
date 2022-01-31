@@ -160,6 +160,8 @@ map.on("load", function () {
     "filter": ["==", "$type", "Point"]
   });
 
+  imagePreloader();
+
   const popup = new maplibregl.Popup({ 
     offset: 8, 
     closeButton: false,
@@ -210,5 +212,17 @@ map.on("load", function () {
   }
 
 });
+
+function imagePreloader() {
+  var images = new Array()
+  function preload() {
+    for (i = 0; i < preload.arguments.length; i++) {
+      images[i] = new Image()
+      images[i].src = preload.arguments[i]
+    }
+  }
+  preload(...{{ thumbnails }});
+}
+
 </script>
 {% endblock %}

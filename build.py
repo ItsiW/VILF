@@ -86,6 +86,7 @@ with open(build_dir / "index.html", "w") as o:
         env.get_template("map.html").render(
             title="The Good Taste Guide",
             description="Find tasty vegan food around New York City!",
+            thumbnails=[f"img/thumb/{file}" for file in os.listdir("static/img/thumb/")]
         )
     )
 sitemap.append(
