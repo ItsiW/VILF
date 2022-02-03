@@ -2,7 +2,7 @@
 name: Stick To My Pot
 cuisine: Chinese
 drinks: false
-visited: "2021-11-18"
+visited: "2022-02-02"
 address: W 35th & 7th
 area: Midtown
 taste: 2
@@ -17,4 +17,4 @@ Normally I like my **veggie dumplings** with a green chive-like filling, but thi
 
 The **scallion pancakes** are top tier. Get one.
 
-They have some cheap (like $4) scallion oil noodles, they're not amazing but good filler. The portions here are kinda small so it's not a terrible idea.
+They have some cheap (like $4) scallion oil noodles, they're not amazing but good filler. The portions here are kinda small so it's not a terrible idea. I tried the pickled cabbage too another time, it's ok for like $3, don't need it but it's nice with the fried stuff.
