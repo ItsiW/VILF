@@ -6,7 +6,6 @@ visited: "2022-02-10"
 address: 144 Orchard St
 area: Lower East Side
 taste: 2
-sgfi: tasty Italian sandwich
 value: 2
 lat: 40.72040424998924
 lon: -73.98892031420166

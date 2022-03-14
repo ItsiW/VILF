@@ -381,4 +381,4 @@ with open(build_dir / "sitemap.xml", "w") as o:
 with open(build_dir / "robots.txt", "w") as o:
     o.write("User-agent: *\nDisallow:\n")
 
-print("Done building tgtg.")
+print(f"Done building tgtg with {len(places)} places")

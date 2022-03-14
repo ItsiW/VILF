@@ -15,4 +15,4 @@ phone: "+16468632233"
 
 New vegan Mexican spot in East Village. They've got a whole bunch of interesting looking options. I got the **Westside** burrito, which had a kinda seitany marinated situation. Really good.
 
-About $15 after tax, but I'm keen to go back to try more like the birria and fish tacos.
+On my next occasion I got the birria tacos and cauliflower bites. I like everything I've had at this place it's very tasty and the prices are reasonable.
