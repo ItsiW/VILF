@@ -71,7 +71,7 @@ map.addControl(
 
 function placeHTML(properties) {
   // don't show image if unavailable or on mobile
-  if (properties.food_thumb_path == "null" || (screen && screen.width <= 720)) {
+  if (properties.food_thumb_path == "null") {
     return `${_placeHTMLbody(properties)}`;
   }
   return `
