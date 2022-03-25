@@ -142,10 +142,8 @@ map.on("load", function () {
     "filter": ["==", "$type", "Point"]
   });
 
-  // if on desktop, preload thumbnails (no thumbnails on mobile)
-  if (screen && screen.width > 720) {
-    imagePreloader();
-  }
+  // preload thumbnails
+  imagePreloader();
 
   const popup = new maplibregl.Popup({ 
     offset: 8, 
