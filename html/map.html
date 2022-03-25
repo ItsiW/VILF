@@ -5,36 +5,18 @@
 {% endblock %}
 {% block content %}
 
-<style>
-  .legend {
-    background-color: #ffffff;
-    border-radius: 3px;
-    top: 7rem;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    font: 12px/20px 'Lato', sans-serif;
-    padding: 0.1rem .3rem 0.1rem .3rem;
-    position: absolute;
-    left: 0.5rem;
-    z-index: 1;
-  }
-
-  @media (min-width: 720px) {
-    .legend {
-      display: none;
-    }
-  }
-
-  .legend-text {
-    padding: 0;
-    margin: 0;
-  }
-</style>
-
 <div id="map"></div>
 
-<div id="state-legend" class="legend">
-  <p class="legend-text"><b class="mono-info">Open:</b> click</p>
-  <p class="legend-text"><b class="mono-info">Info:</b> press</p>
+<div id="label-legend" class="label-legend">
+  <p class="label-legend-line"><span class="dot dot-phenomenal"></span><span class="mono-info-about phenomenal label-legend-text"> Phenomenal</span></p>
+  <p class="label-legend-line"><span class="dot dot-good"></span><span class="mono-info-about good label-legend-text"> Good</span></p>
+  <p class="label-legend-line"><span class="dot dot-sgfi"></span><span class="mono-info-about sgfi label-legend-text"> Something Okay</span></p>
+  <p class="label-legend-line"><span class="dot dot-dnr"></span><span class="mono-info-about dnr label-legend-text"> Not Recommended</span></p>
+</div>
+
+<div id="state-legend" class="state-legend">
+  <p class="state-legend-text"><b class="mono-info">Open:</b> click</p>
+  <p class="state-legend-text"><b class="mono-info">Info:</b> press</p>
 </div>
 
 <script>
