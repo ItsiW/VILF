@@ -3,7 +3,7 @@ name: Polash
 cuisine: Indian
 drinks: false
 visited: "2021-11-08"
-address: E 119th & 3rd
+address: E 119th & 3rd Ave
 area: Harlem
 taste: 0
 value: 1

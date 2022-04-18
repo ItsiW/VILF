@@ -3,7 +3,7 @@ name: Mimi Cheng's Dumplings
 cuisine: Chinese
 drinks: true
 visited: "2022-03-20"
-address: E 11th & 2nd
+address: E 11th & 2nd Ave
 area: East Village
 taste: 0
 value: 1

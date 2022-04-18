@@ -3,7 +3,7 @@ name: The Tang
 cuisine: Chinese
 drinks: True
 visited: "2021-11-11"
-address: W 105th & Amsterdam
+address: W 105th & Amsterdam Ave
 area: Upper West Side
 taste: 2
 value: 1

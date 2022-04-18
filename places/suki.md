@@ -3,7 +3,7 @@ name: Suki
 cuisine: Japanese
 drinks: true
 visited: "2022-03-31"
-address: E 7th & 1st
+address: E 7th & 1st Ave
 area: East Village
 taste: 0
 value: 1

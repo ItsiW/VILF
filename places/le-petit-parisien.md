@@ -3,7 +3,7 @@ name: Le Petit Parisien
 cuisine: French
 drinks: no
 visited: "2022-03-01"
-address: E 7th & 2nd
+address: E 7th & 2nd Ave
 area: East Village
 taste: 0
 value: 1

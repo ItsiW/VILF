@@ -3,7 +3,7 @@ name: Raku
 cuisine: Japanese
 drinks: True
 visited: "2022-02-01"
-address: E 6th & 1st
+address: E 6th & 1st Ave
 area: East Village
 taste: 1
 sgfi: high quality udon noodles

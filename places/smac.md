@@ -3,7 +3,7 @@ name: S'MAC
 cuisine: American
 drinks: true
 visited: "2022-01-24"
-address: E 12th & 1st
+address: E 12th & 1st Ave
 area: East Village
 taste: 0
 value: 1

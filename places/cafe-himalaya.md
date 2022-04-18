@@ -3,7 +3,7 @@ name: Cafe Himalaya
 cuisine: Tibetan
 drinks: true
 visited: "2022-02-09"
-address: E 1st & 1st
+address: E 1st & 1st Ave
 area: East Village
 taste: 1
 sgfi: Tibetan/Nepali comfort food at a good price

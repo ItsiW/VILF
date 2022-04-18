@@ -3,7 +3,7 @@ name: Mamoun's Falafel East Village
 cuisine: Middle Eastern
 drinks: false
 visited: "2022-02-01"
-address: St Marks Pl & 2nd
+address: St Marks Pl & 2nd Ave
 area: East Village
 taste: 2
 value: 3

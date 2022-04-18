@@ -3,7 +3,7 @@ name: The Braised Shop
 cuisine: Chinese
 drinks: False
 visited: "2022-02-06"
-address: E 10th & 1st
+address: E 10th & 1st Ave
 area: East Village
 taste: 1
 sgfi: very satisfying bowl of noodles and stuff

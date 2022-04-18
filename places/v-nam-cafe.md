@@ -3,7 +3,7 @@ name: V-Nam Cafe
 cuisine: Vietnamese
 drinks: False
 visited: "2022-02-06"
-address: E 1st & 1st
+address: E 1st & 1st Ave
 area: East Village
 taste: 1
 sgfi: pretty hearty pho

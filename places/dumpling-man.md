@@ -3,7 +3,7 @@ name: Dumpling Man
 cuisine: Chinese
 drinks: false
 visited: "2022-01-22"
-address: St Marks Pl & 1st
+address: St Marks Pl & 1st Ave
 area: East Village
 taste: 0
 value: 1

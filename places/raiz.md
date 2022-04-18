@@ -3,7 +3,7 @@ name: Raíz
 cuisine: Mexican
 drinks: False
 visited: "2022-02-01"
-address: E 7th & 1st
+address: E 7th & 1st Ave
 area: East Village
 taste: 2
 value: 1

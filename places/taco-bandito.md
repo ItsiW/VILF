@@ -3,7 +3,7 @@ name: Taco Bandito
 cuisine: Mexican
 drinks: false
 visited: "2021-11-13"
-address: W 26th & 8th
+address: W 26th & 8th Ave
 area: Chelsea
 taste: 1
 sgfi: boy is it very cheap and absolutley inoffensive 

@@ -3,7 +3,7 @@ name: Sigiri
 cuisine: Sri Lankan
 drinks: false
 visited: "2022-02-07"
-address: E 6th & 1st
+address: E 6th & 1st Ave
 area: East Village
 taste: 1
 sgfi: cheap decent lunch special

@@ -3,7 +3,7 @@ name: Doaba Deli
 cuisine: Indian
 drinks: false
 visited: "2021-11-05"
-address: W 106th & Columbus
+address: W 106th & Columbus Ave
 area: Upper West Side
 taste: 2
 value: 3

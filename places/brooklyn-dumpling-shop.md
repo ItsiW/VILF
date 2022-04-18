@@ -3,7 +3,7 @@ name: Brooklyn Dumpling Shop
 cuisine: Chinese
 drinks: true
 visited: "2022-01-23"
-address: St Marks Pl & 1st
+address: St Marks Pl & 1st Ave
 area: East Village
 taste: 1
 sgfi: meaty texture impossible meat dumplings

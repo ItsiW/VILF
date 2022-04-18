@@ -3,7 +3,7 @@ name: San Marzano
 cuisine: Italian
 drinks: true
 visited: "2022-01-22"
-address: E 7th & 2nd
+address: E 7th & 2nd Ave
 area: East Village
 taste: 0
 value: 1

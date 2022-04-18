@@ -3,7 +3,7 @@ name: Xe May Sandwich Shop
 cuisine: Vietnamese
 drinks: false
 visited: "2022-01-19"
-address: St Marks Pl & 1st
+address: St Marks Pl & 1st Ave
 area: East Village
 taste: 1
 sgfi: tasty banh mi style sandwich

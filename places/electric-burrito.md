@@ -3,7 +3,7 @@ name: Electric Burrito
 cuisine: Mexican
 drinks: false
 visited: "2022-01-23"
-address: St Marks Pl & 1st
+address: St Marks Pl & 1st Ave
 area: East Village
 taste: 2
 value: 1

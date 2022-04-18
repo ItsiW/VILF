@@ -3,7 +3,7 @@ name: Adyar Ananda Bhavan
 cuisine: Indian
 drinks: true
 visited: "2022-03-14"
-address: E 58th & 1st
+address: E 58th & 1st Ave
 area: Midtown East
 taste: 1
 sgfi: large variety of vegetarian South Indian food

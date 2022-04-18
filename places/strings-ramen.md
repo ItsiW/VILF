@@ -3,7 +3,7 @@ name: Strings Ramen
 cuisine: Japanese
 drinks: false
 visited: "2022-02-12"
-address: E 12th & 2nd
+address: E 12th & 2nd Ave
 area: East Village
 taste: 2
 value: 2

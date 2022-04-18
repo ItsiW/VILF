@@ -3,7 +3,7 @@ name: Lhasa
 cuisine: Tibetan
 drinks: false
 visited: "2022-03-24"
-address: E 11th & 1st
+address: E 11th & 1st Ave
 area: East Village
 taste: 0
 value: 1

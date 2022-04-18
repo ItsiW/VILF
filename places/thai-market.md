@@ -3,7 +3,7 @@ name: Thai Market
 cuisine: Thai
 drinks: false
 visited: "2021-11-24"
-address: W 107th & Amsterdam
+address: W 107th & Amsterdam Ave
 area: Upper West Side
 taste: 0
 value: 1

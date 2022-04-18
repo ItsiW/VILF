@@ -3,7 +3,7 @@ name: Maison Bangkok
 cuisine: Thai
 drinks: yes
 visited: "2022-01-07"
-address: E 77th & 1st
+address: E 77th & 1st Ave
 area: Upper East Side
 taste: 1
 sgfi: nice thai staples with clearly marked vegan menu

@@ -3,7 +3,7 @@ name: Beyond Sushi
 cuisine: Japanese
 drinks: true
 visited: "2022-01-21"
-address: E 81st & 3rd
+address: E 81st & 3rd Ave
 area: Upper East Side
 taste: 1
 sgfi: experimental vegan sushi

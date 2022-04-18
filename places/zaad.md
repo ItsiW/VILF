@@ -3,7 +3,7 @@ name: Zaad
 cuisine: Middle Eastern
 drinks: false
 visited: "2021-11-13"
-address: W 107th & Amsterdam
+address: W 107th & Amsterdam Ave
 area: Upper West Side
 taste: 1
 sgfi: good baba ganoush & baklava and other decent handmade middle eastern standards.

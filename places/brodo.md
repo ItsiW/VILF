@@ -3,7 +3,7 @@ name: Brodo
 cuisine: American
 drinks: false
 visited: "2022-01-22"
-address: E 12th & 1st
+address: E 12th & 1st Ave
 area: East Village
 taste: 1
 sgfi: broth if you want broth and not coffee

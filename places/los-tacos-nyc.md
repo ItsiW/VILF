@@ -3,7 +3,7 @@ name: Los Tacos NYC
 cuisine: Mexican
 drinks: no
 visited: "2022-01-27"
-address: E 7th & A
+address: E 7th & Ave A
 area: East Village
 taste: 0
 value: 1

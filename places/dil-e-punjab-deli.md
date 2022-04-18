@@ -3,7 +3,7 @@ name: Dil-e Punjab Deli
 cuisine: Indian
 drinks: false
 visited: "2021-11-17"
-address: W 21st & 9th
+address: W 21st & 9th Ave
 area: Chelsea
 taste: 1
 sgfi: pretty decent curries at a more than decent price

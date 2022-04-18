@@ -3,7 +3,7 @@ name: Downtown Bakery
 cuisine: Mexican
 drinks: false
 visited: "2022-01-18"
-address: E 4th & 1st
+address: E 4th & 1st Ave
 area: East Village
 taste: 0
 value: 1

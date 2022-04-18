@@ -3,7 +3,7 @@ name: Dumpling N' Dips
 cuisine: Chinese
 drinks: false
 visited: "2022-02-16"
-address: St Marks Pl & 3rd
+address: St Marks Pl & 3rd Ave
 area: East Village
 taste: 0
 value: 2

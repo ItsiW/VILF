@@ -3,7 +3,7 @@ name: Jiang's Kitchen
 cuisine: Chinese
 drinks: False
 visited: "2022-02-02"
-address: St Marks Pl & 1st
+address: St Marks Pl & 1st Ave
 area: East Village
 taste: 1
 sgfi: good stir fried noodles

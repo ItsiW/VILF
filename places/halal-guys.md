@@ -3,7 +3,7 @@ name: The Halal Guys
 cuisine: Middle Eastern
 drinks: False
 visited: "2021-11-11"
-address: W 95th & Amsterdam
+address: W 95th & Amsterdam Ave
 area: Upper West Side
 taste: 0
 value: 1

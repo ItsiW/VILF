@@ -3,7 +3,7 @@ name: Yubu
 cuisine: Korean
 drinks: false
 visited: "2022-02-16"
-address: E 7th & 1st
+address: E 7th & 1st Ave
 area: East Village
 taste: 2
 value: 1

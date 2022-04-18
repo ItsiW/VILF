@@ -3,7 +3,7 @@ name: Udon St Marks
 cuisine: Japanese
 drinks: True
 visited: "2022-03-04"
-address: St Marks Pl & 3rd
+address: St Marks Pl & 3rd Ave
 area: East Village
 taste: 2
 value: 2

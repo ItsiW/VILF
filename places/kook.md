@@ -3,7 +3,7 @@ name: K'OOK
 cuisine: Korean
 drinks: true
 visited: "2022-03-03"
-address: E 6th & 1st
+address: E 6th & 1st Ave
 area: East Village
 taste: 3
 value: 2
