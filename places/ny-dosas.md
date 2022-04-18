@@ -6,7 +6,6 @@ visited: "2022-04-05"
 address: Washington Square Park
 area: West Village
 taste: 2
-sgfi: pretty good dosas
 value: 1
 lat: 40.73087802594516
 lon: -73.99882798510272
