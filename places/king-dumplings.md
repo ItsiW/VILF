@@ -5,8 +5,7 @@ drinks: false
 visited: "2022-03-16"
 address: 74 Hester St
 area: Lower East Side 
-taste: 1
-sgfi: very cheap food that is ok
+taste: 0
 value: 3
 lat: 40.7160428685882
 lon: -73.99163785374249
