@@ -6,7 +6,6 @@ visited: "2022-04-06"
 address: E 7th & 1st Ave
 area: East Village
 taste: 2
-sgfi: tasty veg stir fry lunch
 value: 2
 lat: 40.72714319347132
 lon: -73.9854177740636

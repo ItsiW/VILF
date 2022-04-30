@@ -15,6 +15,8 @@ phone: "+12124753374"
 
 This is an Indian street food spot and small grocery. They've got some nice stuff, I got the **channa kathi roll** (chickpeas) and the **pani puri** (crispy pockets with tamarind and chickpeas that you fill with tangy liquid). They were both good, though the best kathi rolls are still at [Roti Roll](/places/roti-roll). Strong flavours all round, if you've never had pani puri before it's quite an experience.
 
-Because of the smallish portion sizes, things aren't the cheapest, but it's definitely good for a snack. Many items are explicitly vegan (they've got a beyond meat roll) and they said they could make many of the other items vegan as well. 
+Went back again and got a **beyond meat kathi roll**, it's so fatty and satisfying, highly recommend.
+
+Because of the smallish portion sizes, things aren't the cheapest, but it's definitely good for a snack. Many items are explicitly vegan and they said they could make many of the other items vegan as well. 
 
 All in all great spot to have around with strong flavours.

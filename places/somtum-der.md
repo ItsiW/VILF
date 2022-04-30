@@ -2,19 +2,21 @@
 name: Somtum Der
 cuisine: Thai
 drinks: true
-visited: "2022-02-08"
+visited: "2022-04-29"
 address: E 6th & Ave A
 area: East Village
-taste: 2
-value: 1
+taste: 3
+value: 2
 lat: 40.725237530928524
 lon: -73.98434183785997
 menu: https://somtumdernewyork.com/les/full-menu
 phone: "+12122608570"
 ---
 
-I've been meaning to go to this Thai place for a while. Papaya salad (somtum) is one of my favorite foods in the world, but it's hard to make well vegan because of it's reliance on fish sauce. However this place has a whole bunch of vegan thai salads.
+I tried this place once takeaway and it was really good, so I went back with a friend and boy oh boy is this place fantastic. It's a Thai restaurant that focuses on salads made by the mortar and pestle. Things are so incredibly flavourful and bright and herby. I recommend getting a bunch of salads and sticky rice, you'll need a few dishes because they're all pretty small. It costs about $15-$20 a dish, but it is good value because of just how good it is.
 
-I wasn't so hungry so just got a **mushroom larb** (larb hed kao kuo) and **grilled coconut sticky rice skewers**. It's a bit of a pricey place at $20 before tax and very small portions but damn it tastes good. Super spicy and sour and herby and delicious salad. The skewers weren't overly coconuty, pretty tasty but I'd probably just go for regular sticky rice next time. Or maybe they're better fresh off the grill when you eat in.
+Papaya salad (somtum) is one of my favourite foods in the world, but it can be hard to find vegan ones because normally they put in fish sauce. However this place has put in effort to give a good vegan selection.
 
-I'm keen to go back to try their many other salads, including veggie papaya salad, and larb made with impossible meat. I assume their standard Thai noodle dishes are good too, but c'mon that's not why you're going here. Branch out a little. Get a salad.
+We got the **vegetarian papaya salad**, **mushroom larb**, and **impossible larb**. All were fantastic and quite different from each other. The papaya was refreshing, the mushrooms were so herby and tangy, and the impossible larb was so rich and tasty. Get all 3. I think they've got a couple other vegan dishes too.
+
+Be warned, this stuff is truly spicy. Like seriously hot. But incredible. The **grilled coconut sticky rice skewers** are good to wash it down, along with beer.
