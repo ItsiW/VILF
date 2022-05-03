@@ -1,6 +1,6 @@
 ---
 name: Wiki Wiki
-cuisine: Hawaiian
+cuisine: Japanese
 drinks: true
 visited: "2021-11-27"
 address: Dekalb Market Hall

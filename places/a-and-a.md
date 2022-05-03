@@ -1,6 +1,6 @@
 ---
 name: A&A Bake Doubles and Roti
-cuisine: Trinidadian
+cuisine: Caribbean
 drinks: false
 visited: "2021-11-16"
 address: 1337 Fulton St
