@@ -1,13 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="content">
-  <h1 class="name">The Good Taste Guide List</h1>
+  <h1 class="name">Vegan {{ cuisine }} food in New York City</h1>
   {% for place in places %}
   <h2 class="name first-element"><a href="{{ place["url"] }}">{{ place["name"] }}</a></h2>
   <p class="list-info address">{{ place["address"] }}, {{ place["area"] }}</p>
   <p class="list-info"><b style="color: {{ place["taste_color"] }}">{{ place["taste_label"] }}</b> taste. <b style="color: {{ place["value_color"] }}">{{ place["value_label"] }}</b> value.</p>
-  <p class="list-info cuisine"><a href="/cuisines/{{ place["cuisine"].lower().replace(' ','-') }}">{{ place["cuisine"] }} food</a></p>
-  {% if place["sgfi"] %}
+    {% if place["sgfi"] %}
     <p class="list-info" style="font-style: italic;"><b class="sgfi">Going for it: </b>{{ place["sgfi"] }}</p>
     {% endif %}
   {% endfor %}

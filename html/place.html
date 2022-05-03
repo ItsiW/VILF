@@ -3,7 +3,7 @@
 <section class="content">
   <h1 class="name">{{ name }}</h1>
   <p class="address"><a href="geo://?q={{ geodata }}">{{ address }}, <b>{{ area }}</b></a></p>
-  <p class="cuisine">{{ cuisine }} food</p>
+  <p class="cuisine"><a href="/cuisines/{{ cuisine.lower().replace(' ','-') }}">{{ cuisine }} food</a></p>
   <p class="restaurant-links">
     {% if menu %}
     <a href="{{ menu }}" target="_blank">Menu</a>
