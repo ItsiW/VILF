@@ -26,7 +26,7 @@ There is a similar <span class="mono-info-about dnr">Bad</span> <span class="mon
 
 All reviews are provided by Editor-in-Chief [Itsi Weinstock](https://itsiweinstock.com), along with a rotating cast of friends, buddies, colleagues, and acquaintances. 
 
-Memes are provided by Staff Meme Connoisseur [Andrew](https://www.reddit.com/r/vegancirclejerk/). Memes are stolen without remorse.
+The [codebase](https://github.com/aapeliv/tgtg) is open-sourced under an MIT License.
 
 ## Contact
 
@@ -38,6 +38,6 @@ Yes, we will hang out with you at your favorite place and add it to the map.
 
 All opinions, despite how good they are, should not be construed to be fact.
 
-Where providing factual information such as menus, addresses, alcohol availability etc. we have sourced our information from either the restaurant being reviewed or third party information providors where necessary. Please contact us if you would like anything to be corrected.
+Where providing factual information such as menus, addresses, alcohol availability etc. we have sourced our information from either the restaurant being reviewed or third party information providers where necessary. Please contact us if you would like anything to be corrected.
 
 If I have accidentally included any non-vegan items here by mistake, please let me know and I will remove it immediately.
