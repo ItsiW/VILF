@@ -364,6 +364,68 @@ sitemap.insert(
     },
 )
 
+cuisine_names = sorted(set([place["cuisine"] for place in places]))
+
+cuisines_dir = build_dir / "cuisines"
+cuisines_dir.mkdir(exist_ok=True, parents=True)
+with open(cuisines_dir / "index.html", "w") as o:
+    o.write(
+        env.get_template("cuisine-list.html").render(
+            cuisines=[
+                {
+                    "name": cuisine,
+                    "url": f"/cuisines/{cuisine.lower().replace(' ','-')}",
+                    "len": len(
+                        [place for place in places if place["cuisine"] == cuisine]
+                    ),
+                }
+                for cuisine in cuisine_names
+            ]
+        )
+    )
+sitemap.insert(
+    2,
+    {
+        "url": f"{SITE_URL}/cuisines/",
+        "changefreq": "daily",
+    },
+)
+
+
+def format_cuisine_title(cuisine):
+    return f"Vegan {cuisine} food in New York — The Good Taste Guide"
+
+
+def format_cuisine_description(meta):
+    return f"Read our reviews on vegan {cuisine} food and others in New York City from The Good Taste Guide!"
+
+
+cuisine_template = env.get_template("cuisine.html")
+
+for cuisine in cuisine_names:
+    slug = cuisine.lower().replace(" ", "-")
+    cuisine_places = [place["name"] for place in places if place["cuisine"] == cuisine]
+    rendered = cuisine_template.render(
+        title=format_cuisine_title(cuisine),
+        description=format_cuisine_description(cuisine),
+        cuisine=cuisine,
+        places=sorted(
+            [place for place in places if place["cuisine"] == cuisine],
+            key=lambda item: (-item["taste"], -item["value"], item["slug"]),
+        ),
+    )
+    cuisine_dir = build_dir / "cuisines" / slug
+    cuisine_dir.mkdir(exist_ok=True, parents=True)
+    with open(cuisine_dir / "index.html", "w") as o:
+        o.write(rendered)
+
+    sitemap.append(
+        {
+            "url": f"{SITE_URL}/cuisines/{slug}/",
+            "changefreq": "daily",
+        }
+    )
+
 with open(build_dir / "sitemap.xml", "w") as o:
     o.write(
         env.get_template("sitemap.xml").render(
