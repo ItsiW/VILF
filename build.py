@@ -1,19 +1,18 @@
 #!/bin/python3
 
-import glob
 import json
 import os
 import re
 import shutil
 from datetime import date
 from pathlib import Path
-from tqdm import tqdm
 
 import yaml
 from jinja2 import Environment, FileSystemLoader
 from markdown2 import markdown
 from mdplain import plain
 from PIL import Image
+from tqdm import tqdm
 
 SITE_URL = "https://thegoodtaste.guide"
 
@@ -22,7 +21,7 @@ print("Starting build of tgtg...")
 env = Environment(loader=FileSystemLoader("html"))
 env.globals["SITE_URL"] = SITE_URL
 
-build_dir = Path(".") / "build"
+build_dir = Path("./build")
 shutil.rmtree(build_dir, ignore_errors=True)
 
 # scale, crop and store standardised images
@@ -31,13 +30,16 @@ food_thumb_target_size = (426, 240)
 jpg_quality = 75
 
 for img_type in ["food", "thumb", "memes"]:
-    path = "static/img/" + img_type
+    path = Path(f"static/img/{img_type}")
     if not os.path.exists(path):
         os.makedirs(path)
 
-for raw_jpg in tqdm(glob.glob("raw/food/*.jpg"), desc="processing food images"):
-    static_fp = Path(f"img/food/{raw_jpg[9:-4]}.jpg")
-    thumb_fp = Path(f"img/thumb/{raw_jpg[9:-4]}.jpg")
+for raw_jpg in tqdm(
+    list(Path("raw/food").glob("*.jpg")), desc="processing food images"
+):
+    file_name = raw_jpg.parts[-1]
+    static_fp = Path("img/food") / file_name
+    thumb_fp = Path("img/thumb") / file_name
     if not (
         (Path("static") / static_fp).exists() & (Path("static") / thumb_fp).exists()
     ):
@@ -58,7 +60,7 @@ for raw_jpg in tqdm(glob.glob("raw/food/*.jpg"), desc="processing food images"):
             )
             im_cropped = im.crop((left, upper, right, lower))
             im_cropped.save(
-                fp=Path("static/") / static_fp, format="JPEG", quality=jpg_quality
+                fp=Path("static") / static_fp, format="JPEG", quality=jpg_quality
             )
 
             # thumbnails for images on map
@@ -66,31 +68,32 @@ for raw_jpg in tqdm(glob.glob("raw/food/*.jpg"), desc="processing food images"):
                 (food_thumb_target_size[0], food_thumb_target_size[1])
             )
             im_thumb.save(
-                fp=Path("static/") / thumb_fp, format="JPEG", quality=jpg_quality
+                fp=Path("static") / thumb_fp, format="JPEG", quality=jpg_quality
             )
 
 for meme_id, raw_meme in enumerate(
-    tqdm(glob.glob("raw/memes/*"), desc="processing memes")
+    tqdm(list(Path("raw/memes").glob("*")), desc="processing memes")
 ):
     fp = Path(f"img/memes/{meme_id}.jpg")
     with Image.open(raw_meme) as im:
         if im.mode == "RGBA":
             im = im.convert("RGB")
-        im.save(fp=Path("static/") / fp, format="JPEG", quality=jpg_quality)
+        im.save(fp=Path("static") / fp, format="JPEG", quality=jpg_quality)
 n_memes = meme_id + 1
 
-shutil.copytree(Path("static/"), build_dir)
+shutil.copytree(Path("static"), build_dir)
 
 sitemap = []
 
-## map page
+# map page
 with open(build_dir / "index.html", "w") as o:
     o.write(
         env.get_template("map.html").render(
             title="The Good Taste Guide",
             description="Find tasty vegan food around New York City!",
             thumbnails=[
-                f"img/thumb/{file}" for file in os.listdir("static/img/thumb/")
+                str(Path(*file.parts[1:]))
+                for file in Path("static/img/thumb").iterdir()
             ],
         )
     )
@@ -100,7 +103,7 @@ sitemap.append(
     }
 )
 
-## error page
+# error page
 with open(build_dir / "error.html", "w") as o:
     o.write(
         env.get_template("error.html").render(
@@ -109,10 +112,10 @@ with open(build_dir / "error.html", "w") as o:
         )
     )
 
-## about page
+# about page
 about_dir = build_dir / "about"
 about_dir.mkdir(exist_ok=True, parents=True)
-with open("./about.md") as f:
+with open(Path("./about.md")) as f:
     _, frontmatter, md = f.read().split("---", 2)
 meta = yaml.load(frontmatter, Loader=yaml.Loader)
 html = markdown(md.strip())
@@ -129,7 +132,7 @@ sitemap.append(
     }
 )
 
-## place pages
+# place pages
 place_template = env.get_template("place.html")
 places = []
 
@@ -211,18 +214,18 @@ def format_blurb(md):
 
 
 def get_fp_food_image(slug):
-    static_fp = f"/img/food/{slug}.jpg"
-    return static_fp if Path(f"static{static_fp}").exists() else None
+    static_fp = Path(f"img/food/{slug}.jpg")
+    return str(Path(f"/{static_fp}")) if (Path("static") / static_fp).exists() else None
 
 
 def get_fp_food_thumb(slug):
-    static_fp = f"/img/thumb/{slug}.jpg"
-    return static_fp if Path(f"static{static_fp}").exists() else None
+    static_fp = Path(f"img/thumb/{slug}.jpg")
+    return str(Path(f"/{static_fp}")) if (Path("static") / static_fp).exists() else None
 
 
-for place_md in glob.glob("places/*.md"):
-    slug = place_md[7:-3]
-    assert re.match(r"^[0-9a-z-]+$", slug), "Bad filename for " + place_md
+for place_md in Path("places").glob("*.md"):
+    slug = place_md.parts[-1][:-3]
+    assert re.match(r"^[0-9a-z-]+$", slug), "Bad filename for " + str(place_md)
     relative_url = f"/places/{slug}/"
     with open(place_md) as f:
         _, frontmatter, md = f.read().split("---", 2)
@@ -313,7 +316,7 @@ geojson = {
 with open(build_dir / "places.geojson", "w") as o:
     o.write(json.dumps(geojson))
 
-## best page
+# best page
 best_dir = build_dir / "best"
 best_dir.mkdir(exist_ok=True, parents=True)
 with open(best_dir / "index.html", "w") as o:
@@ -336,7 +339,7 @@ sitemap.insert(
 )
 
 
-## latest page
+# latest page
 latest_dir = build_dir / "latest"
 latest_dir.mkdir(exist_ok=True, parents=True)
 with open(latest_dir / "index.html", "w") as o:
