@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="content">
-  <h1 class="name">The Good Taste Guide List</h1>
+  <h1 class="name">The Official V.I.L.F List</h1>
   {% for place in places %}
   <h2 class="name first-element"><a href="{{ place["url"] }}">{{ place["name"] }}</a></h2>
   <p class="list-info address">{{ place["address"] }}, {{ place["area"] }}</p>
