@@ -29,7 +29,7 @@ food_image_target_size = (1920, 1080)
 food_thumb_target_size = (426, 240)
 jpg_quality = 75
 
-for img_type in ["food", "thumb", "memes"]:
+for img_type in ["food", "thumb"]:
     path = Path(f"static/img/{img_type}")
     if not os.path.exists(path):
         os.makedirs(path)
@@ -71,16 +71,6 @@ for raw_jpg in tqdm(
                 fp=Path("static") / thumb_fp, format="JPEG", quality=jpg_quality
             )
 
-for meme_id, raw_meme in enumerate(
-    tqdm(list(Path("raw/memes").glob("*")), desc="processing memes")
-):
-    fp = Path(f"img/memes/{meme_id}.jpg")
-    with Image.open(raw_meme) as im:
-        if im.mode == "RGBA":
-            im = im.convert("RGB")
-        im.save(fp=Path("static") / fp, format="JPEG", quality=jpg_quality)
-n_memes = meme_id + 1
-
 shutil.copytree(Path("static"), build_dir)
 
 sitemap = []
@@ -89,8 +79,8 @@ sitemap = []
 with open(build_dir / "index.html", "w") as o:
     o.write(
         env.get_template("map.html").render(
-            title="The Good Taste Guide",
-            description="Find tasty vegan food around New York City!",
+            title="Vegans In Love with Food",
+            description="Find tasty vegan food in the San Francisco Bay Area with V.I.L.F!",
             thumbnails=[
                 str(Path(*file.parts[1:]))
                 for file in Path("static/img/thumb").iterdir()
@@ -107,7 +97,7 @@ sitemap.append(
 with open(build_dir / "error.html", "w") as o:
     o.write(
         env.get_template("error.html").render(
-            title="The Good Taste Guide",
+            title="Vegans In Love with Food",
             description="An error occured.",
         )
     )
@@ -174,11 +164,11 @@ def boolean_html(boolean):
 
 
 def format_title(meta):
-    return f'{meta["name"]} — Tasty vegan food in {meta["area"]}, New York — The Good Taste Guide'
+    return f'{meta["name"]} — Tasty vegan food in {meta["area"]}, in the San Francisco Bay Area — Vegans In Love with Food'
 
 
 def format_description(meta):
-    return f'Read our review on {meta["name"]} at {meta["address"]} in {meta["area"]}, and more tasty vegan {meta["cuisine"]} food in New York City from The Good Taste Guide!'
+    return f'Read our review on {meta["name"]} at {meta["address"]} in {meta["area"]}, and more tasty vegan {meta["cuisine"]} food in the San Francisco Bay Area from V.I.L.F!'
 
 
 def format_phone_number(meta):
@@ -261,7 +251,6 @@ for place_md in Path("places").glob("*.md"):
         value_html=rating_html(meta["value"], value_labels),
         drinks_html=boolean_html(meta["drinks"]),
         content=html,
-        n_memes=n_memes,
     )
     out_dir = build_dir / "places" / slug
     out_dir.mkdir(exist_ok=True, parents=True)
@@ -322,8 +311,8 @@ best_dir.mkdir(exist_ok=True, parents=True)
 with open(best_dir / "index.html", "w") as o:
     o.write(
         env.get_template("best.html").render(
-            title="The Good Taste Guide",
-            description="Find tasty vegan food around New York City!",
+            title="Vegans In Love with Food",
+            description="Find tasty vegan food around the San Francisco Bay Area with V.I.L.F!",
             # sort by taste desc, then value desc, then alphabetical by name
             places=sorted(
                 places, key=lambda item: (-item["taste"], -item["value"], item["slug"])
@@ -345,8 +334,8 @@ latest_dir.mkdir(exist_ok=True, parents=True)
 with open(latest_dir / "index.html", "w") as o:
     o.write(
         env.get_template("latest.html").render(
-            title="Latest Reviews from The Good Taste Guide",
-            description="Find tasty vegan food around New York City!",
+            title="Latest Reviews from Vegans In Love with Food",
+            description="Find tasty vegan food around the San Francisco Bay Area!",
             # sort by age then standard
             places=sorted(
                 places,
@@ -396,11 +385,11 @@ sitemap.insert(
 
 
 def format_cuisine_title(cuisine):
-    return f"Vegan {cuisine} food in New York — The Good Taste Guide"
+    return f"Vegan {cuisine} food in the San Francisco Bay Area — Vegans In Love with Food"
 
 
 def format_cuisine_description(meta):
-    return f"Read our reviews on vegan {cuisine} food and others in New York City from The Good Taste Guide!"
+    return f"Read our reviews on vegan {cuisine} food and others in the Bay Area from V.I.L.F!"
 
 
 cuisine_template = env.get_template("cuisine.html")
