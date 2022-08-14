@@ -1,5 +1,5 @@
 ---
-name: Tai Yuen Pastry
+name: Tao Yuen Pastry
 cuisine: Chinese
 drinks: false
 visited: "2022-08-02"
