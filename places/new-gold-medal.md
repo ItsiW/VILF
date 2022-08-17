@@ -1,5 +1,5 @@
 ---
-name: Mac Khai Restaurant
+name: New Gold Medal Restaurant
 cuisine: Chinese
 drinks: True
 visited: "2022-08-14"
@@ -17,4 +17,4 @@ A cantonese place with everything on the menu. I was blessed with one of the wor
 
 Compare the picture above with what was shown on the menu (left image)
 
-<center><img src="/other_img/signal-2022-08-16-190447_002.jpeg" alt="mapo tofu" width="80%"/></center>
+<center><img src="/other_img/bad_mapo.jpg" alt="mapo tofu" width="80%"/></center>
