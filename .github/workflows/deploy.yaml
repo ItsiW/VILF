@@ -1,4 +1,4 @@
-name: Deploy tgtg
+name: Deploy VILF
 on:
   push:
     branches: [ develop ]
