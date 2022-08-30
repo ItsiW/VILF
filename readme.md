@@ -76,7 +76,16 @@ You can invalidate any specific static file by passing the relative path to the 
 Using `gcloud`:
 
 ```bash
+# CERTIFICATE
 gcloud beta compute ssl-certificates describe vilf-ssl --global --format="get(name, managed.status, managed.domainStatus)" --project climax-vilf
+
+# LOAD BALANCER
+gcloud compute target-https-proxies describe vilf-lb-target-proxy --project=climax-vilf
+gcloud compute target-http-proxies describe vilf-lb-target-proxy-3 --project=climax-vilf
+
+# FORWARDING RULES
+gcloud compute forwarding-rules describe vilf-lb-frontend-main --project=climax-vilf --global
+gcloud compute forwarding-rules describe vilf-lb-frontend-http-2 --project=climax-vilf --global
 ```
 
 Using `openssl`:
