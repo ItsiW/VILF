@@ -4,7 +4,7 @@ cuisine: Ethiopian
 drinks: False
 visited: "2022-08-30"
 address: 538 9th St
-area: Oakland
+area: Downtown Oakland
 taste: 1
 sgfi: tasty Ethiopian food
 value: 2

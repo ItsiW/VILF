@@ -4,7 +4,7 @@ cuisine: Vietnamese
 drinks: False
 visited: "2022-08-13"
 address: 338 12th St
-area: Oakland
+area: Downtown Oakland
 taste: 0
 value: 1
 lat: 37.80200044208991

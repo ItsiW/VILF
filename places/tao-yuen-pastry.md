@@ -4,7 +4,7 @@ cuisine: Chinese
 drinks: false
 visited: "2022-09-05"
 address: 816 Franklin St
-area: Oakland
+area: Downtown Oakland
 taste: 2
 value: 3
 lat: 37.80003399472605

@@ -4,7 +4,7 @@ cuisine: Vietnamese
 drinks: False
 visited: "2022-08-14"
 address: 1004 Webster St
-area: Oakland
+area: Downtown Oakland
 taste: 1
 sgfi: pretty tasty tofu banh mi
 value: 2

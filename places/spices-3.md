@@ -4,7 +4,7 @@ cuisine: Chinese
 drinks: True
 visited: "2022-08-06"
 address: 370 12th St
-area: Oakland
+area: Downtown Oakland
 taste: 1
 sgfi: huge selection of Sichuan staples
 value: 2

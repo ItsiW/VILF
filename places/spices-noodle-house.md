@@ -4,7 +4,7 @@ cuisine: Chinese
 drinks: False
 visited: "2022-08-16"
 address: 369 12th St
-area: Oakland
+area: Downtown Oakland
 taste: 1
 sgfi: carb-forward oily noodles for when they're needed
 value: 1

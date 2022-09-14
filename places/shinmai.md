@@ -4,7 +4,7 @@ cuisine: Japanese
 drinks: True
 visited: "2022-08-25"
 address: 1825 San Pablo Ave
-area: Oakland
+area: Downtown Oakland
 taste: 0
 value: 1
 lat: 37.80816316826633

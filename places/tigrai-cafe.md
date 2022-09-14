@@ -4,7 +4,7 @@ cuisine: Ethiopian
 drinks: False
 visited: "2022-08-01"
 address: 10009 Clay St
-area: Oakland
+area: Downtown Oakland
 taste: 2
 value: 1
 lat: 37.80295667351805
