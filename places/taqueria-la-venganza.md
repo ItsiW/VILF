@@ -2,7 +2,7 @@
 name: Taqueria La Venganza
 cuisine: Mexican
 address: 1805 Telegraph Ave
-area: Oakland
+area: Downtown Oakland
 lat: 37.80797009530762
 lon: -122.27038588641292
 phone: "+15102509630"

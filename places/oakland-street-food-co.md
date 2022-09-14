@@ -4,7 +4,7 @@ cuisine: Mexican
 drinks: True
 visited: "2022-08-15"
 address: 430 13th St
-area: Oakland
+area: Downtown Oakland
 taste: 1
 sgfi: "yummy grilled tacos"
 value: 2
