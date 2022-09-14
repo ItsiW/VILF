@@ -6,7 +6,7 @@ visited: "2022-08-15"
 address: 430 13th St
 area: Oakland
 taste: 1
-sgfi: "decent food for all with disappointing tofu towers"
+sgfi: "yummy grilled tacos"
 value: 2
 lat: 37.80362128364416
 lon: -122.27121193644999

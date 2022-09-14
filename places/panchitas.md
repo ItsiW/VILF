@@ -6,7 +6,7 @@ visited: "2022-08-12"
 address: 3091 16th St
 area: Mission
 taste: 0
-value: 1
+value: 0
 lat: 37.76477980427262
 lon: -122.42162883322653
 menu: https://www.clover.com/online-ordering/panchitas-restaurant-2-san-francisco
