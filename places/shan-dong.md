@@ -4,7 +4,7 @@ cuisine: Chinese
 drinks: False
 visited: "2022-08-21"
 address: 328 10th St
-area: Oakland
+area: Downtown Oakland
 taste: 1
 sgfi: hand pulled noodles with the chew
 value: 1

@@ -4,7 +4,7 @@ cuisine: Chinese
 drinks: True
 visited: "2022-08-14"
 address: 417 7th St
-area: Oakland
+area: Downtown Oakland
 taste: 0
 value: 1
 lat: 37.799006208149244

@@ -4,7 +4,7 @@ cuisine: Vietnamese
 drinks: False
 visited: "2022-08-28"
 address: 1301 Franklin St
-area: Oakland
+area: Downtown Oakland
 taste: 1
 sgfi: huge selection of vegan Vietnamese goodies
 value: 1

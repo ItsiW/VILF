@@ -4,7 +4,7 @@ cuisine: Chinese
 drinks: False
 visited: "2022-08-06"
 address: 930 Webster St
-area: Oakland
+area: Downtown Oakland
 taste: 0
 value: 2
 lat: 37.800304295028354

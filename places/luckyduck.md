@@ -4,7 +4,7 @@ cuisine: American
 drinks: True
 visited: "2022-09-06"
 address: 302 12th St
-area: Oakland
+area: Downtown Oakland
 taste: 0
 value: 1
 lat: 37.801700337019966
