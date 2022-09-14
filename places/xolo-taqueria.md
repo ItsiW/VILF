@@ -4,7 +4,7 @@ cuisine: Mexican
 drinks: True
 visited: "2022-09-09"
 address: 1916 Telegraph Ave
-area: Oakland
+area: Downtown Oakland
 taste: 1
 sgfi: yummy beyond meat tacos
 value: 2

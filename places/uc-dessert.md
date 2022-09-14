@@ -4,7 +4,7 @@ cuisine: Chinese
 drinks: False
 visited: "2022-08-14"
 address: 388 9th St STE 159
-area: Oakland
+area: Downtown Oakland
 taste: 1
 sgfi: satisfying tofu desserts
 value: 2

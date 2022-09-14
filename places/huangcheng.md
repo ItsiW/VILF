@@ -4,7 +4,7 @@ cuisine: Chinese
 drinks: True
 visited: "2022-09-05"
 address: 911 Washington St
-area: Oakland
+area: Downtown Oakland
 taste: 2
 value: 2
 lat: 37.8017517455172

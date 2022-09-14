@@ -4,7 +4,7 @@ cuisine: Thai
 drinks: True
 visited: "2022-08-13"
 address: 1442 Franklin St
-area: Oakland
+area: Downtown Oakland
 taste: 2
 value: 2
 lat: 37.80451272227467

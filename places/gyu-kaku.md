@@ -4,7 +4,7 @@ cuisine: Japanese
 drinks: True
 visited: "2022-08-06"
 address: 459 8th St
-area: Oakland
+area: Downtown Oakland
 taste: 2
 value: 1
 lat: 37.80018093869602

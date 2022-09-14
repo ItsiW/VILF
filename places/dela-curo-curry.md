@@ -4,7 +4,7 @@ cuisine: Japanese
 drinks: True
 visited: "2022-09-03"
 address: 907 Washington St
-area: Oakland
+area: Downtown Oakland
 taste: 0
 value: 1
 lat: 37.801658077477455

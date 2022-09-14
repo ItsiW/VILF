@@ -4,7 +4,7 @@ cuisine: Indian
 drinks: False
 visited: "2022-08-18"
 address: 377 13th St
-area: Oakland
+area: Downtown Oakland
 taste: 0
 value: 1
 lat: 37.802812265040345

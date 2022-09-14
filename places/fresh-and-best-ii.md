@@ -4,7 +4,7 @@ cuisine: Vietnamese
 drinks: False
 visited: "2022-08-18"
 address: 1428 Alice St
-area: Oakland
+area: Downtown Oakland
 taste: 0
 value: 1
 lat: 37.80298066133665

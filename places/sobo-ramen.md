@@ -4,7 +4,7 @@ cuisine: Japanese
 drinks: True
 visited: "2022-08-07"
 address: 988 Franklin St
-area: Oakland
+area: Downtown Oakland
 taste: 0
 value: 1
 lat: 37.80091805341233

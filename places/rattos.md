@@ -4,7 +4,7 @@ cuisine: Italian
 drinks: True
 visited: "2022-08-25"
 address: 821 Washington St
-area: Oakland
+area: Downtown Oakland
 taste: 0
 value: 1
 lat: 37.80117044945025
