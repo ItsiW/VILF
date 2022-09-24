@@ -1,17 +1,17 @@
 ---
-title: "About — The Good Taste Guide"
-description: "Want to know how The Good Taste Guide got started? Find out here!"
+title: "About — V.I.L.F"
+description: "Want to know about the V.I.L.F mission? Find out here!"
 ---
 
-# About The Good Taste Guide
+# About V.I.L.F
 
-We assume you're here because you want to find good vegan food to eat in New York — actually good vegan food. We have the good taste, and The Good Taste Guide is here to help!
+We assume you're here because you want to find good vegan food to eat in the San Francisco Bay Area — actually good vegan food. Not to worry, we've got the team to help you.
 
-Simply put, we want to find vegan food that anyone would want to eat, whether that person is vegan or not. This is a critical resource that aims to make vegan food more accessible by providing an easy way to find good options wherever you are.
+V.I.L.F is a collaborative and critical project that aims to showcase the ubiquity of good vegan food, holding everything at a high standard. Gone are the days when we need to settle for whatever options we can.
 
-Our philosophy is that vegan food can be, and is, competitive with non-vegan food. Good food is good food. However, people tend to overrate vegan restaurants (usually coming from a good place), which can make it hard to find high quality stuff. A lot of food out there isn't amazing, and that includes vegan stuff. We want to hold them to a higher standard.
+Our philosophy is that vegan food can be, and is, competitive with non-vegan food. Good food is good food.
 
-We mostly target food under $20 per person and try to only review places at the restaurant and not with delivery. And we don't review pizza, bagels or burgers. Or desserts. Grow up.
+We mostly target food under $20 per person and try to only review places at the restaurant and not with delivery.
 
 ## Ratings Guide
 
@@ -24,13 +24,17 @@ There is a similar <span class="mono-info-about dnr">Bad</span> <span class="mon
 
 ## Credits
 
-All reviews are provided by Editor-in-Chief [Itsi Weinstock](https://itsiweinstock.com), along with a rotating cast of friends, buddies, colleagues, and acquaintances. 
+Reviews are provided by a rotating cast of reviewers along with their friends, buddies, colleagues, enemies, and acquaintances.
 
-The website was built by Senior Taste Augmentation Engineer [Aapeli Vuorinen](https://www.aapelivuorinen.com). The code is open source with an MIT license and can be found on our [GitHub repository](https://github.com/aapeliv/tgtg).
+V.I.L.F is a fork of [The Good Taste Guide](https://thegoodtaste.guide), a similar vegan guide made for New York City. It was originally created by its Editor-in-Chief [Itsi Weinstock](https://itsiweinstock.com), and Senior Taste Augmentation Engineer [Aapeli Vuorinen](https://www.aapelivuorinen.com).
+
+Infrastructure support for V.I.L.F is provided by Principal Deliciousness Developer [Tristan Schrader](https://www.tristanschrader.com/).
+
+The code is open source with an MIT license and can be found on our [GitHub repository](https://github.com/itsiw/vilf).
 
 ## Contact
 
-[Email us all complaints, comments, and suggestions.](mailto:contact@thegoodtaste.guide)
+[Email us all complaints, comments, and suggestions.](mailto:contact@vilf.org)
 
 Yes, we will hang out with you at your favorite place and add it to the map.
 
@@ -40,4 +44,4 @@ All opinions, despite how good they are, should not be construed to be fact.
 
 Where providing factual information such as menus, addresses, alcohol availability etc. we have sourced our information from either the restaurant being reviewed or third party information providers where necessary. Please contact us if you would like anything to be corrected.
 
-If I have accidentally included any non-vegan items here by mistake, please let me know and I will remove it immediately.
+If we have accidentally included any non-vegan items here by mistake, please let me know and we will remove it immediately.
