@@ -13,6 +13,10 @@ Our philosophy is that vegan food can be, and is, competitive with non-vegan foo
 
 We mostly target food under $20 per person and try to only review places at the restaurant and not with delivery.
 
+## Creating a Review
+
+Follow our [how-to guide](/contribute)
+
 ## Ratings Guide
 
 - <span class="mono-info-about phenomenal">Phenomenal</span>: Amazing food, you should travel for this. We only give this out rarely.
