@@ -122,6 +122,26 @@ sitemap.append(
     }
 )
 
+# contribute page
+contribute_dir = build_dir / "contribute"
+contribute_dir.mkdir(exist_ok=True, parents=True)
+with open(Path("./contribute.md")) as f:
+    _, frontmatter, md = f.read().split("---", 2)
+meta = yaml.load(frontmatter, Loader=yaml.Loader)
+html = markdown(md.strip())
+with open(contribute_dir / "index.html", "w") as o:
+    o.write(
+        env.get_template("contribute.html").render(
+            **meta,
+            content=html,
+        )
+    )
+sitemap.append(
+    {
+        "url": f"{SITE_URL}/contribute/",
+    }
+)
+
 # place pages
 place_template = env.get_template("place.html")
 places = []
