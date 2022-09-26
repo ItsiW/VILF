@@ -16,7 +16,7 @@ from tqdm import tqdm
 
 SITE_URL = "https://thegoodtaste.guide"
 
-print("Starting build of tgtg...")
+print("Starting build of vilf...")
 
 env = Environment(loader=FileSystemLoader("html"))
 env.globals["SITE_URL"] = SITE_URL
@@ -455,4 +455,4 @@ with open(build_dir / "sitemap.xml", "w") as o:
 with open(build_dir / "robots.txt", "w") as o:
     o.write("User-agent: *\nDisallow:\n")
 
-print(f"Done building tgtg with {len(places)} places")
+print(f"Done building vilf with {len(places)} places")
