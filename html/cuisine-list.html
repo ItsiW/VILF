@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="content">
-  <h1 class="name">Cuisines</h1>
+  <h1 class="page-header">Cuisines</h1>
   {% for cuisine in cuisines %}
-  <h2 class="name first-element"><a href="{{ cuisine["url"] }}">{{ cuisine["name"] }}</a></h2>
+  <h2 class="name"><a href="{{ cuisine["url"] }}">{{ cuisine["name"] }}</a></h2>
     {% if cuisine["len"] == 1 %}
-    <p class="list-info">{{ cuisine["len"] }} review</p>
+    <p class="cuisine-list">{{ cuisine["len"] }} review</p>
     {% else %}
-    <p class="list-info">{{ cuisine["len"] }} reviews</p>
+    <p class="cuisine-list">{{ cuisine["len"] }} reviews</p>
     {% endif %}
   {% endfor %}
 </section>
