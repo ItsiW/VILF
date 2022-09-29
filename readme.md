@@ -1,12 +1,5 @@
 # Vegans In Love with Food™
 
-## Links
-
-1. [`Production IP: https://34.160.129.80:443`](https://34.160.129.80:443)
-    * after DNS propagation, this will be [`vilf.org`](vilf.org)
-2. [`Testing IP: http://34.160.113.123:80`](http://34.160.113.123:80)
-    * This will be dactivated after DNS propagation in favor of HTTP forwarding automatically to HTTPS at [`vilf.org`](vilf.org)
-
 ## Running locally on linux
 
 ### **1. Activate virtual python environment**
@@ -52,6 +45,13 @@ python3 -m http.server 8080 --directory build
 ### **5. Visit website**
 
 Open [`localhost:8080`](localhost:8080) (if you open `0.0.0.0:8080` then the map will not render).
+
+## Links
+
+1. [`Production IP: https://34.160.129.80:443`](https://34.160.129.80:443)
+    * after DNS propagation, this will be [`vilf.org`](vilf.org)
+2. [`Testing IP: http://34.160.113.123:80`](http://34.160.113.123:80)
+    * This will be dactivated after DNS propagation in favor of HTTP forwarding automatically to HTTPS at [`vilf.org`](vilf.org)
 
 ## Helpful admin commands
 
