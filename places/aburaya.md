@@ -8,7 +8,7 @@ lon: -122.26759339833458
 phone: "+15106031040"
 menu: https://aburayaoakland.com/aburaya/order
 drinks: True
-visited: "2022-09-14"
+visited: "2022-09-21"
 taste: 1
 sgfi: fried japanese foods and beer
 value: 1
