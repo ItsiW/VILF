@@ -13,5 +13,4 @@ taste: 2
 value: 2
 ---
 
-This is a very tasty Taiwanese spot with a lot of vegan options (nearly half the menu). Great outdoor patio with lots of seating. The Spicy Noodles, Tofu Wontons w/ Chili Vinegar, and Taiwanese Golden Kimchi were 
-highlights. 
+This is a very tasty Taiwanese spot with a lot of vegan options (nearly half the menu). Great outdoor patio with lots of seating. The **Spicy Noodles**, **Tofu Wontons w/ Chili Vinegar**, and **Taiwanese Golden Kimchi** were highlights. 
