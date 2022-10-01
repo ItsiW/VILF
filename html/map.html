@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+{% block extra_head %}
+<script src="https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.js"></script>
+<link href="https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.css" rel="stylesheet" />
+{% endblock %}
+{% block content %}
+
+<div id="map"></div>
+
+<div id="label-legend" class="label-legend">
+  <p class="label-legend-line"><span class="dot dot-phenomenal"></span><span class="mono-info-about phenomenal label-legend-text"> Phenomenal</span></p>
+  <p class="label-legend-line"><span class="dot dot-good"></span><span class="mono-info-about good label-legend-text"> Good</span></p>
+  <p class="label-legend-line"><span class="dot dot-sgfi"></span><span class="mono-info-about sgfi label-legend-text"> Something Okay</span></p>
+  <p class="label-legend-line"><span class="dot dot-dnr"></span><span class="mono-info-about dnr label-legend-text"> Not Recommended</span></p>
+</div>
+
+<div id="state-legend" class="state-legend">
+  <p class="state-legend-text"><b class="mono-info">Open:</b> click</p>
+  <p class="state-legend-text"><b class="mono-info">Info:</b> press</p>
+</div>
+
+<script>
+maplibregl.accessToken = "pk.eyJ1IjoiYWFwZWxpIiwiYSI6ImNrdm56dW84ejF4cmwydXFnMTNid2pkdXIifQ.OAdGTs-NsR5znCfS7vmyIQ";
+
+var map = new maplibregl.Map({
+  container: "map",
+  style: "mapbox://styles/mapbox/outdoors-v11",
+  center: [-122.1649,37.6227],
+  zoom: 8.66,
+  hash: "spot",
+});
+
+// Add geolocate control to the map.
+map.addControl(
+    new maplibregl.GeolocateControl({
+        positionOptions: {
+            enableHighAccuracy: true
+        },
+        // When active the map will receive updates to the device's location as it changes.
+        trackUserLocation: true,
+        // Draw an arrow next to the location dot to indicate which direction the device is heading.
+        showUserHeading: true
+    })
+);
+
+// Add navigation control to the map
+map.addControl(
+  new maplibregl.NavigationControl({
+    showZoom: false,
+    visualizePitch: true
+  })
+);
+
+function placeHTML(properties) {
+  // don't show image if unavailable or on mobile
+  if (properties.food_thumb_path == "null") {
+    return `${_placeHTMLbody(properties)}`;
+  }
+  return `
+    ${_placeHTMLimage(properties)}
+    ${_placeHTMLbody(properties)}
+  `;
+}
+
+function _placeHTMLimage(properties) {
+  return `
+    <img src="${properties.food_thumb_path }" alt="Vegan ${properties.cuisine} food at ${properties.name} in ${properties.area}, San Francisco Bay Area" class="food-image-popup">
+  `;
+}
+
+function _placeHTMLbody(properties) {
+  return `
+  <div class="map-popup">
+    <h3 class="name-popup">${properties.name}</h3>
+    <div class="description-popup">
+      <p class="popup"><b>${properties.cuisine}</b> food</p>
+    </div>
+    <p class="mono-info-popup">Taste: <b style="color: ${properties.taste_color}">${properties.taste_label}</b></p>
+    <p class="mono-info-popup">Value: <b style="color: ${properties.value_color}">${properties.value_label}</b></p>
+  </div>
+  `;
+}
+
+// desktop click logic
+// open in new window
+function placeClickedDesktop(event) {
+  var feature = event.features[0];
+  window.open(feature.properties.url, '_blank');
+}
+
+// mobile click logic
+// open in same window if the press time is < waitTimeMS
+const waitTimeMS = 200;
+
+// Set up variables for click not to occur
+var mouseIsDown = false;
+
+window.addEventListener('touchstart', function() {
+  mouseIsDown = false;
+  clearTimeout(this.downTimer);
+  this.downTimer = setTimeout(function() {
+      mouseIsDown = true;
+  }, waitTimeMS);
+});
+
+window.addEventListener('touchend', function() {
+  clearTimeout(this.downTimer);
+});
+
+function placeClickedMobile(event) {
+  var feature = event.features[0];
+  console.log(feature);
+  if (!(mouseIsDown)){
+    // opun url
+    location.href = feature.properties.url;
+  }
+}
+
+map.on("load", function () {
+  map.addSource("places", {
+    "type": "geojson",
+    "data": "/places.geojson"
+  });
+
+  // radius of points larger for mobile
+  if (screen && screen.width > 720) {
+    var radius = 7;
+  } else {
+    var radius = 9;
+  }
+
+  map.addLayer({
+    "id": "place-markers",
+    "type": "circle",
+    "source": "places",
+    "paint": {
+      "circle-radius": radius,
+      "circle-color": ["get", "taste_color"],
+      "circle-stroke-width": 1,
+      "circle-stroke-color": "#000000"
+    },
+    "filter": ["==", "$type", "Point"]
+  });
+
+  // preload thumbnails
+  imagePreloader();
+
+  const popup = new maplibregl.Popup({ 
+    offset: 8, 
+    closeButton: false,
+    maxWidth: "12rem",
+  });
+
+  function createPopup(event) {
+    feature = event.features[0]
+    popup
+      .setLngLat(feature.geometry.coordinates)
+      .setHTML(
+        placeHTML(feature.properties)
+      )
+      .addTo(map);
+    
+    // preload image for page
+    var img = new Image();
+    img.src = feature.properties.food_image_path;
+  }
+
+  if (screen && screen.width > 720) {
+    map.on("click", "place-markers", placeClickedDesktop);
+
+    // Change the cursor to a pointer when
+    // the mouse is over the states layer.
+    // Add popup.
+    map.on('mouseenter', 'place-markers', (e) => {
+      map.getCanvas().style.cursor = 'pointer';
+      createPopup(e);
+    });
+      
+    // Change the cursor back to a pointer
+    // when it leaves the states layer.
+    // Remove popup.
+    map.on('mouseleave', 'place-markers', () => {
+      map.getCanvas().style.cursor = '';
+      popup.remove();
+    });
+  } else {
+    // From mobile logic, only open url if pressed for < waitTimeMS
+    map.on('click', 'place-markers', placeClickedMobile)
+
+    // Open popup on mousedown
+    map.on('touchstart', 'place-markers', (e) => {
+      createPopup(e)
+    });
+    
+    // Close popup on mouseup
+    map.on('touchend', 'place-markers', (e) => {
+      popup.remove()
+    });
+  }
+
+});
+
+function imagePreloader() {
+  var images = new Array()
+  function preload() {
+    for (i = 0; i < preload.arguments.length; i++) {
+      images[i] = new Image()
+      images[i].src = preload.arguments[i]
+    }
+  }
+  preload(...{{ thumbnails }});
+}
+
+</script>
+{% endblock %}

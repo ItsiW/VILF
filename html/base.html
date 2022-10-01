@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ title }}</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="theme-color" content="#d44c43" />
+  <meta name="title" content="{{ title }}" />
+  <meta property="og:title" content="{{ title }}" />
+  <meta name="twitter:title" content="{{ title }}" />
+
+  <meta name="description" content="{{ description }}" />
+  <meta property="og:description" content="{{ description }}" />
+  <meta name="twitter:description" content="{{ description }}" />
+
+  <meta property="og:image" content="{{ SITE_URL }}/tgtg_share_image.png" />
+  <meta name="twitter:image" content="{{ SITE_URL }}/tgtg_share_image.png" />
+
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="apple-touch-icon" href="{{ SITE_URL }}/favicon.png" />
+
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Lato', sans-serif;
+    }
+    body {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    h1 {
+      font-size: 2em;
+    }
+    a, a:visited {
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      color: inherit;
+    }
+    a:hover {
+      text-decoration: underline;
+      color: inherit;
+    }
+    h1, h2, h3, .tgtg {
+      font-family: 'Bowlby One SC', sans-serif;
+      font-weight: 400;
+    }
+    .tgtg {
+      margin: 0;
+      color: #fff;
+      font-size: 3em;
+      line-height: 1em;
+    }
+    .tgtg > a {
+      text-decoration: none;
+    }
+    .subtitle {
+      font-size: 1.4em;
+      color: #fff;
+      margin: 0;
+    }
+    .tm {
+      font-family: 'Lato', sans-serif;
+    }
+    .header {
+      font-size: 1rem;
+      padding: 1em;
+      display: block;
+      margin: 0;
+      background: #d44c43;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .header > .left {
+      flex-grow: 1;
+    }
+    .links > a {
+      display: inline-block;
+      padding: 0.3em 1.1em;
+      margin: 0.2em;
+      font-size: 1.5em;
+      color: #fff;
+      font-weight: 700;
+      background-color: #ffffff41;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+    .links > a:hover {
+      background-color: #ffffff9d;
+    }
+    .links {
+      margin-bottom: 0;
+    }
+    @media (max-width: 720px) {
+      .header {
+        font-size: 0.6rem;
+      }
+    }
+    @media (max-width: 720px) {
+      .tgtg {
+        font-size: 2.5em;
+      }
+    }
+    .name {
+      padding: 0;
+      margin: 0;
+    }
+    .content {
+      padding: 1rem;
+      max-width: 50rem;
+      margin: auto;
+    }
+    .address {
+      margin-top: 0;
+      font-size: 1.1em;
+      color: #4b4b4b;
+    }
+    .len-cuisine {
+      margin-top: 0em;
+      margin-bottom: 1em;
+    }
+    .cuisine {
+      margin-bottom: 0;
+    }
+    .restaurant-links {
+      margin-top: 0;
+    }
+    .phenomenal {
+      color: #2b9aef;
+    }
+    .good {
+      color: #32af2d;
+    }
+    .sgfi {
+      color: #efa72b;
+    }
+    .dnr {
+      color: #ef422b;
+    }
+    .content-wrapper {
+      height: 100%;
+    }
+    .mono-info {
+      padding: 0;
+      margin: 0;
+      padding-bottom: 0.4em;
+      font-family: 'Courier New', Courier, monospace;
+    }
+    .mono-info-about {
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: bold;
+    }
+    .drinks {
+      margin-top: 0.6em;
+    }
+    .notes {
+      margin-top: 2em;
+      margin-bottom: 0;
+    }
+    .food-image {
+      margin-top: 1rem;
+      width: auto;
+      max-width: 100%;
+      height: auto;
+    }
+    .contact-us {
+      margin: 0;
+    }
+    .list-info {
+      margin: 0em;
+      padding: 0em;
+    }
+    #map {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+    }
+    .sampling-date {
+      font-style: italic;
+      color: #4b4b4b;
+      margin-bottom: 3em;
+    }
+    .small-date {
+      font-style: italic;
+      color: #4b4b4b;
+      font-size: 1em;
+    }
+    .first-element {
+      margin-top: 2em;
+    }
+    .blurb {
+      font-style: italic;
+      color: #4b4b4b;
+    }
+    .map-popup, .name-popup, .description-popup, .mono-info-popup, .popup {
+      margin: 0;
+      padding: 0;
+    }
+    .map-popup {
+      max-width : 9rem;
+      margin-bottom: -5px;
+    }
+    .name-popup{
+      color: #d44c43;
+    }
+    .description-popup{
+      margin-bottom: 0.6rem;
+    }
+    .mono-info-popup {
+      font-family: 'Courier New', Courier, monospace;
+    }
+    .food-image-popup {
+      margin: -10px;
+      margin-bottom: 0;
+      width: 12rem;
+    }
+    .state-legend {
+      background-color: #ffffff;
+      border-radius: 3px;
+      top: 12rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      font: 12px/20px 'Lato', sans-serif;
+      padding: 0.1rem .3rem 0.1rem .3rem;
+      position: absolute;
+      left: 0.5rem;
+      z-index: 1;
+    }
+    @media (min-width: 720px) {
+      .state-legend {
+        display: none;
+      }
+    }
+    .label-legend {
+      background-color: #ffffff;
+      border-radius: 3px;
+      top: 7rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      font: 12px/20px 'Lato', sans-serif;
+      padding: 0.1rem .3rem 0.1rem .3rem;
+      position: absolute;
+      left: 0.5rem;
+      z-index: 1;
+    }
+    @media (min-width: 720px) {
+      .label-legend {
+        top: 7.5rem;
+      }
+    }
+    .label-legend-line {
+      padding: 0;
+      margin: 0;
+      height: 1rem;
+    }
+    .label-legend-text {
+      position: relative;
+      bottom: .18rem;
+    }
+    .state-legend-text {
+      padding: 0;
+      margin: 0;
+    }
+    .dot {
+      height: 0.875rem;
+      width: 0.875rem;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot-phenomenal {
+      background-color: #2b9aef;
+    }
+    .dot-good {
+      background-color: #32af2d;
+    }
+    .dot-sgfi {
+      background-color: #efa72b;
+    }
+    .dot-dnr {
+      background-color: #ef422b;
+    }
+  </style>
+  {% block extra_head %}{% endblock %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+  <section class="header">
+    <div class="left">
+      <span class="tgtg"><a href="/">The Good Taste Guide<span class="tm">&trade;</span></a></span>
+      <p class="subtitle">A definitive vegan companion to New York City</p>
+    </div>
+    <div class="right">
+      <p class="links">
+        <a href="/best/">Best</a>
+        <a href="/latest/">Latest</a>
+        <a href="/cuisines/">Cuisines</a>
+        <a href="/about/">About</a>
+      </p>
+    </div>
+  </section>
+  <div class="content-wrapper">
+    {% block content %}
+    {% endblock %}
+  </div>
+</body>
+</html>
