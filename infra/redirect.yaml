@@ -1,0 +1,17 @@
+kind: compute#urlMap
+name: vilf-redirect
+defaultUrlRedirect:
+  redirectResponseCode: MOVED_PERMANENTLY_DEFAULT
+  httpsRedirect: True
+tests:
+- description: Test with no query parameters
+  host: vilf.org
+  path: /best/
+  expectedOutputUrl: https://vilf.org/best/
+  expectedRedirectResponseCode: 301
+- description: Test with query parameters
+  host: vilf.org
+  path: /best/?parameter1=value1&parameter2=value2
+  expectedOutputUrl: https://vilf.org/best/?parameter1=value1&parameter2=value2
+  expectedRedirectResponseCode: 301
+
