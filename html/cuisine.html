@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="content">
+  <h1 class="name">Vegan {{ cuisine }} food in the San Francisco Bay Area</h1>
+  {% for place in places %}
+  <h2 class="name first-element"><a href="{{ place["url"] }}">{{ place["name"] }}</a></h2>
+  <p class="list-info address">{{ place["address"] }}, {{ place["area"] }}</p>
+  <p class="list-info"><b style="color: {{ place["taste_color"] }}">{{ place["taste_label"] }}</b> taste. <b style="color: {{ place["value_color"] }}">{{ place["value_label"] }}</b> value.</p>
+    {% if place["sgfi"] %}
+    <p class="list-info" style="font-style: italic;"><b class="sgfi">Going for it: </b>{{ place["sgfi"] }}</p>
+    {% endif %}
+  {% endfor %}
+</section>
+{% endblock %}
