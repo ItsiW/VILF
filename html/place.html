@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="content">
+  <h1 class="name">{{ name }}</h1>
+  <p class="address"><a href="geo://?q={{ geodata }}">{{ address }}, <b>{{ area }}</b></a></p>
+  <p class="cuisine"><a href="/cuisines/{{ cuisine.lower().replace(' ','-') }}">{{ cuisine }} food</a></p>
+  <p class="restaurant-links">
+    {% if menu %}
+    <a href="{{ menu }}" target="_blank">Menu</a>
+    {% endif %}
+    {% if menu and phone_display %}
+     | 
+    {% endif %}
+    {% if phone_display %}
+    <a href="tel:{{ phone }}">{{ phone_display }}</a>
+    {% endif %}
+  </p>
+  <p class="mono-info">Taste: <b>{{ taste_html }}</b></p>
+  <p class="mono-info">Value: <b>{{ value_html }}</b></p>
+  <p class="mono-info drinks">Booze: <b>{{ drinks_html }}</b></p>
+    {% if sgfi %}
+    <p><b class="sgfi">Something Going For It</b> — {{ sgfi }}</p>
+    {% endif %}
+    {% if taste==0 %}
+    <p><b class="dnr">Do Not Recommend</b></p>
+    {% endif %}
+    {% if food_image_path %}
+    <img src="{{ food_image_path }}" alt="Vegan {{ cuisine }} food at {{ name }} in {{ area }}, New York" class="food-image"> 
+    {% endif %}
+  <h3 class="notes">Remarks</h3>
+  {{ content }}
+  <p class="sampling-date">Last sampled {{ visited_display }}.</p>
+  <p class="contact-us"><b>Complaints, compliments, suggestions or want to hang out and get some food?</b>
+  <p class="contact-us"><b><a href="mailto:contact@thegoodtaste.guide">Chuck us an email...</a></b></p>
+</section>
+{% endblock %}
