@@ -13,13 +13,19 @@ Reviews and images are hard-coded into the code-base. Reviews are created with a
 
 If you haven't made a PR (pull request) before, this may seem very complicated. But once you have it going, this will become second nature.
 
-1. Clone a copy of the repository with this command in your terminal: 
+## Creating a local copy of the code
 
-    ```git clone https://github.com/ItsiW/VILF.git```
+Clone a copy of the repository with this command in your terminal. Make sure you are in the directory where you want the code folder to exist: 
 
-    You will need a [GitHub](https://github.com) account and will need to [install git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) on your computer.
+```git clone https://github.com/ItsiW/VILF.git```
 
-2. Create a new git branch with your name and restaurant. If you are doing multiple reviews, you only have to do this once, and include whatever you like instead of `your-restaurant`.
+This may take a few minutes, as there are a lot of images to download.
+
+You will need a [GitHub](https://github.com) account and will need to [install git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) on your computer.
+
+## Creating a review
+
+1. Create a new git branch with your name and restaurant. If you are doing multiple reviews, you only have to do this once, and include whatever you like instead of `your-restaurant`.
 
     `git checkout develop && git pull && git checkout -b your-name/your-restaurant`
 
@@ -42,9 +48,9 @@ If you haven't made a PR (pull request) before, this may seem very complicated. 
 
 7. If you have python on your computer, test that it is working. In the base `vilf/` directory, run
 
-``python build.py``
+    ``python build.py``
 
-further, you can 
+    If it says it's run vilf successfully, you're good to go to the next step. Optionally, you can try to run the website locally by following the [readme](https://github.com/ItsiW/VILF#readme).
 
 8. run the following command in a terminal in the base folder for vilf: 
 
