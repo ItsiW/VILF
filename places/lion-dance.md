@@ -19,3 +19,4 @@ If you foolishly come on a non-sandwich day, the **Three cup tofu** and Jackfrui
 
 Their daily specials are usually really good, although annoyingly, they are posted only on Instagram.
 
+It's about $20 for a sandwich here.  
