@@ -4,7 +4,7 @@ on:
     branches: develop
 jobs:
   deploy:
-    - uses: ${{ github.repository }}/.github/workflows/_build.yaml@${{ github.ref_name }}
+    - uses: "${{ github.repository }}/.github/workflows/_build.yaml"
     - uses: google-github-actions/auth@v0
       with:
         credentials_json: "${{ secrets.CLIMAX_VILF_SA_KEY }}"
