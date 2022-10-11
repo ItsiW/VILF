@@ -3,8 +3,8 @@ name: Joodooboo
 cuisine: Korean 
 address: 4201 Market St, Oakland, CA 94608
 area: North Oakland
-lat: 37.83277829529379 
-lon: -122.29056780752205
+lat: 37.8327459484409
+lon: -122.27374954588369 
 phone: "+15105001001"
 menu: https://www.joodooboo.co/
 drinks: False 
