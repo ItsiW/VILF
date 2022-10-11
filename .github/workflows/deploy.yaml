@@ -4,10 +4,12 @@ on:
     branches: develop
 jobs:
   deploy:
-    - uses: "${{ github.repository }}/.github/workflows/_build.yaml"
-    - uses: google-github-actions/auth@v0
-      with:
-        credentials_json: "${{ secrets.CLIMAX_VILF_SA_KEY }}"
-    - uses: google-github-actions/setup-gcloud@v0
-    - run: gsutil -m rsync -R build gs://climax-vilf-bucket
+    runs-on: ubuntu-latest
+    steps:
+	    - uses: ${{ github.repository }}/.github/workflows/_build.yaml@${{ github.ref_name }}
+	    - uses: google-github-actions/auth@v0
+	      with:
+	        credentials_json: "${{ secrets.CLIMAX_VILF_SA_KEY }}"
+	    - uses: google-github-actions/setup-gcloud@v0
+	    - run: gsutil -m rsync -R build gs://climax-vilf-bucket
 
