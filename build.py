@@ -45,6 +45,7 @@ for raw_jpg in tqdm(
     ):
         with Image.open(raw_jpg) as im:
             assert im.size[0] / im.size[1] <= 16 / 9
+            im = im.convert("RGB")
             im = im.resize(
                 (
                     food_image_target_size[0],
