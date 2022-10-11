@@ -1,4 +1,5 @@
 build/
 venv/
 static/img/
-scripts/__pycache__/
+*.swp
+
