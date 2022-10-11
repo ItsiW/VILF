@@ -1,0 +1,10 @@
+name: Build VILF
+on: push
+runs-on: ubuntu-latest
+jobs:
+  build:
+    steps:
+      - uses: actions/checkout@v2
+      - run: python3 -m pip install -r requirements.txt
+      - run: python3 build.py
+
