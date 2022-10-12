@@ -6,7 +6,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-	    - uses: ${{ github.repository }}/.github/workflows/_build.yaml@${{ github.ref_name }}
+      - uses: ./.github/actions/build
 	    - uses: google-github-actions/auth@v0
 	      with:
 	        credentials_json: "${{ secrets.CLIMAX_VILF_SA_KEY }}"
