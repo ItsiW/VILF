@@ -1,6 +1,6 @@
-"""Click binding to make a CLI for GoogleMapsScraper's scraper and markdown generator"""
+"""Click binding to make a CLI for GoogleMapsScraper's spatula and markdown generator"""
 import click
-from scraper.gmaps_scraper import GoogleMapsScraper
+from spatula.spatula import GoogleMapsScraper
 
 
 @click.command()
