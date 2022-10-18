@@ -100,18 +100,18 @@ openssl s_client -showcerts -servername vilf.org -connect 34.160.129.80:443 -ver
 #### Interactive mode (recommended)
 Think of a good search query that will locate your restaurant (e.g. "Lion Dance Cafe"). Run the following from the terminal to see an interactive prompt:
 ```bash
-python run_spatula.py
+python spatula.py
 #Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
 ```
 Enter the hint:
 ```bash
-python run_spatula.py
+python spatula.py
 #Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
 Lion Dance Cafe
 ```
 The scraper will be able to identify the restaurant automatically and generate a markdown file for you:
 ```bash
-python run_spatula.py
+python spatula.py
 #Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
 Lion Dance Cafe 
 
@@ -154,7 +154,7 @@ use the restaurant name (and possibly street name, see below), and will append a
 to the end of the filename in cases of conflict with a preexisting file. You can also flag to use the 
 city name for the field `area` (though you may want to be more specific like "Downtown Oakland").
 ```bash
-python run_spatula.py --city-as-area --street-in-filename
+python spatula.py --city-as-area --street-in-filename
 #...
 #Successfully wrote markdown to file lion-dance-cafe-380-17th-st.md
 cat lion-dance-cafe-380-17th-st.md
@@ -167,7 +167,7 @@ cat lion-dance-cafe-380-17th-st.md
 
 Sometimes searches are ambiguous. In this case, the scraper will allow you to select one of the top results from a search or try a different search:
 ```bash
-python run_spatula.py                
+python spatula.py                
 #Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
 Bongo Java Nashville
 
@@ -206,7 +206,7 @@ to escape characters correctly (most terminals will automatically escape upon pa
 
 Ex:
 ```bash
-python run_spatula.py --url https://www.google.com/maps/place/Lion+Dance+Caf%C3%A9/@37.8060737,
+python spatula.py --url https://www.google.com/maps/place/Lion+Dance+Caf%C3%A9/@37.8060737,
 -122.270113,17z/data\=\!3m1\!4b1\!4m5\!3m4\!1s0x808f817f59aa5fa9:0xc6930eb94f2d3188\!8m2\!3d37.8060489\
 !4d-122.267932
 
@@ -225,9 +225,9 @@ python run_spatula.py --url https://www.google.com/maps/place/Lion+Dance+Caf%C3%
 Notice the `-0` added to the filename to avoid a collision with the original file we produced.
 
 #### Shortcuts and extras
-1. `python run_spatula.py --search-query 'lion dance cafe'` or `python run_spatula.py -s 'lion dance cafe'` avoids the search prompt and jumps right to the action
-2. `python run_spatula.py --directory '/path/to/folder'` allows you to specify the directory for the markdown file (directory doesn't have to exist yet)
-3. `python run_spatula.py --manual-filename '/path/to/folder/filename.md'` allows you to manually specify the output file
-4. `python run_spatula.py --timeout 30.0` let's you set the timeout for the browser (default is 5.0)
-5. `python run_spatula.py --no-headless` let's you see the browser GUI as the searches are being made (kinda fun but not recommended unless debugging)
-6. For more details run `python run_spatula.py --help`.
+1. `python spatula.py --search-query 'lion dance cafe'` or `python spatula.py -s 'lion dance cafe'` avoids the search prompt and jumps right to the action
+2. `python spatula.py --directory '/path/to/folder'` allows you to specify the directory for the markdown file (directory doesn't have to exist yet)
+3. `python spatula.py --manual-filename '/path/to/folder/filename.md'` allows you to manually specify the output file
+4. `python spatula.py --timeout 30.0` let's you set the timeout for the browser (default is 5.0)
+5. `python spatula.py --no-headless` let's you see the browser GUI as the searches are being made (kinda fun but not recommended unless debugging)
+6. For more details run `python spatula.py --help`.
