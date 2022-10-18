@@ -182,6 +182,7 @@ class GoogleMapsScraper:
                 self.browser.get(results[ans - 1]['href'])
                 self._wait_for_maps_to_redirect()
                 self.url = self.browser.current_url
+                print(f"\nUsing the Google Maps page: {self.url}")
             else:
                 raise ValueError("Answer must be 0 or a valid integer index from a search result.")
         elif re.search(r'google.com/maps/place', self.browser.current_url):
