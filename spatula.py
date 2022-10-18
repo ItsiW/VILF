@@ -2,6 +2,7 @@
 Module to scrape Google Maps and output markdown corresponding to the VILF standard
 """
 from typing import Optional
+from dataclasses import dataclass, field
 from collections import OrderedDict
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -11,7 +12,6 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from webdriver_manager.chrome import ChromeDriverManager
-from dataclasses import dataclass, field
 import re
 from unidecode import unidecode
 from tqdm.auto import tqdm
@@ -204,7 +204,7 @@ class GoogleMapsScraper:
         # TODO: Maybe this can be better/more reliable?
         results = self.browser.find_elements(By.XPATH, "//a/parent::div[@role='article']/a")
         res_dict = OrderedDict()
-        for idx, item in enumerate(results[:5]):
+        for idx, item in enumerate(results[:MAX_NUM_RESULTS]):
             res_dict[idx] = {}
             res_dict[idx]['name'] = item.get_attribute('aria-label')
             res_dict[idx]['href'] = item.get_attribute('href')
@@ -429,8 +429,7 @@ class GoogleMapsScraper:
 )
 @click.option(
     '--url', default='',
-    help="Google Maps restaurant URL (or leave off to use interactive search)."
-         "Do not enclose URL in quotes in most terminals (e.g. zsh)"
+    help="Google Maps restaurant URL. Do not enclose URL in quotes in most terminals (e.g. zsh)"
 )
 @click.option(
     '--city-as-area/--no-city-as-area', default=False,
