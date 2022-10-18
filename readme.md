@@ -96,22 +96,22 @@ openssl s_client -showcerts -servername vilf.org -connect 34.160.129.80:443 -ver
 
 ## Tools for contributors 
 
-### Automating the data collection and markdown file generation
+### `spatula`: Automating the restaurant data collection and markdown file generation
 #### Interactive mode (recommended)
 Think of a good search query that will locate your restaurant (e.g. "Lion Dance Cafe"). Run the following from the terminal to see an interactive prompt:
 ```bash
-python scrape_and_gen_md.py
+python spatula.py
 #Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
 ```
 Enter the hint:
 ```bash
-python scrape_and_gen_md.py
+python spatula.py
 #Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
 Lion Dance Cafe
 ```
 The scraper will be able to identify the restaurant automatically and generate a markdown file for you:
 ```bash
-python scrape_and_gen_md.py
+python spatula.py
 #Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
 Lion Dance Cafe 
 
@@ -154,7 +154,7 @@ use the restaurant name (and possibly street name, see below), and will append a
 to the end of the filename in cases of conflict with a preexisting file. You can also flag to use the 
 city name for the field `area` (though you may want to be more specific like "Downtown Oakland").
 ```bash
-python scrape_and_gen_md.py --city-as-area --street-in-filename
+python spatula.py --city-as-area --street-in-filename
 #...
 #Successfully wrote markdown to file lion-dance-cafe-380-17th-st.md
 cat lion-dance-cafe-380-17th-st.md
@@ -167,26 +167,28 @@ cat lion-dance-cafe-380-17th-st.md
 
 Sometimes searches are ambiguous. In this case, the scraper will allow you to select one of the top results from a search or try a different search:
 ```bash
-python scrape_and_gen_md.py                
+python spatula.py                
 #Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
 Bongo Java Nashville
-#
+
 #Waiting for Google Maps page to redirect...
-#
+
 #I found multiple potential locations, collecting top results...
-#Gathering search result data: 100%|█████| 5/5 [00:23<00:00,  4.80s/it]
-#
+#Gathering search result data: 100%|█████| 5/5 [00:23<00:00,  4.63s/it]
+
 #0: Try searching again
 #1: Bongo Java at 2007 Belmont Blvd, Nashville, TN
 #2: Bongo Java East at 107 S 11th St, Nashville, TN
 #3: Bongo Java at 364 Rep. John Lewis Way S, Nashville, TN
 #4: Bongo Java Roasting Co. at 372 Herron Dr, Nashville, TN
-#
+
 #Select one of the above choices to proceed (0 - 4):
 3
-#
+
 #Waiting for Google Maps page to redirect...
-#
+
+#Using the Google Maps page: https://www.google.com/maps/place/Bongo+Java...
+
 #Name = Bongo Java
 #Address = 364 Rep. John Lewis Way S
 #City = Nashville
@@ -194,20 +196,22 @@ Bongo Java Nashville
 #Zip code = 37203
 #Phone: None
 #Lat, long = 36.157151, -86.776074
-#
+
 #Successfully wrote markdown to file bongo-java.md
 ```
 
 #### Manual URL mode
-Alternatively, you can pass in a URL corresponding to a Google Maps restaurant manually. Careful
-to track escaped characters (most terminals will automatically escape upon pasting).
+Alternatively, you can pass in a URL corresponding to a Google Maps restaurant manually. Be careful
+to escape characters correctly (most terminals will automatically escape upon pasting). 
+
+Ex:
 ```bash
-python scrape_and_gen_md.py --url https://www.google.com/maps/place/Lion+Dance+Caf%C3%A9/@37.8060737,
+python spatula.py --url https://www.google.com/maps/place/Lion+Dance+Caf%C3%A9/@37.8060737,
 -122.270113,17z/data\=\!3m1\!4b1\!4m5\!3m4\!1s0x808f817f59aa5fa9:0xc6930eb94f2d3188\!8m2\!3d37.8060489\
 !4d-122.267932
-#
+
 #Waiting for Google Maps page to redirect...
-#
+
 #Name = Lion Dance Café
 #Address = 380 17th St
 #City = Oakland
@@ -215,15 +219,15 @@ python scrape_and_gen_md.py --url https://www.google.com/maps/place/Lion+Dance+C
 #Zip code = 94612
 #Phone: None
 #Lat, long = 37.806074, -122.270113
-#
+
 #Successfully wrote markdown to file lion-dance-cafe-0.md
 ```
 Notice the `-0` added to the filename to avoid a collision with the original file we produced.
 
 #### Shortcuts and extras
-1. `python scrape_and_gen_md.py --search-query 'lion dance cafe'` or `python scrape_and_gen_md.py -s 'lion dance cafe'` avoids the search prompt and jumps right to the action
-2. `python scrape_and_gen_md.py --directory '/path/to/folder'` allows you to specify the directory for the markdown file (directory doesn't have to exist yet)
-3. `python scrape_and_gen_md.py --manual-filename '/path/to/folder/filename.md'` allows you to manually specify the output file
-4. `python --timeout 30.0` let's you set the timeout for the browser (default is 5.0)
-5. `python scrape_and_gen_md.py --no-headless` let's you see the browser GUI as the searches are being made (kinda fun but not recommended unless debugging)
-For more details run `python scrape_and_gen_md.py --help`.
+1. `python spatula.py --search-query 'lion dance cafe'` or `python spatula.py -s 'lion dance cafe'` avoids the search prompt and jumps right to the action
+2. `python spatula.py --directory '/path/to/folder'` allows you to specify the directory for the markdown file (directory doesn't have to exist yet)
+3. `python spatula.py --manual-filename '/path/to/folder/filename.md'` allows you to manually specify the output file
+4. `python spatula.py --timeout 30.0` let's you set the timeout for the browser (default is 5.0)
+5. `python spatula.py --no-headless` let's you see the browser GUI as the searches are being made (kinda fun but not recommended unless debugging)
+6. For more details run `python spatula.py --help`.
