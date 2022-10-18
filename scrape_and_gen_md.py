@@ -56,7 +56,7 @@ def scrape_and_gen_md(
         directory = None
 
     gmd = GoogleMapsScraper(url=url, timeout=timeout, headless=headless)
-    if search_query is not None:
+    if url is None:
         gmd.search_for_restaurant(search_query=search_query)
     gmd.scrape()
     gmd.print_results()
