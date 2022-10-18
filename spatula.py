@@ -308,21 +308,21 @@ class GoogleMapsScraper:
         if self.phone_number is None:
             phone = ""
         else:
-            phone = "+1" + self.phone_number
+            phone = f"\"+1{self.phone_number}\""
 
         md = "---\n"
         md += f"name: {self.name}\n"
         md += "cuisine: \n"
-        md += "drinks: \n"
-        md += "visited: \n"
         md += f"address: {self.street_address}\n"
         md += f"area: {area}\n"
-        md += "taste: \n"
-        md += "value: \n"
         md += f"lat: {self.lat_long[0]}\n"
         md += f"lon: {self.lat_long[1]}\n"
-        md += "menu: \n"
         md += f"phone: {phone}\n"
+        md += "menu: \n"
+        md += "drinks: \n"
+        md += "visited: \n"
+        md += "taste: \n"
+        md += "value: \n"
         md += "---\n\n"
         md += "<REVIEW>"
 
