@@ -1,4 +1,4 @@
-"""Click binding to make a CLI for GoogleMapsScraper's spatula and markdown generator"""
+"""Click binding to make a CLI for spatula's scraping and markdown generation"""
 import click
 from spatula.spatula import GoogleMapsScraper
 
