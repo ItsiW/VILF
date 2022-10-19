@@ -390,7 +390,7 @@ class GoogleMapsScraper:
 
         # get directory sorted out
         if directory is None:
-            directory = "./"
+            directory = "./places/"
         if not directory.endswith('/'):
             directory += '/'
 
