@@ -78,24 +78,34 @@ class GoogleMapsScraper:
             self.browser.get(self.url)
             self._wait_for_maps_to_redirect()
 
-    def search_for_restaurant(self, search_query: Optional[str] = None) -> None:
-        self._interactive_search(query=search_query)
-
     def scrape(self) -> None:
-        self.name = self._get_name()
-        address_info = self._get_address()
-        self.phone_number = self._get_phone_number()
-        self.browser.close()
-        self.lat_long = self._parse_lat_long()
+        try:
+            self.name = self._get_name()
+            address_info = self._get_address()
+            self.phone_number = self._get_phone_number()
+            self.browser.quit()
+            self.lat_long = self._parse_lat_long()
 
-        self.street_address = address_info['street_address']
-        self.city = address_info['city']
-        self.state = address_info['state']
-        self.zip = address_info['zip']
+            self.street_address = address_info['street_address']
+            self.city = address_info['city']
+            self.state = address_info['state']
+            self.zip = address_info['zip']
+        except NoSuchElementException:
+            print("\nMake sure search terms or supplied URL correspond to a restaurant location. "
+                  "Try searching instead/again with better terms (ex: 'Battambang restaurant "
+                  "Oakland' instead of 'Battambang'):\n")
+            self.search_for_restaurant()
+            self.scrape()
 
-    def _get_name(self) -> str:
+    def _get_name(self, silent: bool = False) -> str:
         """ Get the h1 field (seems reliable)"""
-        return self.browser.find_element(By.TAG_NAME, value="h1").text
+        try:
+            return self.browser.find_element(By.TAG_NAME, value="h1").text
+        except NoSuchElementException as e:
+            if not silent:
+                print("\nA name could not be located.")
+            raise e
+
 
     def _get_address(self, silent: bool = False) -> dict[str, Optional[str]]:
         """
@@ -157,7 +167,7 @@ class GoogleMapsScraper:
         lat, long = re.findall(LAT_LONG_RE, self.url)[0]
         return (float(lat), float(long))
 
-    def _interactive_search(self, query: Optional[str] = None) -> None:
+    def search_for_restaurant(self, search_query: Optional[str] = None) -> None:
         """
         Perform an interactive search for a restaurant's Google Maps site.
 
@@ -167,9 +177,9 @@ class GoogleMapsScraper:
         select one or search again.
         """
         self.browser.get(GOOGLE_MAPS_URL)
-        if query is None:
-            query = input('Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):\n')
-        self.wait.until(EC.element_to_be_clickable((By.ID, "searchboxinput"))).send_keys(query)
+        if search_query is None:
+            search_query = input('Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):\n')
+        self.wait.until(EC.element_to_be_clickable((By.ID, "searchboxinput"))).send_keys(search_query)
         self.wait.until(EC.element_to_be_clickable((By.ID, "searchbox-searchbutton"))).click()
         self._wait_for_maps_to_redirect()
 
@@ -179,7 +189,7 @@ class GoogleMapsScraper:
             results = self._get_search_results()
             ans = self._prompt_choice(results)
             if ans == 0:
-                self._interactive_search()
+                self.search_for_restaurant()
             elif ans > 0:
                 self.browser.get(results[ans - 1]['href'])
                 self._wait_for_maps_to_redirect()
@@ -234,7 +244,7 @@ class GoogleMapsScraper:
         if not res_dict:
             print("\nCould not find any acceptable search results, please "
                   "try a different search.")
-            self._interactive_search()
+            self.search_for_restaurant()
         print('\n0: Try searching again')
         for idx, info in res_dict.items():
             print(
