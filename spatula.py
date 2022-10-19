@@ -390,7 +390,7 @@ class GoogleMapsScraper:
 
         # get directory sorted out
         if directory is None:
-            directory = "./places/"
+            directory = "./"
         if not directory.endswith('/'):
             directory += '/'
 
@@ -443,8 +443,9 @@ class GoogleMapsScraper:
               help='Manual filename to use for output. Include full path with directories. '
                    'Leave off to autogenerate a smart filename (suggested).'
 )
-@click.option('--directory', default='',
-              help="Directory for output file (only used if NOT using --manual-filename)"
+@click.option('--directory', default='./places/',
+              help="Directory for output file (only used if NOT using --manual-filename). It "
+                   "defaults to using './places/'."
 )
 @click.option('--timeout', default=5.0,
               help="Timeout for webdriver actions in seconds (default 5.0)"
@@ -476,6 +477,10 @@ def scrape_and_gen_md(
     :timeout: Max time to wait for browser actions
     :headless: Whether to run without GUI (True) or with GUI (False)
     """
+    search_query = search_query.strip()
+    url = url.strip()
+    manual_filename = manual_filename.strip()
+    directory = directory.strip()
     if not search_query:
         search_query = None
     if not url:
