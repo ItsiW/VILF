@@ -3,7 +3,7 @@ name: Chisme Cantina
 cuisine: Mexican
 drinks: True
 visited: "2022-09-08"
-address: 920 Webster St
+address: 882 Sutter St
 area: Tenderloin
 taste: 0
 value: 0

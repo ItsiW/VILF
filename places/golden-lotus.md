@@ -8,7 +8,7 @@ area: Downtown Oakland
 taste: 1
 sgfi: huge selection of vegan Vietnamese goodies
 value: 1
-lat: 37.803377635118764z
+lat: 37.803377635118764
 lon: -122.27054229015248
 menu: https://www.goldenlotusvegan.co/menu
 phone: "+15108930383"

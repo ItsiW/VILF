@@ -1,7 +1,7 @@
 ---
 name: Good To Eat Dumplings
 cuisine: Taiwanese 
-address: 1298 65th St Suite no.1, Emeryville, CA 94608
+address: 1298 65th St Suite #1
 area: Emeryville 
 lat: 37.84736395508548 
 lon: -122.29056780752205
