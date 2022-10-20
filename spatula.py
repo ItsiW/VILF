@@ -78,12 +78,13 @@ class GoogleMapsScraper:
             self.browser.get(self.url)
             self._wait_for_maps_to_redirect()
 
-    def scrape(self) -> None:
+    def scrape(self, close_browser: bool = True) -> None:
         try:
             self.name = self._get_name()
             address_info = self._get_address()
             self.phone_number = self._get_phone_number()
-            self.browser.quit()
+            if close_browser:
+                self.close_browser()
             self.lat_long = self._parse_lat_long()
 
             self.street_address = address_info['street_address']
@@ -430,6 +431,8 @@ class GoogleMapsScraper:
         print(f'Phone: {self.phone_number}')
         print(f'Lat, long = {self.lat_long[0]:.6f}, {self.lat_long[1]:.6f}')
 
+    def close_browser(self) -> None:
+        self.browser.quit()
 
 @click.command()
 @click.option(
