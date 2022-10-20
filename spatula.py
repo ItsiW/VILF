@@ -417,7 +417,10 @@ class GoogleMapsScraper:
         # coerce any non-ascii letters to their closest ascii form
         base_name = unidecode(base_name)
 
-        # make any non-alpha-numeric or dash items into dashes
+        # remove any punctuation
+        base_name = re.sub(r'[\.,\'\"]', '', base_name)
+
+        # make any non-alpha-numeric or non-dash items into dashes
         base_name = re.sub(r'[^\w\-]', '-', base_name)
 
         # remove any duplicate dashes
