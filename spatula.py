@@ -91,7 +91,7 @@ class GoogleMapsScraper:
             self.city = address_info['city']
             self.state = address_info['state']
             self.zip = address_info['zip']
-        except NoSuchElementException:
+        except (NoSuchElementException, IndexError):
             print("\nMake sure search terms or supplied URL correspond to a restaurant location. "
                   "Try searching instead/again with better terms (ex: 'Battambang restaurant "
                   "Oakland' instead of 'Battambang'):\n")
@@ -126,10 +126,37 @@ class GoogleMapsScraper:
                 "//button[starts-with(@aria-label, 'Address:')]"
             )
             full_address = button.get_attribute('aria-label').split(':')[1].strip()
-            output['street_address'] = full_address.split(',')[0].strip()
-            output['city'] = full_address.split(',')[1].strip()
-            output['state'] = full_address.split(',')[2].strip().split(' ')[0]
-            output['zip'] = full_address.split(',')[2].strip().split(' ')[1]
+            # occasionally restaurants will add extra info to the address
+            # e.g. "inside mall, 100 First St, Suite #2, Springfield, ...". To parse this,
+            # we split the address string by comma, then use a regex to identify the first
+            # component that begins with a digit. This is presumably the street address. We
+            # ignore anything before this (these tend to be instructions like "inside mall,
+            # between 2nd and 3rd street, etc). There are some edge cases not caught by this
+            # (e.g. One Ferry Building, S. Street...) so if we can't find what we need, just
+            # set first_number_idx = 0. We then look through the remaining items and
+            # locate the STATE ZIP with a regex. We assume we're only using US addresses.
+            # From this position we assume the index to the left is the city and everything
+            # between the street address up to the city is useful address info.
+            address_list = [item.strip() for item in full_address.split(',')]
+            first_number_idx = 0 # in case we fail to find a digit, we fall back to using the first item
+            state_zip_idx = -1
+            for idx, item in enumerate(address_list):
+                if re.findall(r'^\d', item):
+                    first_number_idx = idx
+                    break
+            if first_number_idx > len(address_list) - 3:
+                # must have enough room for city and state-zip.
+                raise IndexError("Error parsing address.")
+
+            for idx, item in enumerate(address_list[first_number_idx + 1:]):
+                if re.findall(r'([A-z]{2} \d{5})(?=-\d{4})?', item):
+                    state_zip_idx = first_number_idx + 1 + idx
+                    break
+            if state_zip_idx < 2:
+                raise IndexError("Error parsing address.")
+            output['state'], output['zip'] = address_list[state_zip_idx].split(' ')
+            output['city'] = address_list[state_zip_idx - 1]
+            output['street_address'] = ', '.join(address_list[first_number_idx:state_zip_idx - 1])
             return output
         except NoSuchElementException as e:
             if not silent:
