@@ -50,7 +50,7 @@ class GoogleMapsScraper:
     """
     Container dataclass for restaurant information.
 
-    If a URL is specified at instatiation, it sends the browser there.
+    If a URL is specified at instantiation, it sends the browser there.
     Otherwise, the 'search' method supports interactive searches.
 
     Note that web scraping may be unstable if Google Maps alters its page layout.
@@ -79,6 +79,8 @@ class GoogleMapsScraper:
             self._wait_for_maps_to_redirect()
 
     def scrape(self, close_browser: bool = True) -> None:
+        """Scrape Google Maps data and perform interactive search if failure"""
+
         try:
             self.name = self._get_name()
             address_info = self._get_address()
@@ -462,6 +464,7 @@ class GoogleMapsScraper:
         print(f'Lat, long = {self.lat_long[0]:.6f}, {self.lat_long[1]:.6f}')
 
     def close_browser(self) -> None:
+        """Quit browser session"""
         self.browser.quit()
 
 @click.command()
@@ -476,11 +479,11 @@ class GoogleMapsScraper:
 )
 @click.option(
     '--city-as-area/--no-city-as-area', default=False,
-    help="Whether to use the city as the output file's 'area' field (False by default)"
+    help="Whether to use the city as the output file's 'area' field (false by default)"
 )
 @click.option(
     '--street-in-filename/--no-street-in-filename', default=False,
-    help="Whether to include the street address in the output filename (False by default)"
+    help="Whether to include the street address in the output filename (false by default)"
 )
 @click.option('--manual-filename', default='',
               help='Manual filename to use for output. Include full path with directories. '
