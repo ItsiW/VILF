@@ -291,8 +291,7 @@ class GoogleMapsScraper:
 
         This first waits until the URL redirects to a search or a place
         with valid lattitude and longitude coords (can take a few seconds). It
-        then verifies the h1 (name) field and Address button are present if it's
-        a place.
+        then verifies the h1 (name) field is present.
         """
         try:
             if not silent:
@@ -302,7 +301,7 @@ class GoogleMapsScraper:
             )
             if re.search(r'google.com/maps/place', self.browser.current_url):
                 # If place, check main h1 element is loaded (can't check address
-                # or phone because these aren't guaranteed
+                # or phone because these aren't guaranteed)
                 self.wait.until(
                     EC.presence_of_element_located((By.TAG_NAME, 'h1'))
                 )
