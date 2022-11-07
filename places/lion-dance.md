@@ -3,7 +3,7 @@ name: Lion Dance Cafe
 cuisine: Singaporean
 address: 380 17th St
 area: Downtown Oakland
-lat: 37.80630682828584
+lat: 37.8060489
 lon: -122.26788681531376
 phone: 
 menu: https://www.liondancecafe.com/menus

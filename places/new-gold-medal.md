@@ -8,7 +8,7 @@ area: Downtown Oakland
 taste: 0
 value: 1
 lat: 37.7995298
-lon: -122.2720005
+lon: -122.2722258
 menu:
 phone: "+15104651940"
 ---
