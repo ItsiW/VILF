@@ -20,13 +20,13 @@ import click
 
 
 
-# The following are complex regex searches that check for valid lat/long coords
-# The lat must be between -90 and +90 (to whatever precision) and similar for long
+# The following are complex regex searches that check for valid lat/lon coords
+# The lat must be between -90 and +90 (to whatever precision) and similar for lon
 # but +/- 180. The regex is designed to search against a Google Maps URL where the
-# lat, long will be located like "...google.com/maps...@LAT,LONG,..."
+# lat, lon will be located like "...google.com/maps...!3dLAT!4dLON"
 LAT_RE = r'([+-]?(?:(?:[1-8]?[0-9])(?:\.[0-9]+)?|90(?:\.0+)?))'
-LONG_RE = r'([+-]?(?:(?:(?:[1-9]?[0-9]|1[0-7][0-9])(?:\.[0-9]+)?)|180(?:\.0{1,6})?))'
-LAT_LONG_RE = '@' + LAT_RE + ',' + LONG_RE + ','
+LON_RE = r'([+-]?(?:(?:(?:[1-9]?[0-9]|1[0-7][0-9])(?:\.[0-9]+)?)|180(?:\.0+)?))'
+LAT_LON_RE = '\!3d' + LAT_RE + '\!4d' + LON_RE + '$'
 
 GOOGLE_MAPS_URL = "https://www.google.com/maps"
 MAX_NUM_RESULTS = 5 # max number of results to show in interactive mode
@@ -63,7 +63,7 @@ class GoogleMapsScraper:
     city: str = field(init=False)
     state: str = field(init=False)
     zip: str = field(init=False)
-    lat_long: tuple[float] = field(init=False) # Lat and long coordinates
+    lat_lon: tuple[float] = field(init=False) # Lat and lon coordinates
     phone_number: Optional[str] = None
     url: Optional[str] = None
     headless: bool = True # headless = no browser GUI (recommended)
@@ -87,7 +87,7 @@ class GoogleMapsScraper:
             self.phone_number = self._get_phone_number()
             if close_browser:
                 self.close_browser()
-            self.lat_long = self._parse_lat_long()
+            self.lat_lon = self._parse_lat_lon()
 
             self.street_address = address_info['street_address']
             self.city = address_info['city']
@@ -183,19 +183,19 @@ class GoogleMapsScraper:
         except NoSuchElementException:
             return None
 
-    def _parse_lat_long(self) -> tuple[float, float]:
+    def _parse_lat_lon(self) -> tuple[float, float]:
         """
-        Parse the URL with a regex for the lat and long coordinates
+        Parse the URL with a regex for the lat and lon coordinates
 
-        This regex only searches for values within [-90, 90] for lattitude
+        This regex only searches for values within [-90, 90] for latitude
         and [-180, 180] for longitude (decimals can be any precision). The
-        regex looks for the pattern @LAT,LONG, with LAT in [-90, 90] and
-        LONG in [-180, 180] (decimals can be any precision).
+        regex looks for the pattern !3dLAT!4dLON, with LAT in [-90, 90] and
+        LON in [-180, 180] (decimals can be any precision).
 
-        :return: Tuple containing the lattitude and langitude
+        :return: Tuple containing the latitude and langitude
         """
-        lat, long = re.findall(LAT_LONG_RE, self.url)[0]
-        return (float(lat), float(long))
+        lat, lon = re.findall(LAT_LON_RE, self.url)[0]
+        return (float(lat), float(lon))
 
     def search_for_restaurant(self, search_query: Optional[str] = None) -> None:
         """
@@ -290,14 +290,14 @@ class GoogleMapsScraper:
         Wait for Google Maps to finish redirect
 
         This first waits until the URL redirects to a search or a place
-        with valid lattitude and longitude coords (can take a few seconds). It
+        with valid latitude and longitude coords (can take a few seconds). It
         then verifies the h1 (name) field is present.
         """
         try:
             if not silent:
                 print('\nWaiting for Google Maps page to redirect...')
             self.wait.until(
-                EC.url_matches(rf'google.com/maps/(search|place.*{LAT_LONG_RE}).*/data=')
+                EC.url_matches(rf'google.com/maps/(search.*/data=|place.*{LAT_LON_RE})')
             )
             if re.search(r'google.com/maps/place', self.browser.current_url):
                 # If place, check main h1 element is loaded (can't check address
@@ -308,13 +308,16 @@ class GoogleMapsScraper:
         except TimeoutException as e:
             print(
                 "\nTimeoutException: URL did not load correctly within the given timeout."
-                " URL must be of the form '...google.com/maps/search/.../data=...' or "
-                "'...google.com/maps/place/...@<lat>,<long>,.../data=...' within "
+                " URL must be of the form '...google.com/maps/search/...data=...' or "
+                "'...google.com/maps/place/...<lat>!4d<lon>' within "
                 f"{self.timeout} seconds. Found '{self.browser.current_url}' instead. It's "
                 "possible the timeout is too short and the Google Maps URL has not redirected "
                 "or the specified URL is incompatible."
             )
             raise e
+        except Exception as e:
+            raise e
+
 
     def write_data_to_markdown(
             self,
@@ -354,8 +357,8 @@ class GoogleMapsScraper:
         md += "cuisine: \n"
         md += f"address: {self.street_address}\n"
         md += f"area: {area}\n"
-        md += f"lat: {self.lat_long[0]}\n"
-        md += f"lon: {self.lat_long[1]}\n"
+        md += f"lat: {self.lat_lon[0]}\n"
+        md += f"lon: {self.lat_lon[1]}\n"
         md += f"phone: {phone}\n"
         md += "menu: \n"
         md += "drinks: \n"
@@ -363,7 +366,7 @@ class GoogleMapsScraper:
         md += "taste: \n"
         md += "value: \n"
         md += "---\n\n"
-        md += "<REVIEW>"
+        md += "<REVIEW>\n"
 
         with open(path, 'w', encoding='utf-8', errors='xmlcharrefreplace') as f:
             f.write(md)
@@ -460,7 +463,7 @@ class GoogleMapsScraper:
         print(f'State = {self.state}')
         print(f'Zip code = {self.zip}')
         print(f'Phone: {self.phone_number}')
-        print(f'Lat, long = {self.lat_long[0]:.6f}, {self.lat_long[1]:.6f}')
+        print(f'Lat, lon = {self.lat_lon[0]:.6f}, {self.lat_lon[1]:.6f}')
 
     def close_browser(self) -> None:
         """Quit browser session"""
