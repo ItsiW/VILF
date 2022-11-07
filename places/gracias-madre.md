@@ -4,7 +4,7 @@ cuisine: Mexican
 drinks: True
 visited: "2022-08-26"
 address: 2211 Mission St
-area: The Mission
+area: Mission District
 taste: 0
 value: 0
 lat: 37.76154995130239
