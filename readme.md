@@ -124,7 +124,7 @@ Lion Dance Cafe
 #State = CA
 #Zip code = 94612
 #Phone: None
-#Lat, long = 37.806069, -122.276674
+#Lat, lon = 37.806069, -122.276674
 
 #Successfully wrote markdown to file lion-dance-cafe.md
 ```
@@ -195,7 +195,7 @@ Bongo Java Nashville
 #State = TN
 #Zip code = 37203
 #Phone: None
-#Lat, long = 36.157151, -86.776074
+#Lat, lon = 36.157151, -86.776074
 
 #Successfully wrote markdown to file bongo-java.md
 ```
@@ -218,7 +218,7 @@ python spatula.py --url https://www.google.com/maps/place/Lion+Dance+Caf%C3%A9/@
 #State = CA
 #Zip code = 94612
 #Phone: None
-#Lat, long = 37.806074, -122.270113
+#Lat, lon = 37.806074, -122.270113
 
 #Successfully wrote markdown to file lion-dance-cafe-0.md
 ```
@@ -244,25 +244,25 @@ If everything looks as expected, you will see
 ```bash
 python cross_reference.py $(git diff --staged --name-only places/)
 
-Testing files:
-✔ places/lion-dance-cafe.md
-✔ places/maya-halal-taqueria.md
+#Testing files:
+#✔ places/lion-dance-cafe.md
+#✔ places/maya-halal-taqueria.md
 
-All staged files look good.
+#All staged files look good.
 ```
 
 If anything is wrong, the metadata will be displayed:
 ```bash
 python cross_reference.py $(git diff --staged --name-only places/)
 
-Testing files:
-✘ places/lion-dance-cafe.md
-✔ places/maya-halal-taqueria.md
+#Testing files:
+#✘ places/lion-dance-cafe.md
+#✔ places/maya-halal-taqueria.md
 
-The following files may need inspection:
+#The following files may need inspection:
 
-places/lion-dance-cafe.md
-Current address: 382 17th St | Determined address: 380 17th St
-Current latitude: 34.8060489 | Determined latitude: 37.8060489
-Current longitude: -120.267932 | Determined longitude: -122.267932
+#places/lion-dance-cafe.md
+#Current address: 382 17th St | Determined address: 380 17th St
+#Current latitude: 34.8060489 | Determined latitude: 37.8060489
+#Current longitude: -120.267932 | Determined longitude: -122.267932
 ```
