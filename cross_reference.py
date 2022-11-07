@@ -5,6 +5,7 @@ import io
 import glob
 import re
 from spatula import GoogleMapsScraper
+import click
 
 
 LAT_RES = 1e-2
@@ -68,18 +69,24 @@ def find_item(markdown: str, key: str) -> Optional[str]:
         return search[0]
 
 
-if __name__ == "__main__":
-    files = get_all_markdown_files('./places/')
+@click.command()
+@click.argument('files', type=click.Path(exists=True), nargs=-1)
+def cross_reference_md(files: tuple[str]) -> None:
+    if not files:
+        print("No files to check.")
+        return
+    if any(not file.endswith('.md') for file in files):
+        raise ValueError("Files must all be markdown (.md).")
     content = get_content(files)
     gmd = GoogleMapsScraper(headless=True)
     potentially_bad_files = []
     errors = {}
+    print('\nTesting files:')
     for file, md in content.items():
         error_report = file + '\n'
         try:
             name = find_item(md, key='name').strip()
             address = find_item(md, key='address').strip()
-            area = find_item(md, key='area').strip()
             phone_number = find_item(md, key='phone')
             if phone_number is None:
                 phone_number = ''
@@ -104,12 +111,12 @@ if __name__ == "__main__":
             if phone_number != gmd_phone_number:
                 perfect_match = False
                 error_report += f'Current phone number: {phone_number} | Determined phone number: {gmd_phone_number}\n'
-            if abs(float(lat) - gmd.lat_long[0]) > LAT_RES:
+            if abs(float(lat) - gmd.lat_lon[0]) > LAT_RES:
                 perfect_match = False
-                error_report += f'Current lattitude: {lat} | Determined lattitude: {gmd.lat_long[0]}\n'
-            if abs(float(lon) - gmd.lat_long[1]) > LONG_RES:
+                error_report += f'Current lattitude: {lat} | Determined lattitude: {gmd.lat_lon[0]}\n'
+            if abs(float(lon) - gmd.lat_lon[1]) > LONG_RES:
                 perfect_match = False
-                error_report += f'Current longitude: {lon} | Determined longitude: {gmd.lat_long[1]}\n'
+                error_report += f'Current longitude: {lon} | Determined longitude: {gmd.lat_lon[1]}\n'
         except Exception as e:
             error_report += str(e)
             errors[file] = error_report
@@ -123,7 +130,13 @@ if __name__ == "__main__":
             else:
                 print(u'\u2714 ' + f"{file}")
 
-    print('\nThe following files may need inspection:\n')
-    for file in potentially_bad_files:
-        print(errors[file])
+    if potentially_bad_files:
+        print('\nThe following files may need inspection:\n')
+        for file in potentially_bad_files:
+            print(errors[file])
+    else:
+        print("\nAll staged files look good.")
 
+
+if __name__ == "__main__":
+    cross_reference_md()
