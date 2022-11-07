@@ -231,3 +231,38 @@ Notice the `-0` added to the filename to avoid a collision with the original fil
 4. `python spatula.py --timeout 30.0` let's you set the timeout for the browser (default is 5.0)
 5. `python spatula.py --no-headless` let's you see the browser GUI as the searches are being made (kinda fun but not recommended unless debugging)
 6. For more details run `python spatula.py --help`.
+
+
+### Checking new file additions against Google Maps
+Before committing new markdown files, `spatula` can be used to check new additions against Google Maps even if they were not generated 
+ using `spatula`. Simply run the following from the repo home directory:
+```bash
+python cross_reference.py $(git diff --staged --name-only places/)
+```
+
+If everything looks as expected, you will see
+```bash
+python cross_reference.py $(git diff --staged --name-only places/)
+
+Testing files:
+✔ places/lion-dance-cafe.md
+✔ places/maya-halal-taqueria.md
+
+All staged files look good.
+```
+
+If anything is wrong, the metadata will be displayed:
+```bash
+python cross_reference.py $(git diff --staged --name-only places/)
+
+Testing files:
+✘ places/lion-dance-cafe.md
+✔ places/maya-halal-taqueria.md
+
+The following files may need inspection:
+
+places/lion-dance-cafe.md
+Current address: 382 17th St | Determined address: 380 17th St
+Current lattitude: 34.8060489 | Determined lattitude: 37.8060489
+Current longitude: -120.267932 | Determined longi
+```
