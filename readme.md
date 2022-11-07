@@ -225,12 +225,13 @@ python spatula.py --url https://www.google.com/maps/place/Lion+Dance+Caf%C3%A9/@
 Notice the `-0` added to the filename to avoid a collision with the original file we produced.
 
 #### Shortcuts and extras
-1. `python spatula.py --search-query 'lion dance cafe'` or `python spatula.py -s 'lion dance cafe'` avoids the search prompt and jumps right to the action
-2. `python spatula.py --directory '/path/to/folder'` allows you to specify the directory for the markdown file (directory doesn't have to exist yet)
-3. `python spatula.py --manual-filename '/path/to/folder/filename.md'` allows you to manually specify the output file
-4. `python spatula.py --timeout 30.0` let's you set the timeout for the browser (default is 5.0)
-5. `python spatula.py --no-headless` let's you see the browser GUI as the searches are being made (kinda fun but not recommended unless debugging)
-6. For more details run `python spatula.py --help`.
+1. `python spatula.py --ask-first` prompts the user before writing metadata to markdown.
+2. `python spatula.py --search-query 'lion dance cafe'` or `python spatula.py -s 'lion dance cafe'` avoids the search prompt and jumps right to the action
+3. `python spatula.py --directory '/path/to/folder'` allows you to specify the directory for the markdown file (directory doesn't have to exist yet)
+4. `python spatula.py --manual-filename '/path/to/folder/filename.md'` allows you to manually specify the output file
+5. `python spatula.py --timeout 30.0` let's you set the timeout for the browser (default is 5.0)
+6. `python spatula.py --no-headless` let's you see the browser GUI as the searches are being made (kinda fun but not recommended unless debugging)
+7. For more details run `python spatula.py --help`.
 
 
 ### Checking new file additions against Google Maps
