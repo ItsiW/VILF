@@ -8,7 +8,7 @@ lon: -122.27170421722305
 phone: "+15108932288"
 menu: https://www.imperialsoupoakland.com/menu
 drinks: False
-visited: "2022-09-27"
+visited: "2022-10-09"
 taste: 1
 sgfi: vegan fish and rice!
 value: 2
@@ -19,3 +19,5 @@ This is a little Chinese lunch spot. They've got one vegan thing on the menu whi
 The vegan fish is really good, I think it's one from Layonna. Has a nice chew and they have it with a teriyaki sauce. The broccoli didn't do much for me and the rice to topping ratio was way off in general. I think this is the makings of a great dish but misses the mark. Definitely needs more sauce for the amount of rice. I'll go back to try the mushroom version.
 
 I paid $14 all up, I think it's good value and they put a lot of care in.
+
+UPDATE: went back for the mushroom version, it's a little bland but ok. I preferred the vegan fish one.

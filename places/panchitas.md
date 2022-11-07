@@ -4,7 +4,7 @@ cuisine: Salvadorian
 drinks: False
 visited: "2022-08-12"
 address: 3091 16th St
-area: Mission
+area: Mission District
 taste: 0
 value: 0
 lat: 37.76477980427262
