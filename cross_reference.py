@@ -8,8 +8,8 @@ from spatula import GoogleMapsScraper
 import click
 
 
-LAT_RES = 1e-2
-LON_RES = 1e-2
+LAT_RES = 1e-6
+LON_RES = 1e-6
 
 
 @contextmanager
