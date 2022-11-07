@@ -19,14 +19,13 @@ from pathlib import Path
 import click
 
 
-
 # The following are complex regex searches that check for valid lat/lon coords
 # The lat must be between -90 and +90 (to whatever precision) and similar for lon
 # but +/- 180. The regex is designed to search against a Google Maps URL where the
-# lat, lon will be located like "...google.com/maps...!3dLAT!4dLON"
+# lat, lon will be located like "...google.com/maps...!3dLAT!4dLON..."
 LAT_RE = r'([+-]?(?:(?:[1-8]?[0-9])(?:\.[0-9]+)?|90(?:\.0+)?))'
 LON_RE = r'([+-]?(?:(?:(?:[1-9]?[0-9]|1[0-7][0-9])(?:\.[0-9]+)?)|180(?:\.0+)?))'
-LAT_LON_RE = '\!3d' + LAT_RE + '\!4d' + LON_RE + '$'
+LAT_LON_RE = '\!3d' + LAT_RE + '\!4d' + LON_RE + '(?:[^0-9.].*)?$'
 
 GOOGLE_MAPS_URL = "https://www.google.com/maps"
 MAX_NUM_RESULTS = 5 # max number of results to show in interactive mode
@@ -67,7 +66,7 @@ class GoogleMapsScraper:
     phone_number: Optional[str] = None
     url: Optional[str] = None
     headless: bool = True # headless = no browser GUI (recommended)
-    timeout: float = field(default=5.0) # seconds - max time to wait for browser
+    timeout: float = field(default=10.0) # seconds - max time to wait for browser
 
     def __post_init__(self) -> None:
         if self.timeout < 0:
@@ -499,8 +498,8 @@ class GoogleMapsScraper:
               help="Directory for output file (only used if NOT using --manual-filename). It "
                    "defaults to using './places/'."
 )
-@click.option('--timeout', default=5.0,
-              help="Timeout for webdriver actions in seconds (default 5.0)"
+@click.option('--timeout', default=10.0,
+              help="Timeout for webdriver actions in seconds (default 10.0)"
 )
 @click.option('--headless/--no-headless', default=True,
               help="Whether to use GUI-less (headless) or full GUI web browser. Headless "
@@ -514,7 +513,7 @@ def scrape_and_gen_md(
         street_in_filename: bool = False,
         manual_filename: str = '',
         directory: str = '',
-        timeout: float = 5.0,
+        timeout: float = 10.0,
         headless: bool = True
 ) -> None:
     """
