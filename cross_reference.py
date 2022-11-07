@@ -8,8 +8,8 @@ from spatula import GoogleMapsScraper
 import click
 
 
-LAT_RES = 1e-6
-LON_RES = 1e-6
+LAT_RES = 1e-4
+LON_RES = 1e-4
 
 
 @contextmanager
@@ -78,7 +78,7 @@ def cross_reference_md(files: tuple[str]) -> None:
     if any(not file.endswith('.md') for file in files):
         raise ValueError("Files must all be markdown (.md).")
     content = get_content(files)
-    gmd = GoogleMapsScraper(headless=True)
+    gmd = GoogleMapsScraper(headless=True, timeout=20)
     potentially_bad_files = []
     errors = {}
     print('\nTesting files:')
