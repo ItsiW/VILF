@@ -9,7 +9,7 @@ import click
 
 
 LAT_RES = 1e-2
-LONG_RES = 1e-2
+LON_RES = 1e-2
 
 
 @contextmanager
@@ -113,8 +113,8 @@ def cross_reference_md(files: tuple[str]) -> None:
                 error_report += f'Current phone number: {phone_number} | Determined phone number: {gmd_phone_number}\n'
             if abs(float(lat) - gmd.lat_lon[0]) > LAT_RES:
                 perfect_match = False
-                error_report += f'Current lattitude: {lat} | Determined lattitude: {gmd.lat_lon[0]}\n'
-            if abs(float(lon) - gmd.lat_lon[1]) > LONG_RES:
+                error_report += f'Current latitude: {lat} | Determined latitude: {gmd.lat_lon[0]}\n'
+            if abs(float(lon) - gmd.lat_lon[1]) > LON_RES:
                 perfect_match = False
                 error_report += f'Current longitude: {lon} | Determined longitude: {gmd.lat_lon[1]}\n'
         except Exception as e:

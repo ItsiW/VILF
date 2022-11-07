@@ -263,6 +263,6 @@ The following files may need inspection:
 
 places/lion-dance-cafe.md
 Current address: 382 17th St | Determined address: 380 17th St
-Current lattitude: 34.8060489 | Determined lattitude: 37.8060489
+Current latitude: 34.8060489 | Determined latitude: 37.8060489
 Current longitude: -120.267932 | Determined longi
 ```
