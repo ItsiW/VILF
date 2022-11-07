@@ -4,7 +4,7 @@ cuisine: Indian
 drinks: True
 visited: "2022-09-04"
 address: 1007 Valencia St
-area: The Mission
+area: Mission District
 taste: 2
 value: 2
 lat: 37.75676449975058
