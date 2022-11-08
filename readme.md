@@ -226,7 +226,7 @@ Notice the `-0` added to the filename to avoid a collision with the original fil
 
 #### Shortcuts and extras
 1. `./vilf.sh spatula --ask-first` prompts the user before writing metadata to markdown.
-2. `./vilf.sh spatula --search-query 'lion dance cafe'` or `python spatula.py -s 'lion dance cafe'` avoids the search prompt and jumps right to the action
+2. `./vilf.sh spatula --search-query 'lion dance cafe'` or `./vilf.sh spatula -s 'lion dance cafe'` avoids the search prompt and jumps right to the action
 3. `./vilf.sh spatula --directory '/path/to/folder'` allows you to specify the directory for the markdown file (directory doesn't have to exist yet)
 4. `./vilf.sh spatula --manual-filename '/path/to/folder/filename.md'` allows you to manually specify the output file
 5. `./vilf.sh spatula --timeout 30.0` let's you set the timeout for the browser (default is 5.0)
