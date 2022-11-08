@@ -4,7 +4,7 @@ import sys
 import io
 import glob
 import re
-from spatula import GoogleMapsScraper
+from .spatula import GoogleMapsScraper
 import click
 
 
@@ -72,6 +72,12 @@ def find_item(markdown: str, key: str) -> Optional[str]:
 @click.command()
 @click.argument('files', type=click.Path(exists=True), nargs=-1)
 def cross_reference_md(files: tuple[str]) -> None:
+    """
+    Cross-reference the files against scraped Google Maps
+
+    :param files: Tuple of file paths
+    :return: None
+    """
     if not files:
         print("No files to check.")
         return

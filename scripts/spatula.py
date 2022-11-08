@@ -517,7 +517,7 @@ def scrape_and_gen_md(
         headless: bool = True
 ) -> None:
     """
-    Scrape Google Maps and generate a markdown file (to be run from command line)
+    Scrape Google Maps and generate a markdown file
 
     Can run in interactive or manual mode depending on whether a url is supplied.
     :param search_query: String search to pass to Google Maps (without prompt)
