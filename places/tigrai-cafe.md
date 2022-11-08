@@ -3,7 +3,7 @@ name: Tigrai Cafe
 cuisine: Ethiopian
 drinks: False
 visited: "2022-08-01"
-address: 10009 Clay St
+address: 1009 Clay St
 area: Downtown Oakland
 taste: 2
 value: 1

@@ -2,13 +2,15 @@ name: Deploy VILF
 on:
   push:
     branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - run: python3 -m pip install -r requirements.txt
-    - run: python3 build.py
+    - run: ./vilf.sh build
     - uses: google-github-actions/auth@v0
       with:
         credentials_json: "${{ secrets.CLIMAX_VILF_SA_KEY }}"

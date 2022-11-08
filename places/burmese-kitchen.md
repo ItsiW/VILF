@@ -1,7 +1,7 @@
 ---
 name: Burmese Kitchen
 cuisine: Burmese
-address: Geary Bvd & 2nd Ave
+address: 3815 Geary Blvd
 area: Richmond
 lat: 37.78096563780466
 lon: -122.46036938077033
