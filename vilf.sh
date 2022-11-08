@@ -1,4 +1,4 @@
 #!/bin/zsh
 
-python -m scripts.cli $@
+python3 -m scripts.cli $@
 
