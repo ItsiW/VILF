@@ -1,7 +1,7 @@
 ---
 name: Gott's Roadside
 cuisine: Dessert
-address: One Ferry Building
+address: One Ferry Building, The Embarcadero S
 area: Embarcadero
 lat: 37.79604718575911
 lon: -122.39416442655957

@@ -19,14 +19,13 @@ from pathlib import Path
 import click
 
 
-
-# The following are complex regex searches that check for valid lat/long coords
-# The lat must be between -90 and +90 (to whatever precision) and similar for long
+# The following are complex regex searches that check for valid lat/lon coords
+# The lat must be between -90 and +90 (to whatever precision) and similar for lon
 # but +/- 180. The regex is designed to search against a Google Maps URL where the
-# lat, long will be located like "...google.com/maps...@LAT,LONG,..."
+# lat, lon will be located like "...google.com/maps...!3dLAT!4dLON..."
 LAT_RE = r'([+-]?(?:(?:[1-8]?[0-9])(?:\.[0-9]+)?|90(?:\.0+)?))'
-LONG_RE = r'([+-]?(?:(?:(?:[1-9]?[0-9]|1[0-7][0-9])(?:\.[0-9]+)?)|180(?:\.0{1,6})?))'
-LAT_LONG_RE = '@' + LAT_RE + ',' + LONG_RE + ','
+LON_RE = r'([+-]?(?:(?:(?:[1-9]?[0-9]|1[0-7][0-9])(?:\.[0-9]+)?)|180(?:\.0+)?))'
+LAT_LON_RE = '\!3d' + LAT_RE + '\!4d' + LON_RE + '(?:[^0-9.].*)?$'
 
 GOOGLE_MAPS_URL = "https://www.google.com/maps"
 MAX_NUM_RESULTS = 5 # max number of results to show in interactive mode
@@ -50,7 +49,7 @@ class GoogleMapsScraper:
     """
     Container dataclass for restaurant information.
 
-    If a URL is specified at instatiation, it sends the browser there.
+    If a URL is specified at instantiation, it sends the browser there.
     Otherwise, the 'search' method supports interactive searches.
 
     Note that web scraping may be unstable if Google Maps alters its page layout.
@@ -63,11 +62,11 @@ class GoogleMapsScraper:
     city: str = field(init=False)
     state: str = field(init=False)
     zip: str = field(init=False)
-    lat_long: tuple[float] = field(init=False) # Lat and long coordinates
+    lat_lon: tuple[float] = field(init=False) # Lat and lon coordinates
     phone_number: Optional[str] = None
     url: Optional[str] = None
     headless: bool = True # headless = no browser GUI (recommended)
-    timeout: float = field(default=5.0) # seconds - max time to wait for browser
+    timeout: float = field(default=10.0) # seconds - max time to wait for browser
 
     def __post_init__(self) -> None:
         if self.timeout < 0:
@@ -78,24 +77,37 @@ class GoogleMapsScraper:
             self.browser.get(self.url)
             self._wait_for_maps_to_redirect()
 
-    def search_for_restaurant(self, search_query: Optional[str] = None) -> None:
-        self._interactive_search(query=search_query)
+    def scrape(self, close_browser: bool = True) -> None:
+        """Scrape Google Maps data and perform interactive search if failure"""
 
-    def scrape(self) -> None:
-        self.name = self._get_name()
-        address_info = self._get_address()
-        self.phone_number = self._get_phone_number()
-        self.browser.close()
-        self.lat_long = self._parse_lat_long()
+        try:
+            self.name = self._get_name()
+            address_info = self._get_address()
+            self.phone_number = self._get_phone_number()
+            if close_browser:
+                self.close_browser()
+            self.lat_lon = self._parse_lat_lon()
 
-        self.street_address = address_info['street_address']
-        self.city = address_info['city']
-        self.state = address_info['state']
-        self.zip = address_info['zip']
+            self.street_address = address_info['street_address']
+            self.city = address_info['city']
+            self.state = address_info['state']
+            self.zip = address_info['zip']
+        except (NoSuchElementException, IndexError):
+            print("\nMake sure search terms or supplied URL correspond to a restaurant location. "
+                  "Try searching instead/again with better terms (ex: 'Battambang restaurant "
+                  "Oakland' instead of 'Battambang'):\n")
+            self.search_for_restaurant()
+            self.scrape()
 
-    def _get_name(self) -> str:
+    def _get_name(self, silent: bool = False) -> str:
         """ Get the h1 field (seems reliable)"""
-        return self.browser.find_element(By.TAG_NAME, value="h1").text
+        try:
+            return self.browser.find_element(By.TAG_NAME, value="h1").text
+        except NoSuchElementException as e:
+            if not silent:
+                print("\nA name could not be located.")
+            raise e
+
 
     def _get_address(self, silent: bool = False) -> dict[str, Optional[str]]:
         """
@@ -115,10 +127,37 @@ class GoogleMapsScraper:
                 "//button[starts-with(@aria-label, 'Address:')]"
             )
             full_address = button.get_attribute('aria-label').split(':')[1].strip()
-            output['street_address'] = full_address.split(',')[0].strip()
-            output['city'] = full_address.split(',')[1].strip()
-            output['state'] = full_address.split(',')[2].strip().split(' ')[0]
-            output['zip'] = full_address.split(',')[2].strip().split(' ')[1]
+            # occasionally restaurants will add extra info to the address
+            # e.g. "inside mall, 100 First St, Suite #2, Springfield, ...". To parse this,
+            # we split the address string by comma, then use a regex to identify the first
+            # component that begins with a digit. This is presumably the street address. We
+            # ignore anything before this (these tend to be instructions like "inside mall,
+            # between 2nd and 3rd street, etc). There are some edge cases not caught by this
+            # (e.g. One Ferry Building, S. Street...) so if we can't find what we need, just
+            # set first_number_idx = 0. We then look through the remaining items and
+            # locate the STATE ZIP with a regex. We assume we're only using US addresses.
+            # From this position we assume the index to the left is the city and everything
+            # between the street address up to the city is useful address info.
+            address_list = [item.strip() for item in full_address.split(',')]
+            first_number_idx = 0 # in case we fail to find a digit, we fall back to using the first item
+            state_zip_idx = -1
+            for idx, item in enumerate(address_list):
+                if re.findall(r'^\d', item):
+                    first_number_idx = idx
+                    break
+            if first_number_idx > len(address_list) - 3:
+                # must have enough room for city and state-zip.
+                raise IndexError("Error parsing address.")
+
+            for idx, item in enumerate(address_list[first_number_idx + 1:]):
+                if re.findall(r'([A-z]{2} \d{5})(?=-\d{4})?', item):
+                    state_zip_idx = first_number_idx + 1 + idx
+                    break
+            if state_zip_idx < 2:
+                raise IndexError("Error parsing address.")
+            output['state'], output['zip'] = address_list[state_zip_idx].split(' ')
+            output['city'] = address_list[state_zip_idx - 1]
+            output['street_address'] = ', '.join(address_list[first_number_idx:state_zip_idx - 1])
             return output
         except NoSuchElementException as e:
             if not silent:
@@ -143,21 +182,21 @@ class GoogleMapsScraper:
         except NoSuchElementException:
             return None
 
-    def _parse_lat_long(self) -> tuple[float, float]:
+    def _parse_lat_lon(self) -> tuple[float, float]:
         """
-        Parse the URL with a regex for the lat and long coordinates
+        Parse the URL with a regex for the lat and lon coordinates
 
-        This regex only searches for values within [-90, 90] for lattitude
+        This regex only searches for values within [-90, 90] for latitude
         and [-180, 180] for longitude (decimals can be any precision). The
-        regex looks for the pattern @LAT,LONG, with LAT in [-90, 90] and
-        LONG in [-180, 180] (decimals can be any precision).
+        regex looks for the pattern !3dLAT!4dLON, with LAT in [-90, 90] and
+        LON in [-180, 180] (decimals can be any precision).
 
-        :return: Tuple containing the lattitude and langitude
+        :return: Tuple containing the latitude and langitude
         """
-        lat, long = re.findall(LAT_LONG_RE, self.url)[0]
-        return (float(lat), float(long))
+        lat, lon = re.findall(LAT_LON_RE, self.url)[0]
+        return (float(lat), float(lon))
 
-    def _interactive_search(self, query: Optional[str] = None) -> None:
+    def search_for_restaurant(self, search_query: Optional[str] = None) -> None:
         """
         Perform an interactive search for a restaurant's Google Maps site.
 
@@ -167,9 +206,9 @@ class GoogleMapsScraper:
         select one or search again.
         """
         self.browser.get(GOOGLE_MAPS_URL)
-        if query is None:
-            query = input('Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):\n')
-        self.wait.until(EC.element_to_be_clickable((By.ID, "searchboxinput"))).send_keys(query)
+        if search_query is None:
+            search_query = input('Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):\n')
+        self.wait.until(EC.element_to_be_clickable((By.ID, "searchboxinput"))).send_keys(search_query)
         self.wait.until(EC.element_to_be_clickable((By.ID, "searchbox-searchbutton"))).click()
         self._wait_for_maps_to_redirect()
 
@@ -179,7 +218,7 @@ class GoogleMapsScraper:
             results = self._get_search_results()
             ans = self._prompt_choice(results)
             if ans == 0:
-                self._interactive_search()
+                self.search_for_restaurant()
             elif ans > 0:
                 self.browser.get(results[ans - 1]['href'])
                 self._wait_for_maps_to_redirect()
@@ -234,7 +273,7 @@ class GoogleMapsScraper:
         if not res_dict:
             print("\nCould not find any acceptable search results, please "
                   "try a different search.")
-            self._interactive_search()
+            self.search_for_restaurant()
         print('\n0: Try searching again')
         for idx, info in res_dict.items():
             print(
@@ -250,32 +289,34 @@ class GoogleMapsScraper:
         Wait for Google Maps to finish redirect
 
         This first waits until the URL redirects to a search or a place
-        with valid lattitude and longitude coords (can take a few seconds). It
-        then verifies the h1 (name) field and Address button are present if it's
-        a place.
+        with valid latitude and longitude coords (can take a few seconds). It
+        then verifies the h1 (name) field is present.
         """
         try:
             if not silent:
                 print('\nWaiting for Google Maps page to redirect...')
             self.wait.until(
-                EC.url_matches(rf'google.com/maps/(search|place.*{LAT_LONG_RE}).*/data=')
+                EC.url_matches(rf'google.com/maps/(search.*/data=|place.*{LAT_LON_RE})')
             )
             if re.search(r'google.com/maps/place', self.browser.current_url):
                 # If place, check main h1 element is loaded (can't check address
-                # or phone because these aren't guaranteed
+                # or phone because these aren't guaranteed)
                 self.wait.until(
                     EC.presence_of_element_located((By.TAG_NAME, 'h1'))
                 )
         except TimeoutException as e:
             print(
                 "\nTimeoutException: URL did not load correctly within the given timeout."
-                " URL must be of the form '...google.com/maps/search/.../data=...' or "
-                "'...google.com/maps/place/...@<lat>,<long>,.../data=...' within "
+                " URL must be of the form '...google.com/maps/search/...data=...' or "
+                "'...google.com/maps/place/...<lat>!4d<lon>' within "
                 f"{self.timeout} seconds. Found '{self.browser.current_url}' instead. It's "
                 "possible the timeout is too short and the Google Maps URL has not redirected "
                 "or the specified URL is incompatible."
             )
             raise e
+        except Exception as e:
+            raise e
+
 
     def write_data_to_markdown(
             self,
@@ -315,8 +356,8 @@ class GoogleMapsScraper:
         md += "cuisine: \n"
         md += f"address: {self.street_address}\n"
         md += f"area: {area}\n"
-        md += f"lat: {self.lat_long[0]}\n"
-        md += f"lon: {self.lat_long[1]}\n"
+        md += f"lat: {self.lat_lon[0]}\n"
+        md += f"lon: {self.lat_lon[1]}\n"
         md += f"phone: {phone}\n"
         md += "menu: \n"
         md += "drinks: \n"
@@ -324,7 +365,7 @@ class GoogleMapsScraper:
         md += "taste: \n"
         md += "value: \n"
         md += "---\n\n"
-        md += "<REVIEW>"
+        md += "<REVIEW>\n"
 
         with open(path, 'w', encoding='utf-8', errors='xmlcharrefreplace') as f:
             f.write(md)
@@ -379,7 +420,10 @@ class GoogleMapsScraper:
         # coerce any non-ascii letters to their closest ascii form
         base_name = unidecode(base_name)
 
-        # make any non-alpha-numeric or dash items into dashes
+        # remove any punctuation
+        base_name = re.sub(r'[\.,\'\"]', '', base_name)
+
+        # make any non-alpha-numeric or non-dash items into dashes
         base_name = re.sub(r'[^\w\-]', '-', base_name)
 
         # remove any duplicate dashes
@@ -418,8 +462,11 @@ class GoogleMapsScraper:
         print(f'State = {self.state}')
         print(f'Zip code = {self.zip}')
         print(f'Phone: {self.phone_number}')
-        print(f'Lat, long = {self.lat_long[0]:.6f}, {self.lat_long[1]:.6f}')
+        print(f'Lat, lon = {self.lat_lon[0]:.6f}, {self.lat_lon[1]:.6f}')
 
+    def close_browser(self) -> None:
+        """Quit browser session"""
+        self.browser.quit()
 
 @click.command()
 @click.option(
@@ -432,12 +479,16 @@ class GoogleMapsScraper:
     help="Google Maps restaurant URL. Do not enclose URL in quotes in most terminals (e.g. zsh)"
 )
 @click.option(
+    '--ask-first/--no-ask-first', default=False,
+    help="Whether to ask before generating the markdown file (false by default)."
+)
+@click.option(
     '--city-as-area/--no-city-as-area', default=False,
-    help="Whether to use the city as the output file's 'area' field (False by default)"
+    help="Whether to use the city as the output file's 'area' field (false by default)"
 )
 @click.option(
     '--street-in-filename/--no-street-in-filename', default=False,
-    help="Whether to include the street address in the output filename (False by default)"
+    help="Whether to include the street address in the output filename (false by default)"
 )
 @click.option('--manual-filename', default='',
               help='Manual filename to use for output. Include full path with directories. '
@@ -447,8 +498,8 @@ class GoogleMapsScraper:
               help="Directory for output file (only used if NOT using --manual-filename). It "
                    "defaults to using './places/'."
 )
-@click.option('--timeout', default=5.0,
-              help="Timeout for webdriver actions in seconds (default 5.0)"
+@click.option('--timeout', default=10.0,
+              help="Timeout for webdriver actions in seconds (default 10.0)"
 )
 @click.option('--headless/--no-headless', default=True,
               help="Whether to use GUI-less (headless) or full GUI web browser. Headless "
@@ -457,25 +508,28 @@ class GoogleMapsScraper:
 def scrape_and_gen_md(
         search_query: str = '',
         url: str = '',
+        ask_first: bool = False,
         city_as_area: bool = False,
         street_in_filename: bool = False,
         manual_filename: str = '',
         directory: str = '',
-        timeout: float = 5.0,
+        timeout: float = 10.0,
         headless: bool = True
 ) -> None:
     """
-    Scrape Google Maps and generate a markdown file (to be run from command line)
+    Scrape Google Maps and generate a markdown file
 
     Can run in interactive or manual mode depending on whether a url is supplied.
     :param search_query: String search to pass to Google Maps (without prompt)
     :param url: Google Maps restaurant URL
-    :city_as_area: Whether to use the city for the area in the output markdown file
-    :street_in_filename: Whether to use the street name in the output file
-    :manual_filename: A manual filename that prevents an autogenerated name
-    :directory: Directory specified for output file (doesn't have to exist yet)
-    :timeout: Max time to wait for browser actions
-    :headless: Whether to run without GUI (True) or with GUI (False)
+    :param ask_first: Whether to ask before generating the markdown file (false by default).
+    :param city_as_area: Whether to use the city for the area in the output markdown file
+    :param street_in_filename: Whether to use the street name in the output file
+    :param manual_filename: A manual filename that prevents an autogenerated name
+    :param directory: Directory specified for output file (doesn't have to exist yet)
+    :param timeout: Max time to wait for browser actions
+    :param headless: Whether to run without GUI (True) or with GUI (False)
+    :return: None
     """
     search_query = search_query.strip()
     url = url.strip()
@@ -496,13 +550,27 @@ def scrape_and_gen_md(
     gmd.scrape()
     gmd.print_results()
 
-    path = gmd.write_data_to_markdown(
-        city_as_area=city_as_area,
-        street_in_filename=street_in_filename,
-        manual_filename=manual_filename,
-        directory=directory
-    )
-    print(f"\nSuccessfully wrote markdown to file {str(path)}")
+    if ask_first:
+        while True:
+            ans = input("\nWould you like to write data to markdown (y/n)?\n")
+            ans = ans.lower()
+            if ans in ['yes', 'y', 'no', 'n']:
+                break
+            else:
+                print("\nInvalid response. Answer must be 'y(es)' or 'n(o)'.\n")
+    else:
+        ans = 'y'
+
+    if ans in ['y', 'yes']:
+        path = gmd.write_data_to_markdown(
+            city_as_area=city_as_area,
+            street_in_filename=street_in_filename,
+            manual_filename=manual_filename,
+            directory=directory
+        )
+        print(f"\nSuccessfully wrote markdown to file {str(path)}")
+    else:
+        print("Not writing markdown.")
 
 if __name__ == "__main__":
     scrape_and_gen_md()
