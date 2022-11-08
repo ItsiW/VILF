@@ -33,7 +33,7 @@ pip install -r requirements.txt
 ### **3. Build static files**
 
 ```bash
-python build.py
+./vilf.sh build
 ```
 
 ### **4. Serve static files locally**
@@ -60,13 +60,13 @@ These will only work if your account has the right permissions.
 ### **1. Push static files to bucket**
 
 ```bash
-gsutil -m rsync -R build gs://climax-vilf-bucket
+gsutil -m rsync -R build gs://climax-scripts-bucket
 ```
 
 ### **2. Invalidate Cloud CDN cache**
 
 ```bash
-gcloud compute url-maps invalidate-cdn-cache vilf-lb --path / --project climax-vilf
+gcloud compute url-maps invalidate-cdn-cache scripts-lb --path / --project climax-scripts
 ```
 
 You can invalidate any specific static file by passing the relative path to the `--path` argument.
@@ -77,21 +77,21 @@ Using `gcloud`:
 
 ```bash
 # CERTIFICATE
-gcloud beta compute ssl-certificates describe vilf-ssl --global --format="get(name, managed.status, managed.domainStatus)" --project climax-vilf
+gcloud beta compute ssl-certificates describe scripts-ssl --global --format="get(name, managed.status, managed.domainStatus)" --project climax-scripts
 
 # LOAD BALANCER
-gcloud compute target-https-proxies describe vilf-lb-target-proxy --project=climax-vilf
-gcloud compute target-http-proxies describe vilf-lb-target-proxy-3 --project=climax-vilf
+gcloud compute target-https-proxies describe scripts-lb-target-proxy --project=climax-scripts
+gcloud compute target-http-proxies describe scripts-lb-target-proxy-3 --project=climax-scripts
 
 # FORWARDING RULES
-gcloud compute forwarding-rules describe vilf-lb-frontend-main --project=climax-vilf --global
-gcloud compute forwarding-rules describe vilf-lb-frontend-http-2 --project=climax-vilf --global
+gcloud compute forwarding-rules describe scripts-lb-frontend-main --project=climax-scripts --global
+gcloud compute forwarding-rules describe scripts-lb-frontend-http-2 --project=climax-scripts --global
 ```
 
 Using `openssl`:
 
 ```bash
-openssl s_client -showcerts -servername vilf.org -connect 34.160.129.80:443 -verify 99 -verify_return_error
+openssl s_client -showcerts -servername scripts.org -connect 34.160.129.80:443 -verify 99 -verify_return_error
 ```
 
 ## Tools for contributors 
@@ -100,18 +100,18 @@ openssl s_client -showcerts -servername vilf.org -connect 34.160.129.80:443 -ver
 #### Interactive mode (recommended)
 Think of a good search query that will locate your restaurant (e.g. "Lion Dance Cafe"). Run the following from the terminal to see an interactive prompt:
 ```bash
-python spatula.py
+./vilf.sh spatula
 #Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
 ```
 Enter the hint:
 ```bash
-python spatula.py
+./vilf.sh spatula
 #Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
 Lion Dance Cafe
 ```
 The scraper will be able to identify the restaurant automatically and generate a markdown file for you:
 ```bash
-python spatula.py
+./vilf.sh spatula
 #Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
 Lion Dance Cafe 
 
@@ -154,7 +154,7 @@ use the restaurant name (and possibly street name, see below), and will append a
 to the end of the filename in cases of conflict with a preexisting file. You can also flag to use the 
 city name for the field `area` (though you may want to be more specific like "Downtown Oakland").
 ```bash
-python spatula.py --city-as-area --street-in-filename
+./vilf.sh spatula --city-as-area --street-in-filename
 #...
 #Successfully wrote markdown to file lion-dance-cafe-380-17th-st.md
 cat lion-dance-cafe-380-17th-st.md
@@ -167,7 +167,7 @@ cat lion-dance-cafe-380-17th-st.md
 
 Sometimes searches are ambiguous. In this case, the scraper will allow you to select one of the top results from a search or try a different search:
 ```bash
-python spatula.py                
+./vilf.sh spatula
 #Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
 Bongo Java Nashville
 
@@ -206,7 +206,7 @@ to escape characters correctly (most terminals will automatically escape upon pa
 
 Ex:
 ```bash
-python spatula.py --url https://www.google.com/maps/place/Lion+Dance+Caf%C3%A9/@37.8060737,
+./vilf.sh spatula --url https://www.google.com/maps/place/Lion+Dance+Caf%C3%A9/@37.8060737,
 -122.270113,17z/data\=\!3m1\!4b1\!4m5\!3m4\!1s0x808f817f59aa5fa9:0xc6930eb94f2d3188\!8m2\!3d37.8060489\
 !4d-122.267932
 
@@ -225,25 +225,25 @@ python spatula.py --url https://www.google.com/maps/place/Lion+Dance+Caf%C3%A9/@
 Notice the `-0` added to the filename to avoid a collision with the original file we produced.
 
 #### Shortcuts and extras
-1. `python spatula.py --ask-first` prompts the user before writing metadata to markdown.
-2. `python spatula.py --search-query 'lion dance cafe'` or `python spatula.py -s 'lion dance cafe'` avoids the search prompt and jumps right to the action
-3. `python spatula.py --directory '/path/to/folder'` allows you to specify the directory for the markdown file (directory doesn't have to exist yet)
-4. `python spatula.py --manual-filename '/path/to/folder/filename.md'` allows you to manually specify the output file
-5. `python spatula.py --timeout 30.0` let's you set the timeout for the browser (default is 5.0)
-6. `python spatula.py --no-headless` let's you see the browser GUI as the searches are being made (kinda fun but not recommended unless debugging)
-7. For more details run `python spatula.py --help`.
+1. `./vilf.sh spatula --ask-first` prompts the user before writing metadata to markdown.
+2. `./vilf.sh spatula --search-query 'lion dance cafe'` or `python spatula.py -s 'lion dance cafe'` avoids the search prompt and jumps right to the action
+3. `./vilf.sh spatula --directory '/path/to/folder'` allows you to specify the directory for the markdown file (directory doesn't have to exist yet)
+4. `./vilf.sh spatula --manual-filename '/path/to/folder/filename.md'` allows you to manually specify the output file
+5. `./vilf.sh spatula --timeout 30.0` let's you set the timeout for the browser (default is 5.0)
+6. `./vilf.sh spatula --no-headless` let's you see the browser GUI as the searches are being made (kinda fun but not recommended unless debugging)
+7. For more details run `./vilf.sh spatula --help`.
 
 
 ### Checking new file additions against Google Maps
-Before committing new markdown files, `spatula` can be used to check new additions against Google Maps even if they were not generated 
- using `spatula`. Simply run the following from the repo home directory:
+Before committing new markdown files, `spatula` can be leveraged to check new files against
+Google Maps scraping. Simply run the following from the repo home directory:
 ```bash
-python cross_reference.py $(git diff --staged --name-only places/)
+./vilf.sh check $(git diff --staged --name-only places/)
 ```
 
 If everything looks as expected, you will see
 ```bash
-python cross_reference.py $(git diff --staged --name-only places/)
+./vilf.sh check $(git diff --staged --name-only places/)
 
 #Testing files:
 #✔ places/lion-dance-cafe.md
@@ -254,7 +254,7 @@ python cross_reference.py $(git diff --staged --name-only places/)
 
 If anything is wrong, the metadata will be displayed:
 ```bash
-python cross_reference.py $(git diff --staged --name-only places/)
+./vilf.sh check $(git diff --staged --name-only places/)
 
 #Testing files:
 #✘ places/lion-dance-cafe.md

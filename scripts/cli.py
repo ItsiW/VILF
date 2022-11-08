@@ -12,6 +12,6 @@ def vilf():
 
 if __name__ == "__main__":
     vilf.add_command(build_vilf, 'build')
-    vilf.add_command(scrape_and_gen_md, 'scrape')
+    vilf.add_command(scrape_and_gen_md, 'spatula')
     vilf.add_command(cross_reference_md, 'check')
     vilf()
