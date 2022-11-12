@@ -47,7 +47,7 @@ def get_chrome_browser(headless: bool = True) -> webdriver.Chrome:
 @dataclass
 class GoogleMapsScraper:
     """
-    Container dataclass for restaurant information.
+    Dataclass for restaurant information.
 
     If a URL is specified at instantiation, it sends the browser there.
     Otherwise, the 'search' method supports interactive searches.
@@ -79,7 +79,6 @@ class GoogleMapsScraper:
 
     def scrape(self, close_browser: bool = True) -> None:
         """Scrape Google Maps data and perform interactive search if failure"""
-
         try:
             self.name = self._get_name()
             address_info = self._get_address()
@@ -94,20 +93,19 @@ class GoogleMapsScraper:
             self.zip = address_info['zip']
         except (NoSuchElementException, IndexError):
             print("\nMake sure search terms or supplied URL correspond to a restaurant location. "
-                  "Try searching instead/again with better terms (ex: 'Battambang restaurant "
+                  "Try searching again with better terms (ex: 'Battambang restaurant "
                   "Oakland' instead of 'Battambang'):\n")
             self.search_for_restaurant()
             self.scrape()
 
     def _get_name(self, silent: bool = False) -> str:
-        """ Get the h1 field (seems reliable)"""
+        """Get the h1 field"""
         try:
             return self.browser.find_element(By.TAG_NAME, value="h1").text
         except NoSuchElementException as e:
             if not silent:
                 print("\nA name could not be located.")
             raise e
-
 
     def _get_address(self, silent: bool = False) -> dict[str, Optional[str]]:
         """
@@ -131,15 +129,15 @@ class GoogleMapsScraper:
             # e.g. "inside mall, 100 First St, Suite #2, Springfield, ...". To parse this,
             # we split the address string by comma, then use a regex to identify the first
             # component that begins with a digit. This is presumably the street address. We
-            # ignore anything before this (these tend to be instructions like "inside mall,
-            # between 2nd and 3rd street, etc). There are some edge cases not caught by this
+            # ignore anything before this (these tend to be instructions like "inside mall",
+            # "between 2nd and 3rd street", etc). There are some edge cases not caught by this
             # (e.g. One Ferry Building, S. Street...) so if we can't find what we need, just
             # set first_number_idx = 0. We then look through the remaining items and
             # locate the STATE ZIP with a regex. We assume we're only using US addresses.
             # From this position we assume the index to the left is the city and everything
             # between the street address up to the city is useful address info.
             address_list = [item.strip() for item in full_address.split(',')]
-            first_number_idx = 0 # in case we fail to find a digit, we fall back to using the first item
+            first_number_idx = 0 # in case we fail to find a digit, we fall back to first item
             state_zip_idx = -1
             for idx, item in enumerate(address_list):
                 if re.findall(r'^\d', item):
@@ -180,7 +178,7 @@ class GoogleMapsScraper:
             label = button.get_attribute('aria-label')
             return ''.join(filter(str.isdigit, label))
         except NoSuchElementException:
-            return None
+            return
 
     def _parse_lat_lon(self) -> tuple[float, float]:
         """
@@ -188,10 +186,9 @@ class GoogleMapsScraper:
 
         This regex only searches for values within [-90, 90] for latitude
         and [-180, 180] for longitude (decimals can be any precision). The
-        regex looks for the pattern !3dLAT!4dLON, with LAT in [-90, 90] and
-        LON in [-180, 180] (decimals can be any precision).
+        regex looks for the pattern !3dLAT!4dLON
 
-        :return: Tuple containing the latitude and langitude
+        :return: Tuple containing the latitude and longitude
         """
         lat, lon = re.findall(LAT_LON_RE, self.url)[0]
         return (float(lat), float(lon))
@@ -207,9 +204,14 @@ class GoogleMapsScraper:
         """
         self.browser.get(GOOGLE_MAPS_URL)
         if search_query is None:
-            search_query = input('Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):\n')
-        self.wait.until(EC.element_to_be_clickable((By.ID, "searchboxinput"))).send_keys(search_query)
-        self.wait.until(EC.element_to_be_clickable((By.ID, "searchbox-searchbutton"))).click()
+            search_query = input('Enter Google Maps search terms '
+                                 '(ex: Lion Dance Cafe in Oakland):\n')
+        self.wait.until(
+            EC.element_to_be_clickable((By.ID, "searchboxinput"))
+        ).send_keys(search_query)
+        self.wait.until(
+            EC.element_to_be_clickable((By.ID, "searchbox-searchbutton"))
+        ).click()
         self._wait_for_maps_to_redirect()
 
         # Multiple locations/ambiguous search
@@ -308,15 +310,12 @@ class GoogleMapsScraper:
             print(
                 "\nTimeoutException: URL did not load correctly within the given timeout."
                 " URL must be of the form '...google.com/maps/search/...data=...' or "
-                "'...google.com/maps/place/...<lat>!4d<lon>' within "
+                "'...google.com/maps/place/...<lat>!4d<lon>...' within "
                 f"{self.timeout} seconds. Found '{self.browser.current_url}' instead. It's "
                 "possible the timeout is too short and the Google Maps URL has not redirected "
                 "or the specified URL is incompatible."
             )
             raise e
-        except Exception as e:
-            raise e
-
 
     def write_data_to_markdown(
             self,
