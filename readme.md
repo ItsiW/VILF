@@ -33,7 +33,7 @@ pip install -r requirements.txt
 ### **3. Build static files**
 
 ```bash
-./vilf.sh build
+./vilf build
 ```
 
 ### **4. Serve static files locally**
@@ -100,104 +100,104 @@ openssl s_client -showcerts -servername scripts.org -connect 34.160.129.80:443 -
 #### Interactive mode (recommended)
 Think of a good search query that will locate your restaurant (e.g. "Lion Dance Cafe"). Run the following from the terminal to see an interactive prompt:
 ```bash
-./vilf.sh spatula
-#Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
+./vilf spatula
+# Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
 ```
 Enter the hint:
 ```bash
-./vilf.sh spatula
-#Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
+./vilf spatula
+# Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
 Lion Dance Cafe
 ```
 The scraper will be able to identify the restaurant automatically and generate a markdown file for you:
 ```bash
-./vilf.sh spatula
-#Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
+./vilf spatula
+# Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
 Lion Dance Cafe 
 
-#Waiting for Google Maps page to redirect...
+# Waiting for Google Maps page to redirect...
 
-#Using the Google Maps page: https://www.google.com/maps/place/Lion+Dance...
-#Name = Lion Dance Café
-#Address = 380 17th St
-#City = Oakland
-#State = CA
-#Zip code = 94612
-#Phone: None
-#Lat, lon = 37.806069, -122.276674
+# Using the Google Maps page: https://www.google.com/maps/place/Lion+Dance...
+# Name = Lion Dance Café
+# Address = 380 17th St
+# City = Oakland
+# State = CA
+# Zip code = 94612
+# Phone: None
+# Lat, lon = 37.806069, -122.276674
 
-#Successfully wrote markdown to file lion-dance-cafe.md
+# Successfully wrote markdown to file places/lion-dance-cafe.md
 ```
 The markdown will contain the fields pre-populated and the relevant values already filled in. The rest is up to 
 you to fill in.
 ```bash
 cat lion-dance-cafe.md
-#---
-#name: Lion Dance Café
-#cuisine: 
-#drinks: 
-#visited: 
-#address: 380 17th St
-#area: 
-#taste: 
-#value: 
-#lat: 37.8060692
-#lon: -122.2766738
-#menu: 
-#phone: 
-#---
-#
-#<REVIEW>
+# ---
+# name: Lion Dance Café
+# cuisine: 
+# address: 380 17th St
+# area: 
+# lat: 37.8060489
+# lon: -122.267932
+# phone: 
+# menu: 
+# drinks: 
+# visited: 
+# taste: 
+# value: 
+# ---
+
+# <REVIEW>
 ```
 File name formatting happens automatically. It will safely remove bad characters,
 use the restaurant name (and possibly street name, see below), and will append an integer
 to the end of the filename in cases of conflict with a preexisting file. You can also flag to use the 
 city name for the field `area` (though you may want to be more specific like "Downtown Oakland").
 ```bash
-./vilf.sh spatula --city-as-area --street-in-filename
-#...
-#Successfully wrote markdown to file lion-dance-cafe-380-17th-st.md
+./vilf spatula --city-as-area --street-in-filename
+# ...
+# Successfully wrote markdown to file lion-dance-cafe-380-17th-st.md
 cat lion-dance-cafe-380-17th-st.md
-#...
-#address: 380 17th St
-#area: Oakland
-#taste:
-#... 
+# ...
+# address: 380 17th St
+# area: Oakland
+# lat: 37.8060489
+# ... 
 ```
-
+ 
 Sometimes searches are ambiguous. In this case, the scraper will allow you to select one of the top results from a search or try a different search:
 ```bash
-./vilf.sh spatula
-#Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
+./vilf spatula
+# Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
 Bongo Java Nashville
 
-#Waiting for Google Maps page to redirect...
+# Waiting for Google Maps page to redirect...
 
-#I found multiple potential locations, collecting top results...
-#Gathering search result data: 100%|█████| 5/5 [00:23<00:00,  4.63s/it]
+# I found multiple potential locations, collecting top results...
+# Gathering search result data: 100%|█████| 5/5 [00:23<00:00,  4.63s/it]
 
-#0: Try searching again
-#1: Bongo Java at 2007 Belmont Blvd, Nashville, TN
-#2: Bongo Java East at 107 S 11th St, Nashville, TN
-#3: Bongo Java at 364 Rep. John Lewis Way S, Nashville, TN
-#4: Bongo Java Roasting Co. at 372 Herron Dr, Nashville, TN
+# 0: Try searching again
+# 1: Bongo Java at 2007 Belmont Blvd, Nashville, TN
+# 2: Bongo Java East at 107 S 11th St, Nashville, TN
+# 3: Bongo Java at 364 Rep. John Lewis Way S, Nashville, TN
+# 4: Bongo Java Roasting Co. at 372 Herron Dr, Nashville, TN
 
-#Select one of the above choices to proceed (0 - 4):
+# Select one of the above choices to proceed (0 - 4):
 3
 
-#Waiting for Google Maps page to redirect...
+# Waiting for Google Maps page to redirect...
 
-#Using the Google Maps page: https://www.google.com/maps/place/Bongo+Java...
+# Using the Google Maps page: https://www.google.com/maps/place/Bongo+Java...
 
-#Name = Bongo Java
-#Address = 364 Rep. John Lewis Way S
-#City = Nashville
-#State = TN
-#Zip code = 37203
-#Phone: None
-#Lat, lon = 36.157151, -86.776074
+# Name = Bongo Java
+# Address = 364 Rep. John Lewis Way S
+# City = Nashville
+# State = TN
+# Zip code = 37203
+# Phone: None
+# Lat, lon = 36.157151, -86.776074
 
-#Successfully wrote markdown to file bongo-java.md
+# Successfully wrote markdown to file places/bongo-java.md
 ```
 
 #### Manual URL mode
@@ -206,64 +206,64 @@ to escape characters correctly (most terminals will automatically escape upon pa
 
 Ex:
 ```bash
-./vilf.sh spatula --url https://www.google.com/maps/place/Lion+Dance+Caf%C3%A9/@37.8060737,
+./vilf spatula --url https://www.google.com/maps/place/Lion+Dance+Caf%C3%A9/@37.8060737,
 -122.270113,17z/data\=\!3m1\!4b1\!4m5\!3m4\!1s0x808f817f59aa5fa9:0xc6930eb94f2d3188\!8m2\!3d37.8060489\
 !4d-122.267932
 
-#Waiting for Google Maps page to redirect...
+# Waiting for Google Maps page to redirect...
 
-#Name = Lion Dance Café
-#Address = 380 17th St
-#City = Oakland
-#State = CA
-#Zip code = 94612
-#Phone: None
-#Lat, lon = 37.806074, -122.270113
+# Name = Lion Dance Café
+# Address = 380 17th St
+# City = Oakland
+# State = CA
+# Zip code = 94612
+# Phone: None
+# Lat, lon = 37.806074, -122.270113
 
-#Successfully wrote markdown to file lion-dance-cafe-0.md
+# Successfully wrote markdown to file places/lion-dance-cafe-0.md
 ```
 Notice the `-0` added to the filename to avoid a collision with the original file we produced.
 
 #### Shortcuts and extras
-1. `./vilf.sh spatula --ask-first` prompts the user before writing metadata to markdown.
-2. `./vilf.sh spatula --search-query 'lion dance cafe'` or `./vilf.sh spatula -s 'lion dance cafe'` avoids the search prompt and jumps right to the action
-3. `./vilf.sh spatula --directory '/path/to/folder'` allows you to specify the directory for the markdown file (directory doesn't have to exist yet)
-4. `./vilf.sh spatula --manual-filename '/path/to/folder/filename.md'` allows you to manually specify the output file
-5. `./vilf.sh spatula --timeout 30.0` let's you set the timeout for the browser (default is 5.0)
-6. `./vilf.sh spatula --no-headless` let's you see the browser GUI as the searches are being made (kinda fun but not recommended unless debugging)
-7. For more details run `./vilf.sh spatula --help`.
+1. `./vilf spatula --ask-first` prompts the user before writing metadata to markdown.
+2. `./vilf spatula --search-query 'lion dance cafe'` or `./vilf spatula -s 'lion dance cafe'` avoids the search prompt and jumps right to the action
+3. `./vilf spatula --directory '/path/to/folder'` allows you to specify the directory for the markdown file (directory doesn't have to exist yet)
+4. `./vilf spatula --manual-filename '/path/to/folder/filename.md'` allows you to manually specify the output file
+5. `./vilf spatula --timeout 30.0` let's you set the timeout for the browser (default is 10.0)
+6. `./vilf spatula --no-headless` let's you see the browser GUI as the searches are being made (kinda fun but not recommended unless debugging)
+7. For more details run `./vilf spatula --help`.
 
 
 ### Checking new file additions against Google Maps
 Before committing new markdown files, `spatula` can be leveraged to check new files against
 Google Maps scraping. Simply run the following from the repo home directory:
 ```bash
-./vilf.sh check $(git diff --staged --name-only places/)
+./vilf check $(git diff --staged --name-only places/)
 ```
 
 If everything looks as expected, you will see
 ```bash
-./vilf.sh check $(git diff --staged --name-only places/)
+./vilf check $(git diff --staged --name-only places/)
 
-#Testing files:
-#✔ places/lion-dance-cafe.md
-#✔ places/maya-halal-taqueria.md
+# Testing files:
+# ✔ places/lion-dance-cafe.md
+# ✔ places/maya-halal-taqueria.md
 
-#All staged files look good.
+# All files look good.
 ```
 
 If anything is wrong, the metadata will be displayed:
 ```bash
-./vilf.sh check $(git diff --staged --name-only places/)
+./vilf check $(git diff --staged --name-only places/)
 
-#Testing files:
-#✘ places/lion-dance-cafe.md
-#✔ places/maya-halal-taqueria.md
+# Testing files:
+# ✘ places/lion-dance-cafe.md
+# ✔ places/maya-halal-taqueria.md
 
-#The following files may need inspection:
+# The following files may need inspection:
 
-#places/lion-dance-cafe.md
-#Current address: 382 17th St | Determined address: 380 17th St
-#Current latitude: 34.8060489 | Determined latitude: 37.8060489
-#Current longitude: -120.267932 | Determined longitude: -122.267932
+# places/lion-dance-cafe.md
+# Current address: 382 17th St | Determined address: 380 17th St
+# Current latitude: 34.8060489 | Determined latitude: 37.8060489
+# Current longitude: -120.267932 | Determined longitude: -122.267932
 ```
