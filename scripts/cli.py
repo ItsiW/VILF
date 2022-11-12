@@ -4,14 +4,14 @@ from .cross_reference import cross_reference_md
 from .spatula import scrape_and_gen_md
 
 @click.group()
-def vilf():
+def cli():
     """
-    VILF CLI
+    VILF CLI interface
     """
     pass
 
 if __name__ == "__main__":
-    vilf.add_command(build_vilf, 'build')
-    vilf.add_command(scrape_and_gen_md, 'spatula')
-    vilf.add_command(cross_reference_md, 'check')
-    vilf()
+    cli.add_command(build_vilf, 'build')
+    cli.add_command(scrape_and_gen_md, 'spatula')
+    cli.add_command(cross_reference_md, 'check')
+    cli()

@@ -141,7 +141,7 @@ def cross_reference_md(files: tuple[str]) -> None:
         for file in potentially_bad_files:
             print(errors[file])
     else:
-        print("\nAll staged files look good.")
+        print("\nAll files look good.")
 
 
 if __name__ == "__main__":
