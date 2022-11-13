@@ -1,3 +1,4 @@
 build/
 venv/
 static/img/
+scripts/__pycache__/
