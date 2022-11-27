@@ -239,56 +239,59 @@ def build_vilf() -> None:
 
 
     for place_md in Path("places").glob("*.md"):
-        slug = place_md.parts[-1][:-3]
-        assert re.match(r"^[0-9a-z-]+$", slug), "Bad filename for " + str(place_md)
-        relative_url = f"/places/{slug}/"
-        with open(place_md) as f:
-            _, frontmatter, md = f.read().split("---", 2)
-        meta = yaml.load(frontmatter, Loader=yaml.Loader)
-        meta["url"] = relative_url
-        meta["slug"] = slug
-        meta["geodata"] = format_geodata(meta)
-        meta["phone_display"] = format_phone_number(meta)
-        visited = date.fromisoformat(meta["visited"])
-        meta["visited_display"] = format_visited(visited)
-        meta["review_age"] = (date.today() - visited).days
-        if meta["taste"] == 1:
-            assert "sgfi" in meta, f"{meta['slug']} missing sgfi"
-            assert meta["sgfi"] is not None, f"{meta['slug']} missing sgfi"
-        if meta["taste"] >= 1:
-            assert "**" in md, f"highlight food in {meta['slug']}"
-        meta["taste_label"], meta["taste_color"] = rating_to_formatting(
-            meta["taste"], taste_labels
-        )
-        meta["value_label"], meta["value_color"] = rating_to_formatting(
-            meta["value"], value_labels
-        )
-        meta["drinks_label"], meta["drinks_color"] = boolean_to_formatting(meta["drinks"])
-        html = markdown(md.strip())
-        meta["blurb"] = format_blurb(md)
-        meta["food_image_path"] = get_fp_food_image(slug)
-        meta["food_thumb_path"] = get_fp_food_thumb(slug)
-        rendered = place_template.render(
-            **meta,
-            title=format_title(meta),
-            description=format_description(meta),
-            taste_html=rating_html(meta["taste"], taste_labels),
-            value_html=rating_html(meta["value"], value_labels),
-            drinks_html=boolean_html(meta["drinks"]),
-            content=html,
-        )
-        out_dir = build_dir / "places" / slug
-        out_dir.mkdir(exist_ok=True, parents=True)
-        with open(out_dir / "index.html", "w") as o:
-            o.write(rendered)
-        places.append(meta)
+        try: 
+            slug = place_md.parts[-1][:-3]
+            assert re.match(r"^[0-9a-z-]+$", slug), "Bad filename for " + str(place_md)
+            relative_url = f"/places/{slug}/"
+            with open(place_md) as f:
+                _, frontmatter, md = f.read().split("---", 2)
+            meta = yaml.load(frontmatter, Loader=yaml.Loader)
+            meta["url"] = relative_url
+            meta["slug"] = slug
+            meta["geodata"] = format_geodata(meta)
+            meta["phone_display"] = format_phone_number(meta)
+            visited = date.fromisoformat(meta["visited"])
+            meta["visited_display"] = format_visited(visited)
+            meta["review_age"] = (date.today() - visited).days
+            if meta["taste"] == 1:
+                assert "sgfi" in meta, f"{meta['slug']} missing sgfi"
+                assert meta["sgfi"] is not None, f"{meta['slug']} missing sgfi"
+            if meta["taste"] >= 1:
+                assert "**" in md, f"highlight food in {meta['slug']}"
+            meta["taste_label"], meta["taste_color"] = rating_to_formatting(
+                meta["taste"], taste_labels
+            )
+            meta["value_label"], meta["value_color"] = rating_to_formatting(
+                meta["value"], value_labels
+            )
+            meta["drinks_label"], meta["drinks_color"] = boolean_to_formatting(meta["drinks"])
+            html = markdown(md.strip())
+            meta["blurb"] = format_blurb(md)
+            meta["food_image_path"] = get_fp_food_image(slug)
+            meta["food_thumb_path"] = get_fp_food_thumb(slug)
+            rendered = place_template.render(
+                **meta,
+                title=format_title(meta),
+                description=format_description(meta),
+                taste_html=rating_html(meta["taste"], taste_labels),
+                value_html=rating_html(meta["value"], value_labels),
+                drinks_html=boolean_html(meta["drinks"]),
+                content=html,
+            )
+            out_dir = build_dir / "places" / slug
+            out_dir.mkdir(exist_ok=True, parents=True)
+            with open(out_dir / "index.html", "w") as o:
+                o.write(rendered)
+            places.append(meta)
 
-        sitemap.append(
-            {
-                "url": f"{SITE_URL}{relative_url}",
-                "lastmod": visited,
-            }
-        )
+            sitemap.append(
+                {
+                    "url": f"{SITE_URL}{relative_url}",
+                    "lastmod": visited,
+                }
+            )
+        except Exception as e:
+            print(place_md.name, e)
 
     unique_fields = ["name", "lat", "lon", "menu", "phone", "blurb"]
 
