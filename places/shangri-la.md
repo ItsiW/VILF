@@ -8,7 +8,7 @@ lon: -122.2628546
 phone: "+15102509918"
 menu: https://shangrilavegantelegraph.com/menu
 drinks: yes 
-visited: "12-10-2022"
+visited: "2022-12-10"
 taste: 3
 value: 2
 ---
