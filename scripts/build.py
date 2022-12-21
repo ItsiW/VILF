@@ -15,7 +15,7 @@ from PIL import Image
 from tqdm import tqdm
 import click
 
-SITE_URL = "https://thegoodtaste.guide"
+SITE_URL = "https://vilf.org"
 
 @click.command()
 def build_vilf() -> None:
