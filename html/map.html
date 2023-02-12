@@ -135,11 +135,31 @@ map.on("load", function () {
     "source": "places",
     "paint": {
       "circle-radius": radius,
-      "circle-color": ["get", "taste_color"],
+      "circle-color": ["get", "taste_color"], 
       "circle-stroke-width": 1,
       "circle-stroke-color": "#000000"
     },
     "filter": ["==", "$type", "Point"]
+  });
+
+  map.addLayer({
+    "id": "poi-labels",
+    "type": "symbol",
+    "source": "places",
+    'layout': {
+      'text-field': ['get', 'name'],
+      'text-variable-anchor': ['top'],
+      'text-radial-offset': 1,
+      'text-justify': 'auto',
+      'text-font': ["Open Sans Bold","Arial Unicode MS Regular"],
+    },
+    'paint':{
+      'text-color': ["get", "taste_color"],
+      'text-halo-blur': .2,
+      'text-halo-width': .8,
+      'text-halo-color': "#000000",
+    },
+    "filter": [">=", ["zoom"], 14]
   });
 
   // preload thumbnails
