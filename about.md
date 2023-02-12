@@ -15,7 +15,7 @@ We mostly target food under $20 per person and try to only review places at the 
 
 ## Creating a Review
 
-Fill in our [Review Form](https://forms.gle/rAWoud7gfEGVToXy9).
+Fill in our [Review Form](https://forms.gle/sMNZHQZUkwGH3LL66).
 
 ## Ratings Guide
 
