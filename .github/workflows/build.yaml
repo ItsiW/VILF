@@ -1,7 +1,7 @@
 name: Test Build VILF
 on:
   pull_request:
-    branches: [ develop ]
+    branches: develop
 jobs:
   build:
     runs-on: ubuntu-latest
