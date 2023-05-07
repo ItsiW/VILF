@@ -1,6 +1,0 @@
-jobs:
-  build:
-    steps:
-      - uses: actions/checkout@v2
-      - run: python3 -m pip install -r requirements.txt
-      - run: ./vilf build
