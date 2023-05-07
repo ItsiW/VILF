@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: python3 -m pip install -r requirements.txt
-      - run: ./vilf build
+      - run: python3 vilf.py build
 	    - uses: google-github-actions/auth@v0
 	      with:
 	        credentials_json: "${{ secrets.CLIMAX_VILF_SA_KEY }}"
