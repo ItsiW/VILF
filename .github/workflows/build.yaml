@@ -1,0 +1,12 @@
+name: Test Build VILF
+on:
+  pull_request:
+    branches: develop
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: python3 -m pip install -r requirements.txt
+      - run: ./vilf build
+
