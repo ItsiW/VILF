@@ -10,7 +10,6 @@ menu: https://order.thanx.com/curryupnow
 drinks: True
 visited: "2022-11-19"
 taste: 1
-sgfi: None
 value: 2
 ---
 

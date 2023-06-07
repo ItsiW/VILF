@@ -10,7 +10,6 @@ menu: https://www.tlctaco.com/menus/#vegan
 drinks: True
 visited: "2022-10-31"
 taste: 1
-sgfi: None
 value: 2
 ---
 

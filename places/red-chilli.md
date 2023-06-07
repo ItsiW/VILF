@@ -10,7 +10,6 @@ menu:
 drinks: False
 visited: "2022-09-11"
 taste: 1
-sgfi: late night thali
 value: 2
 ---
 

@@ -10,7 +10,6 @@ menu:
 drinks: False
 visited: "2022-10-01"
 taste: 1
-sgfi: None
 value: 2
 ---
 

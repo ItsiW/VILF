@@ -10,7 +10,6 @@ menu: https://www.beyondmenu.com/42956/san-francisco/yemen-kitchen-san-francisco
 drinks: False
 visited: "2022-10-18"
 taste: 1
-sgfi: None
 value: 3
 ---
 

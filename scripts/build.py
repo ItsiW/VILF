@@ -233,9 +233,6 @@ def build_vilf() -> None:
             visited = date.fromisoformat(meta["visited"])
             meta["visited_display"] = format_visited(visited)
             meta["review_age"] = (date.today() - visited).days
-            if meta["taste"] == 1:
-                assert "sgfi" in meta, f"{meta['slug']} missing sgfi"
-                assert meta["sgfi"] is not None, f"{meta['slug']} missing sgfi"
             if meta["taste"] >= 1:
                 assert "**" in md, f"highlight food in {meta['slug']}"
             meta["taste_label"], meta["taste_color"] = rating_to_formatting(

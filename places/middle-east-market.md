@@ -6,7 +6,6 @@ visited: "2022-08-22"
 address: 2054 San Pablo Ave
 area: Berkeley
 taste: 1
-sgfi: try some yummy Iranian food
 value: 2
 lat: 37.86830098238302
 lon: -122.29207360804679
