@@ -10,7 +10,6 @@ menu: https://www.reemscalifornia.com/reemsmission
 drinks: True
 visited: "2022-11-11"
 taste: 1
-sgfi: None
 value: 1
 ---
 

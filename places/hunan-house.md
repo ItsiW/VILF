@@ -6,7 +6,6 @@ visited: "2022-09-06"
 address: 826 Washington St
 area: Chinatown
 taste: 1
-sgfi: nice Chinese appetizers in a dingey vibey setting
 value: 1
 lat: 37.79516158308355
 lon: -122.40700267132775

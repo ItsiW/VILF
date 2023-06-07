@@ -10,7 +10,6 @@ menu: https://www.toasttab.com/ramenwell-3378-18th-st/v3/?mode=fulfillment
 drinks: True
 visited: "2022-11-05"
 taste: 1
-sgfi: None
 value: 1
 ---
 

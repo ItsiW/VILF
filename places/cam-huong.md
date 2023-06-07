@@ -6,7 +6,6 @@ visited: "2022-08-04"
 address: 1088 Webster St
 area: Downtown Oakland
 taste: 1
-sgfi: pretty nice tofu banh mi
 value: 2
 lat: 37.80114462032649
 lon: -122.27003100057853

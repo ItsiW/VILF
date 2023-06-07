@@ -10,7 +10,6 @@ menu: https://www.trulyeats.com/valencia-menu
 drinks: False
 visited: "2022-11-15"
 taste: 1
-sgfi: None
 value: 1
 ---
 

@@ -10,7 +10,6 @@ menu: https://places.singleplatform.com/rheas-deli/menu?ref=google
 drinks: True
 visited: "2022-11-06"
 taste: 1
-sgfi: None
 value: 2
 ---
 

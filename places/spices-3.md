@@ -6,7 +6,6 @@ visited: "2022-08-06"
 address: 370 12th St
 area: Downtown Oakland
 taste: 1
-sgfi: huge selection of Sichuan staples
 value: 2
 lat: 37.802305882468936
 lon: -122.27004915721817

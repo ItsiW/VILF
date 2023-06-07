@@ -6,7 +6,6 @@ visited: "2022-08-16"
 address: 369 12th St
 area: Downtown Oakland
 taste: 1
-sgfi: carb-forward oily noodles for when they're needed
 value: 1
 lat: 37.802068998066886
 lon: -122.27045356075722

@@ -10,7 +10,6 @@ menu: https://www.sakuraoakland.com/chuan-yu-menu
 drinks: True
 visited: "2022-09-13"
 taste: 1
-sgfi: decent sichuan staples
 value: 1
 ---
 

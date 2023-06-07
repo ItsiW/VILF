@@ -6,7 +6,6 @@ visited: "2022-09-04"
 address: 3074b Scott Blvd
 area: Santa Clara
 taste: 1
-sgfi: wide variety of Maharashtran staples
 value: 2
 lat: 37.376858175031934
 lon: -121.9615346846677

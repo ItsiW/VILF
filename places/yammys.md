@@ -6,7 +6,6 @@ visited: "2022-08-30"
 address: 538 9th St
 area: Downtown Oakland
 taste: 1
-sgfi: tasty Ethiopian food
 value: 2
 lat: 37.80181652349749
 lon: -122.27538935440708
