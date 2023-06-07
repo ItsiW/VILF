@@ -2,4 +2,4 @@ build/
 venv/
 static/img/
 *.swp
-
+scripts/__pycache__/
