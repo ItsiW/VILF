@@ -10,7 +10,6 @@ menu: https://www.spoonashby.com/_files/ugd/a06ab3_e2d19efc4fa143bc9263fd60a8f50
 drinks: False
 visited: "2022-10-26"
 taste: 1
-sgfi: None
 value: 2
 ---
 

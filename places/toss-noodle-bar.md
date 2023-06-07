@@ -10,7 +10,6 @@ menu: http://tossnoodlebar.com/menu/
 drinks: False
 visited: "2022-09-23"
 taste: 1
-sgfi: tasty fried noodles
 value: 1
 ---
 

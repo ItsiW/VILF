@@ -10,7 +10,6 @@ menu: https://www.menya-kanemaru.com/menus
 drinks: True
 visited: "2022-11-13"
 taste: 1
-sgfi: None
 value: 1
 ---
 

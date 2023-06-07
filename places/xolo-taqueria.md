@@ -6,7 +6,6 @@ visited: "2022-09-09"
 address: 1916 Telegraph Ave
 area: Downtown Oakland
 taste: 1
-sgfi: yummy beyond meat tacos
 value: 2
 lat: 37.80842114899604
 lon: -122.26964864466785

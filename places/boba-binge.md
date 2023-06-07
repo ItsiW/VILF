@@ -6,7 +6,6 @@ visited: "2022-08-14"
 address: 1004 Webster St
 area: Downtown Oakland
 taste: 1
-sgfi: pretty tasty tofu banh mi
 value: 2
 lat: 37.80073511393545
 lon: -122.27018237805379

@@ -6,7 +6,6 @@ visited: "2022-08-11"
 address: 920 Webster St
 area: Downtown Oakland
 taste: 1
-sgfi: pretty nice tofu banh mi
 value: 2
 lat: 37.800210418911654
 lon: -122.2704510618263

@@ -10,7 +10,6 @@ menu: https://aburayaoakland.com/aburaya/order
 drinks: True
 visited: "2022-09-21"
 taste: 1
-sgfi: fried japanese foods and beer
 value: 1
 ---
 

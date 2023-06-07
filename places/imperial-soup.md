@@ -10,7 +10,6 @@ menu: https://www.imperialsoupoakland.com/menu
 drinks: False
 visited: "2022-10-09"
 taste: 1
-sgfi: vegan fish and rice!
 value: 2
 ---
 
