@@ -8,7 +8,7 @@ lon: -122.4256116
 phone: "+14156407038"
 menu: 
 drinks: false
-visited: "2022-02-23"
+visited: "2023-02-23"
 taste: 0
 value: 0
 ---

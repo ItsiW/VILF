@@ -8,7 +8,7 @@ lon: -122.4184359
 phone: "+14156216108"
 menu: https://chilelindo.com/empanadas/
 drinks: false
-visited: "2022-03-04"
+visited: "2023-03-04"
 taste: 0
 value: 1
 ---

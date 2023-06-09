@@ -8,7 +8,7 @@ lon: -122.4184218
 phone: "+14156425958"
 menu: https://www.oldjerusalem.co/menu/
 drinks: false
-visited: "2022-01-21"
+visited: "2023-01-21"
 taste: 2
 value: 2
 ---
