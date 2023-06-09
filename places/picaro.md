@@ -8,7 +8,7 @@ lon: -122.4225222
 phone: "+14154314089"
 menu: https://picarocafe.com/store/
 drinks: true
-visited: "2022-02-12"
+visited: "2023-02-12"
 taste: 2
 value: 3
 ---

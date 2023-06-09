@@ -8,7 +8,7 @@ lon: -122.4173283
 phone: "+14158241800"
 menu: https://bendersbar.com/food
 drinks: true
-visited: "2022-01-18"
+visited: "2023-01-18"
 taste: 2
 value: 2
 ---

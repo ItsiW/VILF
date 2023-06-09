@@ -8,7 +8,7 @@ lon: -122.2727995
 phone: "+15108436600"
 menu: https://www.beyondmenu.com/30973/berkeley/udupi-palace-berkeley-94704.aspx?utm_mode=light
 drinks: false
-visited: "2022-01-27"
+visited: "2023-01-27"
 taste: 1
 value: 2
 ---

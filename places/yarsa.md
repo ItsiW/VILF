@@ -1,6 +1,6 @@
 ---
 name: Yarsa Nepalese Cuisine
-cuisine: Nepalese
+cuisine: Himalayan
 drinks: False
 visited: "2022-09-07"
 address: 1310 Grant Ave

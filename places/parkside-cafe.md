@@ -8,7 +8,7 @@ lon: -122.639645
 phone: "+14158681272"
 menu: https://www.parksidecafe.com/menu-snackbar
 drinks: false
-visited: "2022-02-18"
+visited: "2023-02-18"
 taste: 1
 value: 1
 ---

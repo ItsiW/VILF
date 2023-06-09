@@ -8,7 +8,7 @@ lon: -122.4216815
 phone: "+14156785767"
 menu: https://www.shizensf.com/menu
 drinks: True
-visited: "2022-01-19"
+visited: "2023-01-19"
 taste: 1
 value: 1
 ---
