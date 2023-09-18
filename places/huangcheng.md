@@ -5,7 +5,7 @@ drinks: True
 visited: "2022-09-05"
 address: 911 Washington St
 area: Downtown Oakland
-taste: 2
+taste: 3
 value: 2
 lat: 37.8017517455172
 lon: -122.27465994245688
