@@ -8,11 +8,11 @@ lon: -122.4234894
 phone: "+14158638100"
 menu: http://www.eatbiglantern.com/Menu
 drinks: false
-visited: "2023-03-28"
-taste: 0
+visited: "2023-11-04"
+taste: 2
 value: 1
 ---
 
-Very Chinese American place with a huge vegan selection, including dim sum and vegan meats. We get the veg dim sum combination plate and orange meatless chicken. All in all it's fine, but nothing was amazing. I guess it's worth coming to scratch the itch. Although it'd probable be worth coming back to try more. 
+First time I came here was not so good but I came back and got a bunch of stuff with friends and it's fun and tasty so give it a shot. Forgot what we got, but it was **something tasty**.
 
 A bit under $20 a head.
