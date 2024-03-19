@@ -1,6 +1,6 @@
 ---
 name: Hometown Creamery
-cuisine: Desert
+cuisine: Dessert
 address: 432 Octavia St
 area: Civic Center
 lat: 37.7763187361261
