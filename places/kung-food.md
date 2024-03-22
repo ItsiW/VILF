@@ -18,3 +18,5 @@ Chicken was square,
 prices were fair.
 
 Divis must have better Chinese food somehwere.
+
+– [Tess Linden](https://www.linkedin.com/in/tess-linden-32962761)
