@@ -3,3 +3,6 @@ venv/
 static/img/
 *.swp
 scripts/__pycache__/
+/.direnv/
+/.pre-commit-config.yaml
+result

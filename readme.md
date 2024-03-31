@@ -94,6 +94,14 @@ Using `openssl`:
 openssl s_client -showcerts -servername scripts.org -connect 34.160.129.80:443 -verify 99 -verify_return_error
 ```
 
+### **4. Manage infrastructure**
+
+We use [OpenTofu](https://opentofu.org/) to deploy infrastructure as code primarily to GCP. Install the tool and running it in `./infra` for more details. This will read the configuration from `main.tf.json` to determine what to administer. This file is generated from the configuration in `default.nix`, which requires the [Nix package manager](https://nixos.org/) to interpret. Once installed and the development shell activated, run `vilf tofu` to manage further.
+
+### **5. Nix development shell**
+
+We use a Nix development shell to currently to manage infrastructure and autoformat code. It will likely accumulate more functionality too. After installing [Nix: the package manager](https://nixos.org/download/), you can enter the development shell by running `nix develop`. In this shell you can run `pre-commit` to run repository commit hooks (autoformatting, linting, etc.), as well as access repository tools through the `vilf` executable.
+
 ## Tools for contributors 
 
 ### `spatula`: Automating the restaurant data collection and markdown file generation
