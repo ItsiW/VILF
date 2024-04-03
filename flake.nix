@@ -7,9 +7,13 @@
     flake-parts.follows = "canivete/flake-parts";
     pre-commit.follows = "canivete/pre-commit";
     systems.follows = "canivete/systems";
+    opentofu-registry.follows = "canivete/opentofu-registry";
 
     terranix.url = github:terranix/terranix;
     terranix.inputs.nixpkgs.follows = "nixpkgs";
+
+    nix2container.url = github:nlewo/nix2container;
+    nix2container.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs = inputs:
     with inputs;

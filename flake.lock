@@ -37,15 +37,16 @@
         "flake-parts": "flake-parts",
         "nixpkgs": "nixpkgs",
         "nixpkgs-stable": "nixpkgs-stable",
+        "opentofu-registry": "opentofu-registry",
         "pre-commit": "pre-commit",
         "systems": "systems_2"
       },
       "locked": {
-        "lastModified": 1711911584,
-        "narHash": "sha256-FU/F1jTROwOxEoMK1keLqgkP+K4Y7s3rFlnBeeZkfR4=",
+        "lastModified": 1712086563,
+        "narHash": "sha256-DcltObtn++OXiMY5ynJjQYgtTpYj2Bbdr7oPCN9NKLo=",
         "owner": "schradert",
         "repo": "canivete",
-        "rev": "b1711cce2b887e4958fbcf17989ad0714813f466",
+        "rev": "fefc417f9fe1c5a89e0bbe28280f89e4bfbe6a00",
         "type": "github"
       },
       "original": {
@@ -110,6 +111,24 @@
       }
     },
     "flake-utils_2": {
+      "inputs": {
+        "systems": "systems_3"
+      },
+      "locked": {
+        "lastModified": 1694529238,
+        "narHash": "sha256-zsNZZGTGnMOf9YpHKJqMSsa0dXbfmxeoJ7xHlrt+xmY=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "ff7b65b44d01cf9ba6a71320833626af21126384",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "flake-utils_3": {
       "locked": {
         "lastModified": 1634851050,
         "narHash": "sha256-N83GlSGPJJdcqhUxSCS/WwW5pksYf3VP1M13cDRTSVA=",
@@ -146,19 +165,40 @@
         "type": "github"
       }
     },
+    "nix2container": {
+      "inputs": {
+        "flake-utils": "flake-utils_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1711883218,
+        "narHash": "sha256-XKHhQJ0tk/S/LbYJb31VVvZKWdb+uCFnvEuUQZJkP9o=",
+        "owner": "nlewo",
+        "repo": "nix2container",
+        "rev": "2154ad0459abfa258edaab038b4716f474656e99",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nlewo",
+        "repo": "nix2container",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1711703276,
-        "narHash": "sha256-iMUFArF0WCatKK6RzfUJknjem0H9m4KgorO/p3Dopkk=",
+        "lastModified": 1711731143,
+        "narHash": "sha256-P3rID/C2N9+emVlCr4ta0X591usRvFxqk1wON/2j+Dg=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "d8fe5e6c92d0d190646fb9f1056741a229980089",
+        "rev": "f72123158996b8d4449de481897d855bc47c7bf6",
         "type": "github"
       },
       "original": {
         "owner": "nixos",
-        "ref": "nixos-unstable",
         "repo": "nixpkgs",
+        "rev": "f72123158996b8d4449de481897d855bc47c7bf6",
         "type": "github"
       }
     },
@@ -175,6 +215,23 @@
         "owner": "nixos",
         "ref": "nixos-23.11",
         "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "opentofu-registry": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1712078392,
+        "narHash": "sha256-NJ/qZk6/haV+VMitb5tO85CDddmTCPuB29borYdhr0I=",
+        "owner": "opentofu",
+        "repo": "registry",
+        "rev": "ef991a928b6938dec3888cc62627d12b0cf74f07",
+        "type": "github"
+      },
+      "original": {
+        "owner": "opentofu",
+        "ref": "main",
+        "repo": "registry",
         "type": "github"
       }
     },
@@ -213,6 +270,7 @@
           "canivete",
           "flake-parts"
         ],
+        "nix2container": "nix2container",
         "nixpkgs": [
           "canivete",
           "nixpkgs"
@@ -220,6 +278,10 @@
         "nixpkgs-stable": [
           "canivete",
           "nixpkgs-stable"
+        ],
+        "opentofu-registry": [
+          "canivete",
+          "opentofu-registry"
         ],
         "pre-commit": [
           "canivete",
@@ -262,11 +324,26 @@
         "type": "github"
       }
     },
+    "systems_3": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
     "terranix": {
       "inputs": {
         "bats-assert": "bats-assert",
         "bats-support": "bats-support",
-        "flake-utils": "flake-utils_2",
+        "flake-utils": "flake-utils_3",
         "nixpkgs": [
           "nixpkgs"
         ],
