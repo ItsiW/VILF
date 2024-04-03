@@ -20,6 +20,17 @@
     }
   },
   "resource": {
+    "google_artifact_registry_repository": {
+      "main": {
+        "depends_on": [
+          "google_project_service.artifacts"
+        ],
+        "format": "DOCKER",
+        "location": "us-west1",
+        "project": "climax-vilf",
+        "repository_id": "main"
+      }
+    },
     "google_certificate_manager_certificate_map": {
       "main": {
         "name": "vilf-map"
@@ -97,12 +108,38 @@
         "project_id": "climax-vilf"
       }
     },
+    "google_project_service": {
+      "artifacts": {
+        "service": "artifactregistry.googleapis.com"
+      },
+      "run": {
+        "service": "run.googleapis.com"
+      }
+    },
+    "google_sql_database": {
+      "appsmith": {
+        "instance": "${ google_sql_database_instance.main.name }",
+        "name": "appsmith"
+      }
+    },
     "google_sql_database_instance": {
       "main": {
         "database_version": "POSTGRES_15",
         "name": "vilf",
         "settings": {
           "deletion_protection_enabled": true,
+          "ip_configuration": {
+            "authorized_networks": [
+              {
+                "name": "appsmith-1",
+                "value": "18.223.74.85"
+              },
+              {
+                "name": "appsmith-2",
+                "value": "3.131.104.27"
+              }
+            ]
+          },
           "tier": "db-custom-2-8192"
         }
       }
@@ -118,6 +155,19 @@
         "location": "US",
         "name": "climax-vilf-bucket"
       }
+    },
+    "null_resource": {
+      "container": {
+        "provisioner": {
+          "local-exec": {
+            "command": "/nix/store/fdrfdxmkcvixph6xb0rlp88anhq7zclr-copy-to-podman/bin/copy-to-podman"
+          }
+        },
+        "triggers": {
+          "name": "localhost/server",
+          "tag": "0.0.1"
+        }
+      }
     }
   },
   "terraform": {
@@ -130,7 +180,11 @@
     "required_providers": {
       "google": {
         "source": "opentofu/google",
-        "version": "5.22.0"
+        "version": "5.23.0"
+      },
+      "null": {
+        "source": "opentofu/null",
+        "version": "3.2.2"
       }
     }
   }
