@@ -5,7 +5,7 @@ provider "registry.opentofu.org/opentofu/google" {
   version     = "5.23.0"
   constraints = "5.23.0"
   hashes = [
-    "h1:KraD3p/wiVTTC38GS6O0akwaIrQ4TXtF467LZRURJ0s=",
+    "h1:a25RLf6Xw18TnQIpSboHv61CB+4b+R9qwJ8B9vOcYvs=",
   ]
 }
 
@@ -13,6 +13,6 @@ provider "registry.opentofu.org/opentofu/null" {
   version     = "3.2.2"
   constraints = "3.2.2"
   hashes = [
-    "h1:vbLm/KPwhYHkYwmhhaShjA8qbO9N50MijMPT6AnWLEM=",
+    "h1:I3bhrgj1lf/Dqdub56uaq4vF8fzUP0h9qWhQQ9QwzZE=",
   ]
 }
