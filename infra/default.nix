@@ -50,7 +50,7 @@
               strip_query = false;
             };
             # TODO why are blank services required here but don't do anything?
-            # TODO do I ned expectedOutputUrl and expectedRedirectResponseCode?
+            # TODO do I need expectedOutputUrl and expectedRedirectResponseCode?
             test = [
               {
                 description = "Test with no query parameters";

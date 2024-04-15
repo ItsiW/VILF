@@ -46,13 +46,6 @@ python3 -m http.server 8080 --directory build
 
 Open [`localhost:8080`](localhost:8080) (if you open `0.0.0.0:8080` then the map will not render).
 
-## Links
-
-1. [`Production IP: https://34.160.129.80:443`](https://34.160.129.80:443)
-    * after DNS propagation, this will be [`vilf.org`](vilf.org)
-2. [`Testing IP: http://34.160.113.123:80`](http://34.160.113.123:80)
-    * This will be dactivated after DNS propagation in favor of HTTP forwarding automatically to HTTPS at [`vilf.org`](vilf.org)
-
 ## Helpful admin commands
 
 These will only work if your account has the right permissions.
@@ -91,7 +84,7 @@ gcloud compute forwarding-rules describe scripts-lb-frontend-http-2 --project=cl
 Using `openssl`:
 
 ```bash
-openssl s_client -showcerts -servername scripts.org -connect 34.160.129.80:443 -verify 99 -verify_return_error
+openssl s_client -showcerts -servername scripts.org -connect <ip>:443 -verify 99 -verify_return_error
 ```
 
 ### **4. Manage infrastructure**
@@ -102,26 +95,33 @@ We use [OpenTofu](https://opentofu.org/) to deploy infrastructure as code primar
 
 We use a Nix development shell to currently to manage infrastructure and autoformat code. It will likely accumulate more functionality too. After installing [Nix: the package manager](https://nixos.org/download/), you can enter the development shell by running `nix develop`. In this shell you can run `pre-commit` to run repository commit hooks (autoformatting, linting, etc.), as well as access repository tools through the `vilf` executable.
 
-## Tools for contributors 
+## Tools for contributors
 
 ### `spatula`: Automating the restaurant data collection and markdown file generation
+
 #### Interactive mode (recommended)
+
 Think of a good search query that will locate your restaurant (e.g. "Lion Dance Cafe"). Run the following from the terminal to see an interactive prompt:
+
 ```bash
 ./vilf spatula
 # Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
 ```
+
 Enter the hint:
+
 ```bash
 ./vilf spatula
 # Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
 Lion Dance Cafe
 ```
+
 The scraper will be able to identify the restaurant automatically and generate a markdown file for you:
+
 ```bash
 ./vilf spatula
 # Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
-Lion Dance Cafe 
+Lion Dance Cafe
 
 # Waiting for Google Maps page to redirect...
 
@@ -136,31 +136,35 @@ Lion Dance Cafe
 
 # Successfully wrote markdown to file places/lion-dance-cafe.md
 ```
-The markdown will contain the fields pre-populated and the relevant values already filled in. The rest is up to 
+
+The markdown will contain the fields pre-populated and the relevant values already filled in. The rest is up to
 you to fill in.
+
 ```bash
 cat lion-dance-cafe.md
 # ---
 # name: Lion Dance Café
-# cuisine: 
+# cuisine:
 # address: 380 17th St
-# area: 
+# area:
 # lat: 37.8060489
 # lon: -122.267932
-# phone: 
-# menu: 
-# drinks: 
-# visited: 
-# taste: 
-# value: 
+# phone:
+# menu:
+# drinks:
+# visited:
+# taste:
+# value:
 # ---
 
 # <REVIEW>
 ```
+
 File name formatting happens automatically. It will safely remove bad characters,
 use the restaurant name (and possibly street name, see below), and will append an integer
-to the end of the filename in cases of conflict with a preexisting file. You can also flag to use the 
+to the end of the filename in cases of conflict with a preexisting file. You can also flag to use the
 city name for the field `area` (though you may want to be more specific like "Downtown Oakland").
+
 ```bash
 ./vilf spatula --city-as-area --street-in-filename
 # ...
@@ -170,10 +174,11 @@ cat lion-dance-cafe-380-17th-st.md
 # address: 380 17th St
 # area: Oakland
 # lat: 37.8060489
-# ... 
+# ...
 ```
- 
+
 Sometimes searches are ambiguous. In this case, the scraper will allow you to select one of the top results from a search or try a different search:
+
 ```bash
 ./vilf spatula
 # Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
@@ -209,10 +214,12 @@ Bongo Java Nashville
 ```
 
 #### Manual URL mode
+
 Alternatively, you can pass in a URL corresponding to a Google Maps restaurant manually. Be careful
-to escape characters correctly (most terminals will automatically escape upon pasting). 
+to escape characters correctly (most terminals will automatically escape upon pasting).
 
 Ex:
+
 ```bash
 ./vilf spatula --url https://www.google.com/maps/place/Lion+Dance+Caf%C3%A9/@37.8060737,
 -122.270113,17z/data\=\!3m1\!4b1\!4m5\!3m4\!1s0x808f817f59aa5fa9:0xc6930eb94f2d3188\!8m2\!3d37.8060489\
@@ -230,9 +237,11 @@ Ex:
 
 # Successfully wrote markdown to file places/lion-dance-cafe-0.md
 ```
+
 Notice the `-0` added to the filename to avoid a collision with the original file we produced.
 
 #### Shortcuts and extras
+
 1. `./vilf spatula --ask-first` prompts the user before writing metadata to markdown.
 2. `./vilf spatula --search-query 'lion dance cafe'` or `./vilf spatula -s 'lion dance cafe'` avoids the search prompt and jumps right to the action
 3. `./vilf spatula --directory '/path/to/folder'` allows you to specify the directory for the markdown file (directory doesn't have to exist yet)
@@ -241,15 +250,17 @@ Notice the `-0` added to the filename to avoid a collision with the original fil
 6. `./vilf spatula --no-headless` let's you see the browser GUI as the searches are being made (kinda fun but not recommended unless debugging)
 7. For more details run `./vilf spatula --help`.
 
-
 ### Checking new file additions against Google Maps
+
 Before committing new markdown files, `spatula` can be leveraged to check new files against
 Google Maps scraping. Simply run the following from the repo home directory:
+
 ```bash
 ./vilf check $(git diff --staged --name-only places/)
 ```
 
 If everything looks as expected, you will see
+
 ```bash
 ./vilf check $(git diff --staged --name-only places/)
 
@@ -261,6 +272,7 @@ If everything looks as expected, you will see
 ```
 
 If anything is wrong, the metadata will be displayed:
+
 ```bash
 ./vilf check $(git diff --staged --name-only places/)
 
