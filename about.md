@@ -3,6 +3,7 @@ title: "About — V.I.L.F"
 description: "Want to know about the V.I.L.F mission? Find out here!"
 ---
 
+<!-- markdownlint-disable-next-line MD025 -->
 # About V.I.L.F
 
 We assume you're here because you want to find good vegan food to eat in the San Francisco Bay Area — actually good vegan food. Not to worry, we've got the team to help you.
