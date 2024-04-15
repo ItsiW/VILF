@@ -20,17 +20,6 @@
     }
   },
   "resource": {
-    "google_artifact_registry_repository": {
-      "main": {
-        "depends_on": [
-          "google_project_service.artifacts"
-        ],
-        "format": "DOCKER",
-        "location": "us-west1",
-        "project": "climax-vilf",
-        "repository_id": "main"
-      }
-    },
     "google_certificate_manager_certificate_map": {
       "main": {
         "name": "vilf-map"
@@ -108,14 +97,6 @@
         "project_id": "climax-vilf"
       }
     },
-    "google_project_service": {
-      "artifacts": {
-        "service": "artifactregistry.googleapis.com"
-      },
-      "run": {
-        "service": "run.googleapis.com"
-      }
-    },
     "google_sql_database": {
       "appsmith": {
         "instance": "${ google_sql_database_instance.main.name }",
@@ -155,26 +136,31 @@
         "location": "US",
         "name": "climax-vilf-bucket"
       }
-    },
-    "null_resource": {
-      "container": {
-        "provisioner": {
-          "local-exec": {
-            "command": "/nix/store/fdrfdxmkcvixph6xb0rlp88anhq7zclr-copy-to-podman/bin/copy-to-podman"
-          }
-        },
-        "triggers": {
-          "name": "localhost/server",
-          "tag": "0.0.1"
-        }
-      }
     }
   },
   "terraform": {
-    "backend": {
-      "gcs": {
-        "bucket": "climax-tfstate",
-        "prefix": "vilf"
+    "encryption": {
+      "key_provider": {
+        "pbkdf2": {
+          "default": {
+            "passphrase": "ref+sops://.canivete/sops/default.yaml#/opentofu_pw"
+          }
+        }
+      },
+      "method": {
+        "aes_gcm": {
+          "default": {
+            "keys": "${ key_provider.pbkdf2.default }"
+          }
+        }
+      },
+      "plan": {
+        "fallback": {},
+        "method": "${ method.aes_gcm.default }"
+      },
+      "state": {
+        "fallback": {},
+        "method": "${ method.aes_gcm.default }"
       }
     },
     "required_providers": {
