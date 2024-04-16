@@ -1,4 +1,5 @@
 {
+  imports = [./new.nix];
   perSystem = {
     nix,
     pkgs,
