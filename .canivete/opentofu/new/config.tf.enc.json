@@ -2,26 +2,39 @@
   "data": {
     "google_billing_account": {
       "main": {
-        "display_name": "Climax Foods Inc. - SADA"
+        "display_name": "My Billing Account"
       }
     },
-    "google_organization": {
-      "main": {
-        "domain": "climaxfoods.com"
+    "google_project_service": {
+      "cloudresourcemanager": {
+        "service": "cloudresourcemanager.googleapis.com"
+      },
+      "serviceusage": {
+        "service": "serviceusage.googleapis.com"
       }
     }
   },
   "provider": {
+    "github": {
+      "owner": "ItsiW"
+    },
     "google": {
-      "billing_project": "climax-billing",
-      "project": "climax-vilf",
+      "project": "vilf-com",
       "region": "us-west1",
       "zone": "us-west1-b"
     }
   },
   "resource": {
+    "google_billing_project_info": {
+      "main": {
+        "billing_account": "${ data.google_billing_account.main.id }"
+      }
+    },
     "google_certificate_manager_certificate_map": {
       "main": {
+        "depends_on": [
+          "google_project_service.certificatemanager"
+        ],
         "name": "vilf-map"
       }
     },
@@ -32,17 +45,26 @@
         "custom_response_headers": [
           "Strict-Transport-Security:max-age=31536000; includeSubDomains; preload"
         ],
+        "depends_on": [
+          "google_project_service.compute"
+        ],
         "enable_cdn": true,
         "name": "${ google_storage_bucket.main.name }"
       }
     },
     "google_compute_global_forwarding_rule": {
       "http": {
+        "depends_on": [
+          "google_project_service.compute"
+        ],
         "name": "vilf-lb-http-frontend",
         "port_range": "80-80",
         "target": "${ google_compute_target_http_proxy.main.id }"
       },
       "https": {
+        "depends_on": [
+          "google_project_service.compute"
+        ],
         "name": "vilf-lb-https-frontend",
         "port_range": "443-443",
         "target": "${ google_compute_target_https_proxy.main.id }"
@@ -50,6 +72,9 @@
     },
     "google_compute_target_http_proxy": {
       "main": {
+        "depends_on": [
+          "google_project_service.compute"
+        ],
         "name": "vilf-lb-http-proxy",
         "url_map": "${ google_compute_url_map.redirect.id }"
       }
@@ -57,6 +82,9 @@
     "google_compute_target_https_proxy": {
       "main": {
         "certificate_map": "https://certificatemanager.googleapis.com/v1/${ google_certificate_manager_certificate_map.main.id }",
+        "depends_on": [
+          "google_project_service.compute"
+        ],
         "name": "vilf-lb-https-proxy",
         "url_map": "${ google_compute_url_map.main.id }"
       }
@@ -64,6 +92,9 @@
     "google_compute_url_map": {
       "main": {
         "default_service": "${ google_compute_backend_bucket.main.id }",
+        "depends_on": [
+          "google_project_service.compute"
+        ],
         "name": "vilf-lb"
       },
       "redirect": {
@@ -72,6 +103,9 @@
           "redirect_response_code": "MOVED_PERMANENTLY_DEFAULT",
           "strip_query": false
         },
+        "depends_on": [
+          "google_project_service.compute"
+        ],
         "name": "vilf-redirect",
         "test": [
           {
@@ -89,16 +123,45 @@
         ]
       }
     },
-    "google_project": {
-      "main": {
-        "billing_account": "${ data.google_billing_account.main.id }",
-        "name": "climax-vilf",
-        "org_id": "${ data.google_organization.main.org_id }",
-        "project_id": "climax-vilf"
+    "google_project_service": {
+      "certificatemanager": {
+        "depends_on": [
+          "google_billing_project_info.main",
+          "data.google_project_service.serviceusage",
+          "data.google_project_service.cloudresourcemanager"
+        ],
+        "service": "certificatemanager.googleapis.com"
+      },
+      "compute": {
+        "depends_on": [
+          "google_billing_project_info.main",
+          "data.google_project_service.serviceusage",
+          "data.google_project_service.cloudresourcemanager"
+        ],
+        "service": "compute.googleapis.com"
+      },
+      "sqladmin": {
+        "depends_on": [
+          "google_billing_project_info.main",
+          "data.google_project_service.serviceusage",
+          "data.google_project_service.cloudresourcemanager"
+        ],
+        "service": "sqladmin.googleapis.com"
+      },
+      "storage": {
+        "depends_on": [
+          "google_billing_project_info.main",
+          "data.google_project_service.serviceusage",
+          "data.google_project_service.cloudresourcemanager"
+        ],
+        "service": "storage.googleapis.com"
       }
     },
     "google_sql_database": {
       "appsmith": {
+        "depends_on": [
+          "google_project_service.sqladmin"
+        ],
         "instance": "${ google_sql_database_instance.main.name }",
         "name": "appsmith"
       }
@@ -106,6 +169,9 @@
     "google_sql_database_instance": {
       "main": {
         "database_version": "POSTGRES_15",
+        "depends_on": [
+          "google_project_service.sqladmin"
+        ],
         "name": "vilf",
         "settings": {
           "deletion_protection_enabled": true,
@@ -127,14 +193,26 @@
     },
     "google_sql_user": {
       "appsmith": {
+        "depends_on": [
+          "google_project_service.sqladmin"
+        ],
         "instance": "${ google_sql_database_instance.main.name }",
-        "name": "appsmith"
+        "name": "appsmith",
+        "password": "${ random_password.appsmith.result }"
       }
     },
     "google_storage_bucket": {
       "main": {
+        "depends_on": [
+          "google_project_service.storage"
+        ],
         "location": "US",
-        "name": "climax-vilf-bucket"
+        "name": "vilf-org"
+      }
+    },
+    "random_password": {
+      "appsmith": {
+        "length": 21
       }
     }
   },
@@ -168,13 +246,17 @@
       }
     },
     "required_providers": {
+      "github": {
+        "source": "integrations/github",
+        "version": "6.2.1"
+      },
       "google": {
         "source": "opentofu/google",
         "version": "5.23.0"
       },
-      "null": {
-        "source": "opentofu/null",
-        "version": "3.2.2"
+      "random": {
+        "source": "opentofu/random",
+        "version": "3.6.0"
       }
     }
   }
