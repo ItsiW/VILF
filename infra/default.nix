@@ -25,14 +25,13 @@
               depends_on = ["google_billing_project_info.main" "data.google_project_service.serviceusage" "data.google_project_service.cloudresourcemanager"];
               service = "${name}.googleapis.com";
             });
-
-            # google_service_account.vilfer.account_id = "vilfer";
-            # google_service_account_key.vilfer.service_account_id = "\${ google_service_account.vilfer.name }";
-            # github_actions_secret.VILF_SA_CREDS = {
-            #   repository = "VILF";
-            #   secret_name = "VILF_SA_CREDS";
-            #   encrypted_value = "\${ google_service_account_key.vilfer.private_key }";
-            # };
+            google_service_account.vilfer.account_id = "vilfer";
+            google_service_account_key.vilfer.service_account_id = "\${ google_service_account.vilfer.name }";
+            github_actions_secret.VILF_CREDS = {
+              repository = "VILF";
+              secret_name = "VILF_CREDS";
+              plaintext_value = "\${ google_service_account_key.vilfer.private_key }";
+            };
           };
         };
       };
