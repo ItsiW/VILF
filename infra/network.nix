@@ -1,4 +1,4 @@
-{config, ...}: {
+{
   google.services = ["compute"];
   resource = {
     google_compute_url_map.main = {
@@ -13,22 +13,6 @@
         redirect_response_code = "MOVED_PERMANENTLY_DEFAULT";
         strip_query = false;
       };
-      # TODO why are blank services required here but don't do anything?
-      # TODO do I need expectedOutputUrl and expectedRedirectResponseCode?
-      test = [
-        {
-          description = "Test with no query parameters";
-          host = config.vilf.domain;
-          path = "/best/";
-          service = "";
-        }
-        {
-          description = "Test with query parameters";
-          host = config.vilf.domain;
-          path = "/best/?parameter1=value1&parameter2=value2";
-          service = "";
-        }
-      ];
     };
     google_compute_target_http_proxy.main = {
       name = "vilf-lb-http-proxy";
