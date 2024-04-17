@@ -371,7 +371,7 @@ def build_vilf() -> None:
                 cuisines=[
                     {
                         "name": cuisine,
-                        "url": f"/cuisines/{cuisine.lower().replace(' ','-')}",
+                        "url": f"/cuisines/{cuisine.lower().replace(' ','-')}/",
                         "len": len(
                             [place for place in places if place["cuisine"] == cuisine]
                         ),
