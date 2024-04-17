@@ -4,6 +4,7 @@
   ...
 }:
 with nix; {
+  google.services = ["storage" "compute"];
   data.google_iam_policy.bucket.binding = let
     roles."roles/storage.admin" = ["projectOwner:${config.provider.google.project}"];
     roles."roles/storage.objectViewer" = ["allUsers"];

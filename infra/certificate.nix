@@ -2,6 +2,7 @@
 with nix; let
   domain = "vilf.org";
 in {
+  google.services = ["certificatemanager"];
   resource = {
     google_certificate_manager_dns_authorization = mapAttrs (_: cfg:
       mergeAttrs cfg {
