@@ -16,6 +16,12 @@
           },
           {
             "members": [
+              "${ google_service_account.vilfer.member }"
+            ],
+            "role": "roles/storage.objectAdmin"
+          },
+          {
+            "members": [
               "allUsers"
             ],
             "role": "roles/storage.objectViewer"
@@ -43,6 +49,13 @@
     }
   },
   "resource": {
+    "github_actions_secret": {
+      "VILF_CREDS": {
+        "plaintext_value": "${ google_service_account_key.vilfer.private_key }",
+        "repository": "VILF",
+        "secret_name": "VILF_CREDS"
+      }
+    },
     "google_billing_project_info": {
       "main": {
         "billing_account": "${ data.google_billing_account.main.id }"
@@ -322,6 +335,16 @@
           "data.google_project_service.cloudresourcemanager"
         ],
         "service": "storage.googleapis.com"
+      }
+    },
+    "google_service_account": {
+      "vilfer": {
+        "account_id": "vilfer"
+      }
+    },
+    "google_service_account_key": {
+      "vilfer": {
+        "service_account_id": "${ google_service_account.vilfer.name }"
       }
     },
     "google_sql_database": {
