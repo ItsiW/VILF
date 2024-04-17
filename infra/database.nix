@@ -1,5 +1,6 @@
 {nix, ...}:
 with nix; {
+  google.services = ["sqladmin"];
   resource = {
     google_sql_database_instance.main = {
       depends_on = ["google_project_service.sqladmin"];

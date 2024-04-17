@@ -3,6 +3,7 @@ with nix; let
   domain = "vilf.org";
   dns_name = "${domain}.";
 in {
+  google.services = ["dns"];
   resource.google_dns_managed_zone.main = {
     depends_on = ["google_project_service.dns"];
     name = "vilf-org";

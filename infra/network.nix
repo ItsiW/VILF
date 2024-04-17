@@ -1,6 +1,7 @@
 let
   domain = "vilf.org";
 in {
+  google.services = ["compute"];
   resource = {
     google_compute_url_map.main = {
       name = "vilf-lb";
