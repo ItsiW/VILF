@@ -2,27 +2,99 @@
   "data": {
     "google_billing_account": {
       "main": {
-        "display_name": "Climax Foods Inc. - SADA"
+        "display_name": "My Billing Account"
       }
     },
-    "google_organization": {
-      "main": {
-        "domain": "climaxfoods.com"
+    "google_iam_policy": {
+      "bucket": {
+        "binding": [
+          {
+            "members": [
+              "projectOwner:vilf-com"
+            ],
+            "role": "roles/storage.admin"
+          },
+          {
+            "members": [
+              "allUsers"
+            ],
+            "role": "roles/storage.objectViewer"
+          }
+        ]
+      }
+    },
+    "google_project_service": {
+      "cloudresourcemanager": {
+        "service": "cloudresourcemanager.googleapis.com"
+      },
+      "serviceusage": {
+        "service": "serviceusage.googleapis.com"
       }
     }
   },
   "provider": {
+    "github": {
+      "owner": "ItsiW"
+    },
     "google": {
-      "billing_project": "climax-billing",
-      "project": "climax-vilf",
+      "project": "vilf-com",
       "region": "us-west1",
       "zone": "us-west1-b"
     }
   },
   "resource": {
+    "google_billing_project_info": {
+      "main": {
+        "billing_account": "${ data.google_billing_account.main.id }"
+      }
+    },
+    "google_certificate_manager_certificate": {
+      "main": {
+        "managed": {
+          "dns_authorizations": [
+            "${ google_certificate_manager_dns_authorization.root.id }",
+            "${ google_certificate_manager_dns_authorization.www.id }"
+          ],
+          "domains": [
+            "vilf.org",
+            "www.vilf.org"
+          ]
+        },
+        "name": "vilf-org"
+      }
+    },
     "google_certificate_manager_certificate_map": {
       "main": {
+        "depends_on": [
+          "google_project_service.certificatemanager"
+        ],
         "name": "vilf-map"
+      }
+    },
+    "google_certificate_manager_certificate_map_entry": {
+      "main": {
+        "certificates": [
+          "${ google_certificate_manager_certificate.main.id }"
+        ],
+        "map": "${ google_certificate_manager_certificate_map.main.name }",
+        "matcher": "PRIMARY",
+        "name": "vilf-org"
+      }
+    },
+    "google_certificate_manager_dns_authorization": {
+      "root": {
+        "depends_on": [
+          "google_project_service.certificatemanager"
+        ],
+        "domain": "vilf.org",
+        "name": "vilf-org"
+      },
+      "www": {
+        "depends_on": [
+          "google_project_service.certificatemanager"
+        ],
+        "domain": "www.vilf.org",
+        "name": "www-vilf-org"
       }
     },
     "google_compute_backend_bucket": {
@@ -32,17 +104,30 @@
         "custom_response_headers": [
           "Strict-Transport-Security:max-age=31536000; includeSubDomains; preload"
         ],
+        "depends_on": [
+          "google_project_service.compute"
+        ],
         "enable_cdn": true,
         "name": "${ google_storage_bucket.main.name }"
       }
     },
+    "google_compute_global_address": {
+      "main": {
+        "depends_on": [
+          "google_project_service.compute"
+        ],
+        "name": "vilf-lb-ipv4"
+      }
+    },
     "google_compute_global_forwarding_rule": {
       "http": {
+        "ip_address": "${ google_compute_global_address.main.address }",
         "name": "vilf-lb-http-frontend",
         "port_range": "80-80",
         "target": "${ google_compute_target_http_proxy.main.id }"
       },
       "https": {
+        "ip_address": "${ google_compute_global_address.main.address }",
         "name": "vilf-lb-https-frontend",
         "port_range": "443-443",
         "target": "${ google_compute_target_https_proxy.main.id }"
@@ -72,6 +157,9 @@
           "redirect_response_code": "MOVED_PERMANENTLY_DEFAULT",
           "strip_query": false
         },
+        "depends_on": [
+          "google_project_service.compute"
+        ],
         "name": "vilf-redirect",
         "test": [
           {
@@ -89,12 +177,151 @@
         ]
       }
     },
-    "google_project": {
+    "google_dns_managed_zone": {
       "main": {
-        "billing_account": "${ data.google_billing_account.main.id }",
-        "name": "climax-vilf",
-        "org_id": "${ data.google_organization.main.org_id }",
-        "project_id": "climax-vilf"
+        "depends_on": [
+          "google_project_service.dns"
+        ],
+        "dns_name": "vilf.org.",
+        "name": "vilf-org"
+      }
+    },
+    "google_dns_record_set": {
+      "_acme-challenge_root": {
+        "managed_zone": "${ google_dns_managed_zone.main.name }",
+        "name": "${ google_certificate_manager_dns_authorization.root.dns_resource_record[0].name }",
+        "rrdatas": [
+          "${ google_certificate_manager_dns_authorization.root.dns_resource_record[0].data }"
+        ],
+        "ttl": 300,
+        "type": "${ google_certificate_manager_dns_authorization.root.dns_resource_record[0].type }"
+      },
+      "_acme-challenge_www": {
+        "managed_zone": "${ google_dns_managed_zone.main.name }",
+        "name": "${ google_certificate_manager_dns_authorization.www.dns_resource_record[0].name }",
+        "rrdatas": [
+          "${ google_certificate_manager_dns_authorization.www.dns_resource_record[0].data }"
+        ],
+        "ttl": 300,
+        "type": "${ google_certificate_manager_dns_authorization.www.dns_resource_record[0].type }"
+      },
+      "fm1__domainkey_c": {
+        "managed_zone": "${ google_dns_managed_zone.main.name }",
+        "name": "fm1._domainkey.vilf.org.",
+        "rrdatas": [
+          "fm1.vilf.org.dkim.fmhosted.com."
+        ],
+        "ttl": 300,
+        "type": "CNAME"
+      },
+      "fm2__domainkey_c": {
+        "managed_zone": "${ google_dns_managed_zone.main.name }",
+        "name": "fm2._domainkey.vilf.org.",
+        "rrdatas": [
+          "fm2.vilf.org.dkim.fmhosted.com."
+        ],
+        "ttl": 300,
+        "type": "CNAME"
+      },
+      "fm3__domainkey_c": {
+        "managed_zone": "${ google_dns_managed_zone.main.name }",
+        "name": "fm3._domainkey.vilf.org.",
+        "rrdatas": [
+          "fm3.vilf.org.dkim.fmhosted.com."
+        ],
+        "ttl": 300,
+        "type": "CNAME"
+      },
+      "root-a": {
+        "managed_zone": "${ google_dns_managed_zone.main.name }",
+        "name": "vilf.org.",
+        "rrdatas": [
+          "${ google_compute_global_address.main.address }"
+        ],
+        "ttl": 300,
+        "type": "A"
+      },
+      "root-caa": {
+        "managed_zone": "${ google_dns_managed_zone.main.name }",
+        "name": "vilf.org.",
+        "rrdatas": [
+          "0 issue \"pki.goog\"",
+          "0 issue \"letsencrypt.org\""
+        ],
+        "ttl": 300,
+        "type": "CAA"
+      },
+      "root-mx": {
+        "managed_zone": "${ google_dns_managed_zone.main.name }",
+        "name": "vilf.org.",
+        "rrdatas": [
+          "10 in1-smtp.messagingengine.com.",
+          "20 in2-smtp.messagingengine.com."
+        ],
+        "ttl": 300,
+        "type": "MX"
+      },
+      "root-txt": {
+        "managed_zone": "${ google_dns_managed_zone.main.name }",
+        "name": "vilf.org.",
+        "rrdatas": [
+          "v=spf1 include:spf.messagingengine.com ?all",
+          "google-site-verification=bOCcwr5Tv4_OTbSd_I4qPw_G5eoslPyAZ9c0NzqJ7n4",
+          "google-site-verification=MoMPhxfm9W0rOK06GVkZwXh8pGF8aFL_QSk4GcPMD6c"
+        ],
+        "ttl": 300,
+        "type": "TXT"
+      },
+      "www-a": {
+        "managed_zone": "${ google_dns_managed_zone.main.name }",
+        "name": "www.vilf.org.",
+        "rrdatas": [
+          "${ google_compute_global_address.main.address }"
+        ],
+        "ttl": 300,
+        "type": "A"
+      }
+    },
+    "google_project_service": {
+      "certificatemanager": {
+        "depends_on": [
+          "google_billing_project_info.main",
+          "data.google_project_service.serviceusage",
+          "data.google_project_service.cloudresourcemanager"
+        ],
+        "service": "certificatemanager.googleapis.com"
+      },
+      "compute": {
+        "depends_on": [
+          "google_billing_project_info.main",
+          "data.google_project_service.serviceusage",
+          "data.google_project_service.cloudresourcemanager"
+        ],
+        "service": "compute.googleapis.com"
+      },
+      "dns": {
+        "depends_on": [
+          "google_billing_project_info.main",
+          "data.google_project_service.serviceusage",
+          "data.google_project_service.cloudresourcemanager"
+        ],
+        "service": "dns.googleapis.com"
+      },
+      "sqladmin": {
+        "depends_on": [
+          "google_billing_project_info.main",
+          "data.google_project_service.serviceusage",
+          "data.google_project_service.cloudresourcemanager"
+        ],
+        "service": "sqladmin.googleapis.com"
+      },
+      "storage": {
+        "depends_on": [
+          "google_billing_project_info.main",
+          "data.google_project_service.serviceusage",
+          "data.google_project_service.cloudresourcemanager"
+        ],
+        "service": "storage.googleapis.com"
       }
     },
     "google_sql_database": {
@@ -106,6 +333,9 @@
     "google_sql_database_instance": {
       "main": {
         "database_version": "POSTGRES_15",
+        "depends_on": [
+          "google_project_service.sqladmin"
+        ],
         "name": "vilf",
         "settings": {
           "deletion_protection_enabled": true,
@@ -128,13 +358,33 @@
     "google_sql_user": {
       "appsmith": {
         "instance": "${ google_sql_database_instance.main.name }",
-        "name": "appsmith"
+        "name": "appsmith",
+        "password": "${ random_password.appsmith.result }"
       }
     },
     "google_storage_bucket": {
       "main": {
+        "depends_on": [
+          "google_project_service.storage"
+        ],
         "location": "US",
-        "name": "climax-vilf-bucket"
+        "name": "vilf-org",
+        "uniform_bucket_level_access": true,
+        "website": {
+          "main_page_suffix": "index.html",
+          "not_found_page": "error.html"
+        }
+      }
+    },
+    "google_storage_bucket_iam_policy": {
+      "main": {
+        "bucket": "${ google_storage_bucket.main.name }",
+        "policy_data": "${ data.google_iam_policy.bucket.policy_data }"
+      }
+    },
+    "random_password": {
+      "appsmith": {
+        "length": 21
       }
     }
   },
@@ -168,13 +418,17 @@
       }
     },
     "required_providers": {
+      "github": {
+        "source": "integrations/github",
+        "version": "6.2.1"
+      },
       "google": {
         "source": "opentofu/google",
         "version": "5.23.0"
       },
-      "null": {
-        "source": "opentofu/null",
-        "version": "3.2.2"
+      "random": {
+        "source": "opentofu/random",
+        "version": "3.6.0"
       }
     }
   }
