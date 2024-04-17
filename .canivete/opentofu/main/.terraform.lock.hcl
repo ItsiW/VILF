@@ -1,6 +1,14 @@
 # This file is maintained automatically by "tofu init".
 # Manual edits may be lost in future updates.
 
+provider "registry.opentofu.org/integrations/github" {
+  version     = "6.2.1"
+  constraints = "6.2.1"
+  hashes = [
+    "h1:oJyNnCADFGTCRD6fKvR+UAx7a4uoVTCgI0ooSbEotkg=",
+  ]
+}
+
 provider "registry.opentofu.org/opentofu/google" {
   version     = "5.23.0"
   constraints = "5.23.0"
@@ -9,10 +17,10 @@ provider "registry.opentofu.org/opentofu/google" {
   ]
 }
 
-provider "registry.opentofu.org/opentofu/null" {
-  version     = "3.2.2"
-  constraints = "3.2.2"
+provider "registry.opentofu.org/opentofu/random" {
+  version     = "3.6.0"
+  constraints = "3.6.0"
   hashes = [
-    "h1:I3bhrgj1lf/Dqdub56uaq4vF8fzUP0h9qWhQQ9QwzZE=",
+    "h1:CiJNBkjk8eAKgWQJ1DKL7zDgYTV+7DBbzfwB0YSDsOs=",
   ]
 }
