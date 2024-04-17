@@ -1,6 +1,4 @@
-let
-  domain = "vilf.org";
-in {
+{config, ...}: {
   google.services = ["compute"];
   resource = {
     google_compute_url_map.main = {
@@ -20,13 +18,13 @@ in {
       test = [
         {
           description = "Test with no query parameters";
-          host = domain;
+          host = config.vilf.domain;
           path = "/best/";
           service = "";
         }
         {
           description = "Test with query parameters";
-          host = domain;
+          host = config.vilf.domain;
           path = "/best/?parameter1=value1&parameter2=value2";
           service = "";
         }

@@ -1,6 +1,10 @@
-{nix, ...}:
+{
+  config,
+  nix,
+  ...
+}:
 with nix; let
-  domain = "vilf.org";
+  inherit (config.vilf) domain;
 in {
   google.services = ["certificatemanager"];
   resource = {
