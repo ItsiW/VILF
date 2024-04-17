@@ -173,21 +173,7 @@
         "depends_on": [
           "google_project_service.compute"
         ],
-        "name": "vilf-redirect",
-        "test": [
-          {
-            "description": "Test with no query parameters",
-            "host": "vilf.org",
-            "path": "/best/",
-            "service": ""
-          },
-          {
-            "description": "Test with query parameters",
-            "host": "vilf.org",
-            "path": "/best/?parameter1=value1&parameter2=value2",
-            "service": ""
-          }
-        ]
+        "name": "vilf-redirect"
       }
     },
     "google_dns_managed_zone": {

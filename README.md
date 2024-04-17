@@ -46,45 +46,26 @@ python3 -m http.server 8080 --directory build
 
 Open [`localhost:8080`](localhost:8080) (if you open `0.0.0.0:8080` then the map will not render).
 
-## Helpful admin commands
-
-These will only work if your account has the right permissions.
+## Helpful infra commands
 
 ### **1. Push static files to bucket**
 
 ```bash
-gsutil -m rsync -R build gs://climax-scripts-bucket
+# Requires roles/storage.objectAdmin on gs://vilf-org
+gsutil -m rsync -R build gs://vilf-org
 ```
 
 ### **2. Invalidate Cloud CDN cache**
 
 ```bash
-gcloud compute url-maps invalidate-cdn-cache scripts-lb --path / --project climax-scripts
+# Requires roles/owner on projects/vilf-com
+gcloud compute url-maps invalidate-cdn-cache vilf-lb --path /
 ```
-
-You can invalidate any specific static file by passing the relative path to the `--path` argument.
 
 ### **3. Track SSL propagation status**
 
-Using `gcloud`:
-
 ```bash
-# CERTIFICATE
-gcloud beta compute ssl-certificates describe scripts-ssl --global --format="get(name, managed.status, managed.domainStatus)" --project climax-scripts
-
-# LOAD BALANCER
-gcloud compute target-https-proxies describe scripts-lb-target-proxy --project=climax-scripts
-gcloud compute target-http-proxies describe scripts-lb-target-proxy-3 --project=climax-scripts
-
-# FORWARDING RULES
-gcloud compute forwarding-rules describe scripts-lb-frontend-main --project=climax-scripts --global
-gcloud compute forwarding-rules describe scripts-lb-frontend-http-2 --project=climax-scripts --global
-```
-
-Using `openssl`:
-
-```bash
-openssl s_client -showcerts -servername scripts.org -connect <ip>:443 -verify 99 -verify_return_error
+openssl s_client -showcerts -servername scripts.org -connect $(dig +short A vilf.org):443 -verify 99 -verify_return_error
 ```
 
 ### **4. Manage infrastructure**
