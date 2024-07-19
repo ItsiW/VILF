@@ -5,7 +5,7 @@
       canivete.opentofu.workspaces.main = {
         plugins = ["opentofu/google" "opentofu/random" "integrations/github"];
         modules.main = {config, ...}: {
-          imports = [./dns.nix ./server.nix ./certificate.nix ./database.nix ./bucket.nix ./network.nix];
+          imports = [./dns.nix ./server.nix ./certificate.nix ./bucket.nix ./network.nix];
           options.google.services = mkOption {
             type = listOf str;
             default = [];
