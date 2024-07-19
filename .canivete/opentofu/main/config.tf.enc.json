@@ -306,14 +306,6 @@
         ],
         "service": "dns.googleapis.com"
       },
-      "sqladmin": {
-        "depends_on": [
-          "google_billing_project_info.main",
-          "data.google_project_service.serviceusage",
-          "data.google_project_service.cloudresourcemanager"
-        ],
-        "service": "sqladmin.googleapis.com"
-      },
       "storage": {
         "depends_on": [
           "google_billing_project_info.main",
@@ -331,44 +323,6 @@
     "google_service_account_key": {
       "vilfer": {
         "service_account_id": "${ google_service_account.vilfer.name }"
-      }
-    },
-    "google_sql_database": {
-      "appsmith": {
-        "instance": "${ google_sql_database_instance.main.name }",
-        "name": "appsmith"
-      }
-    },
-    "google_sql_database_instance": {
-      "main": {
-        "database_version": "POSTGRES_15",
-        "depends_on": [
-          "google_project_service.sqladmin"
-        ],
-        "name": "vilf",
-        "settings": {
-          "deletion_protection_enabled": true,
-          "ip_configuration": {
-            "authorized_networks": [
-              {
-                "name": "appsmith-1",
-                "value": "18.223.74.85"
-              },
-              {
-                "name": "appsmith-2",
-                "value": "3.131.104.27"
-              }
-            ]
-          },
-          "tier": "db-custom-2-8192"
-        }
-      }
-    },
-    "google_sql_user": {
-      "appsmith": {
-        "instance": "${ google_sql_database_instance.main.name }",
-        "name": "appsmith",
-        "password": "${ random_password.appsmith.result }"
       }
     },
     "google_storage_bucket": {
@@ -389,11 +343,6 @@
       "main": {
         "bucket": "${ google_storage_bucket.main.name }",
         "policy_data": "${ data.google_iam_policy.bucket.policy_data }"
-      }
-    },
-    "random_password": {
-      "appsmith": {
-        "length": 21
       }
     }
   },
@@ -429,15 +378,15 @@
     "required_providers": {
       "github": {
         "source": "integrations/github",
-        "version": "6.2.1"
+        "version": "6.2.3"
       },
       "google": {
         "source": "opentofu/google",
-        "version": "5.23.0"
+        "version": "5.38.0"
       },
       "random": {
         "source": "opentofu/random",
-        "version": "3.6.0"
+        "version": "3.6.2"
       }
     }
   }

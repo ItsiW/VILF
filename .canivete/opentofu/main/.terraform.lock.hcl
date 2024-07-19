@@ -2,25 +2,25 @@
 # Manual edits may be lost in future updates.
 
 provider "registry.opentofu.org/integrations/github" {
-  version     = "6.2.1"
-  constraints = "6.2.1"
+  version     = "6.2.3"
+  constraints = "6.2.3"
   hashes = [
-    "h1:oJyNnCADFGTCRD6fKvR+UAx7a4uoVTCgI0ooSbEotkg=",
+    "h1:Bh12bx2xNmuD+UVEZTFetHIm98IEbm3M1OuMz9N9WH4=",
   ]
 }
 
 provider "registry.opentofu.org/opentofu/google" {
-  version     = "5.23.0"
-  constraints = "5.23.0"
+  version     = "5.38.0"
+  constraints = "5.38.0"
   hashes = [
-    "h1:a25RLf6Xw18TnQIpSboHv61CB+4b+R9qwJ8B9vOcYvs=",
+    "h1:YAROACdj+giGx06q1NXIlnHFtLPcMUzofVpWuev5Dng=",
   ]
 }
 
 provider "registry.opentofu.org/opentofu/random" {
-  version     = "3.6.0"
-  constraints = "3.6.0"
+  version     = "3.6.2"
+  constraints = "3.6.2"
   hashes = [
-    "h1:CiJNBkjk8eAKgWQJ1DKL7zDgYTV+7DBbzfwB0YSDsOs=",
+    "h1:HI05ully2LCYE07xSC+jtFgKU/a/coaK+G1JLRXssGs=",
   ]
 }
