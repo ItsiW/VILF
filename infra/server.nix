@@ -52,9 +52,9 @@ in {
   #   template.containers.env = lib.attrsets.mapAttrsToList lib.nameValuePair {
   #     VILF_GIT_BRANCH = "develop";
   #     VILF_GIT_URL = "https://github.com/ItsiW/VILF.git";
-  #     VILF_PG_USER = "\${ google_sql_user.appsmith.name }";
-  #     VILF_PG_HOST = "\${ google_sql_database_instance.main.public_ip_address }";
-  #     VILF_PG_DB = "\${ google_sql_database.appsmith.name }";
+  #     VILF_PG_USER = "";
+  #     VILF_PG_HOST = "";
+  #     VILF_PG_DB = "";
   #     VILF_PG_TABLE = "submission";
   #     VILF_GCS_BUCKET = "\${ google_storage_bucket.main.url }";
   #     VILF_DEPLOY = toString deploy;
