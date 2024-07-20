@@ -17,6 +17,6 @@ Chicken was square,
 
 prices were fair.
 
-Divis must have better Chinese food somehwere.
+Divis must have better Chinese food somewhere.
 
 – [Tess Linden](https://www.linkedin.com/in/tess-linden-32962761)
