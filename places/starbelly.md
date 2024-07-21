@@ -13,14 +13,16 @@ taste: 2
 value: 1
 ---
 
-Scrumptious
-Tastes
-Available.
-Recommend
-Brussels.
-Elote\*
-Likewise 
-Laudable. 
-Yes. 
+Steep,\*   
+Though     
+Appetizing.  
+Recommend    
+Brussels.  
+Elote\**  
+Likewise  
+Laudable.  
+Yum!  
 
-\*pizza
+\*($105 for large dinner & drinks for 2, with leftovers)  
+\*\*(pizza)  
+
