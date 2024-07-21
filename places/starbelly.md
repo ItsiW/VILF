@@ -23,6 +23,6 @@ Likewise
 Laudable.  
 Yum!  
 
-\*($105 for large dinner & drinks for 2, with leftovers)  
+\*($105 after tax/tip for large dinner & drinks for 2, with leftovers)  
 \*\*(pizza)  
 
