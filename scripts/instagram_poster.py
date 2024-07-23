@@ -71,7 +71,9 @@ class InstagramBot:
         self.click(self.driver.find_elements(By.CSS_SELECTOR, '[aria-label="Home"]')[1])
 
         # upload image
-        image_file_location = Path(f"../raw/food/{place['slug']}.jpg").resolve().as_posix()
+        image_file_location = Path(f"../raw/food/{place['slug']}.jpg")
+        assert image_file_location.exists(), f"{place['slug']} does not have an image"
+        image_file_location =image_file_location.resolve().as_posix()
         self.click(self.driver.find_elements(By.CSS_SELECTOR, '[aria-label="Home"]')[0])
         new_post_button = WebDriverWait(self.driver, 5).until(
             EC.presence_of_element_located((By.XPATH, f"//*[text()='Post']"))
