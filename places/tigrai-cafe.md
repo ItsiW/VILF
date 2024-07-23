@@ -11,6 +11,7 @@ lat: 37.80295667351805
 lon: -122.27543367086177
 menu: https://www.tigraicafe.com/menus
 phone: "+15108174155"
+instagram_published: False
 ---
 
 This is an Ethiopian/Eritrean restaurant with a bewildering vibe. I went on a Monday night and it was pretty much empty. The lights were on full and a tacky Ethiopian music video was playing loudly on a giant screen. 10/10.

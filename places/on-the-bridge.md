@@ -11,6 +11,7 @@ drinks: True
 visited: "2022-09-10"
 taste: 3
 value: 2
+instagram_published: False
 ---
 
 This place is so cool I almost don't want to tell people about it. It's a Japanese diner on the second floor of an arcade, in a bridge that links two buildings. It is so kitschy in the best way possible, the walls are lined with anime paraphernalia (including some playing on the tvs) and tons of sakes and beers. You sit at a little counter and it's a very comfortable atmosphere. 

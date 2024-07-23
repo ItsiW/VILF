@@ -11,6 +11,7 @@ lat: 37.80114462032649
 lon: -122.27003100057853
 menu: 
 phone: "+15104448822"
+instagram_published: False
 ---
 
 This is a Vietnamese bakery that makes a nice **curry tofu banh mi**. It's pretty good, nothing too special but hits the spot. Make sure to get it without mayo. Has all the nice pickled veg and stuff.

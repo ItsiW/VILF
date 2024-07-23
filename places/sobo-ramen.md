@@ -11,6 +11,7 @@ lat: 37.80091805341233
 lon: -122.2716052815348
 menu: http://www.soboramen.com/menu1.html
 phone: "+15108327626"
+instagram_published: False
 ---
 
 I got the vegan version of the spicy miso ramen. Like it was fine, I just wouldn't recommend it. Not very interesting, I've probably had some good instant ramens that were as good.

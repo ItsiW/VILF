@@ -11,6 +11,7 @@ drinks: true
 visited: "2023-02-12"
 taste: 2
 value: 3
+instagram_published: False
 ---
 
 This is one of the best value places in the city. There's tons of different **veggie tapas** dishes like **artichokes**, **pimientos de padron** (like shishitos), and **patatas bravas**. You get complimentary bread and bravas sauce. 

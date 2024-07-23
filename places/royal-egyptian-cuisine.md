@@ -11,6 +11,7 @@ drinks: False
 visited: "2023-10-20"
 taste: 1
 value: 2
+instagram_published: False
 ---
 
 Worth coming here just for the vibe that the extremely extroverted proprietor provides. You need to check the [twitter](https://twitter.com/EgyptianCuisine) to see if he's open.

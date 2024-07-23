@@ -11,6 +11,7 @@ drinks: false
 visited: "2023-01-21"
 taste: 2
 value: 2
+instagram_published: False
 ---
 
 Finally some great Palestinian food. They got all the hits. Big mix plate of stuff, **fried eggplant and cauliflower**, good **baba ganoush**, and a mix of ful and hummus called **qudsiah** which was excellent. Chips, pickles, everything was good. Excited to go back.

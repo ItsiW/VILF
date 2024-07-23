@@ -11,6 +11,7 @@ drinks: False
 visited: "2022-11-12"
 taste: 0
 value: 1
+instagram_published: False
 ---
 
 Little dim sum restaurant. They've actually got a few vegan items, we got spinach steamed dumplings, and spinach dumpling steamed buns, along with some red bean buns.

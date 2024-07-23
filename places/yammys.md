@@ -11,6 +11,7 @@ lat: 37.80181652349749
 lon: -122.27538935440708
 menu: http://www.yammysethiopiancafe.com/menu/
 phone: "+15102509756"
+instagram_published: False
 ---
 
 I am a simple man, give me a big plate of Ethiopian food and I am happy.

@@ -11,6 +11,7 @@ drinks: false
 visited: "2023-07-26"
 taste: 2
 value: 2
+instagram_published: False
 ---
 
 This is a fantastic place. They have vegan **tamales**, a few kinds including sometime some vegan specials. I think a few of the other options like the Memelas can be made vegan too. The salsas are top notch.

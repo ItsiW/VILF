@@ -11,6 +11,7 @@ drinks: True
 visited: "2022-09-09"
 taste: 2
 value: 2
+instagram_published: False
 ---
 
 Extremely good vegan mexican food in an arcade bar. The whole menu is vegan, with many different fake meats that they make themselves. We went for 3 different **tacos** which were all very delicious. At the time they had 6 options but by the looks of it I think they rotate their menu regularly. We got the cauliflower, carnitas, and carne con chili rojo, all of which were great and very saucy. We liked the **cauliflower** the best. Honestly we wish we woulda got the other three options as well. It costed us like $16 for three, but they are large. We opted for tacos to get the variety, but you can get more bang for your buck if you get the nachos or burritos.

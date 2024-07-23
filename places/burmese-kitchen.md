@@ -11,6 +11,7 @@ drinks: True
 visited: "2022-09-10"
 taste: 2
 value: 2
+instagram_published: False
 ---
 
 Very cute Burmese restaurant in Richmond. A very energetic man (I believe the owner) directed us to the patio out the back where we sat in some marquees with some heaters.

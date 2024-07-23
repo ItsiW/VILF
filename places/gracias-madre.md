@@ -11,6 +11,7 @@ lat: 37.76154995130239
 lon: -122.419097325420255
 menu: https://gracias-madre.getbento.com/menus/#food
 phone: "+14152850205"
+instagram_published: False
 ---
 
 An all-vegan Mexican spot. We got a whole loada stuff. It felt like most plates were bulked out with beans and rice, but it was kinda pricey. 

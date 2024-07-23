@@ -11,6 +11,7 @@ lat: 37.801700337019966
 lon: -122.26865652299868
 menu: https://www.luckyduckoakland.com/menu
 phone: "+15108911830"
+instagram_published: False
 ---
 
 Luckyduck is a cafe and bicycle shop, for all your cafe and bicycle shop needs. Every time I have been it has been extremely warm inside. 

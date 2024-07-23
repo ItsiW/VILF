@@ -11,6 +11,7 @@ drinks: False
 visited: "2024-03-09"
 taste: 1
 value: 2
+instagram_published: False
 ---
 
 Nice Malaysian place with a bunch of vegan options. We got the **char koay teow** and **salt and pepper eggplant** which were really good. Other stuff was ok.
