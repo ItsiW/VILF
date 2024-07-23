@@ -21,6 +21,7 @@ class InstagramBot:
             return credentials['username'], credentials['password']
 
     def slow_type(self, element, string):
+        self.click(element)
         for char in string:
             sleep(0.2 * random())
             element.send_keys(char)
@@ -53,7 +54,10 @@ class InstagramBot:
             EC.presence_of_element_located((By.XPATH, "//*[text()='Log in']"))
         )
         self.click(login_button_1)
-        self.slow_type(self.driver.find_element(By.NAME, "username"), self.username)
+        username_element = WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located((By.NAME, "username"))
+        )
+        self.slow_type(username_element, self.username)
         self.slow_type(self.driver.find_element(By.NAME, "password"), self.password)
         self.click(self.driver.find_element(By.XPATH, "//*[text()='Log in']"))
         
