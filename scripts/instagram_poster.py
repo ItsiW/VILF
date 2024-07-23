@@ -1,14 +1,16 @@
 import json
-from time import sleep
-from random import random
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from pathlib import Path
+from random import random
+from time import sleep
+
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from webdriver_manager.chrome import ChromeDriverManager
+
 
 class InstagramBot:
     def __init__(self, credentials_file):
@@ -16,9 +18,9 @@ class InstagramBot:
         self.driver = self.launch_instagram()
 
     def load_credentials(self, filepath):
-        with open(filepath, 'r') as file:
+        with open(filepath, "r") as file:
             credentials = json.load(file)
-            return credentials['username'], credentials['password']
+            return credentials["username"], credentials["password"]
 
     def slow_type(self, element, string):
         self.click(element)
@@ -33,7 +35,9 @@ class InstagramBot:
     def close_popup(self, close_button_text):
         try:
             close_button = WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, f"//*[text()='{close_button_text}']"))
+                EC.presence_of_element_located(
+                    (By.XPATH, f"//*[text()='{close_button_text}']")
+                )
             )
             self.click(close_button)
         except Exception as e:
@@ -60,7 +64,7 @@ class InstagramBot:
         self.slow_type(username_element, self.username)
         self.slow_type(self.driver.find_element(By.NAME, "password"), self.password)
         self.click(self.driver.find_element(By.XPATH, "//*[text()='Log in']"))
-        
+
         self.close_popup("Dismiss")
         self.close_popup("Not now")
         self.close_popup("Cancel")
@@ -73,13 +77,13 @@ class InstagramBot:
         # upload image
         image_file_location = Path(f"../raw/food/{place['slug']}.jpg")
         assert image_file_location.exists(), f"{place['slug']} does not have an image"
-        image_file_location =image_file_location.resolve().as_posix()
+        image_file_location = image_file_location.resolve().as_posix()
         self.click(self.driver.find_elements(By.CSS_SELECTOR, '[aria-label="Home"]')[0])
         new_post_button = WebDriverWait(self.driver, 5).until(
             EC.presence_of_element_located((By.XPATH, f"//*[text()='Post']"))
         )
         self.click(new_post_button)
-        sleep(5 + 2*random())
+        sleep(5 + 2 * random())
         file_input = self.driver.find_elements(By.CSS_SELECTOR, 'input[type="file"]')[1]
         file_input.send_keys(image_file_location)
 
@@ -98,9 +102,11 @@ See the full review here
 {"vilf.org" + place['url']}
 
 #vegan #sanfrancisco #bayarea #sfbayarea #foodies #veganfood #{place['cuisine'].replace(" ", "")}FoodSanFrancisco #{place['area'].replace(" ", "").replace("-", "")}"""
-        
+
         text_input = WebDriverWait(self.driver, 5).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "[aria-label='Write a caption…']"))
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, "[aria-label='Write a caption…']")
+            )
         )
         self.slow_type(text_input, text)
         self.click(self.driver.find_element(By.XPATH, f"//*[text()='New post']"))
@@ -124,7 +130,9 @@ See the full review here
 
         # Optionally, navigate back to home to continue other actions or verify the post
         home_button = WebDriverWait(self.driver, 5).until(
-            EC.presence_of_all_elements_located((By.CSS_SELECTOR, '[aria-label="Home"]'))
+            EC.presence_of_all_elements_located(
+                (By.CSS_SELECTOR, '[aria-label="Home"]')
+            )
         )[1]
         self.click(home_button)
 
