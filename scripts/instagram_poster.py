@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from random import random
+from random import choice, random, sample
 from time import sleep
 
 from selenium import webdriver
@@ -10,7 +10,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
-
 
 class InstagramBot:
     def __init__(self, credentials_file):
@@ -94,14 +93,19 @@ class InstagramBot:
         self.click(next_button)
 
         # Enter main text (caption)
-        text = f"""{place['name']} in {place['area']}: {place['taste_label']}!
+        item_a = choice(a)
+        item_b1, item_b2 = sample(b, 2)
+
+        text = f"""Attention all {item_a}, got a{'n' if item_b1[0].lower() in ['a','e','i','o','u'] else ''} {item_b1} review for you on this {item_b2} day
+        
+{place['name']} in {place['area']}: {place['taste_label']}!
         
 {place['blurb'][:1000 + int(10 * random())]}
 
 See the full review here
-{"vilf.org" + place['url']}
+{"vilf.org" + place['url'][:-1]}
 
-#vegan #sanfrancisco #bayarea #sfbayarea #foodies #veganfood #{place['cuisine'].replace(" ", "")}FoodSanFrancisco #{place['area'].replace(" ", "").replace("-", "")}"""
+#vegan #vilf #sanfrancisco #bayarea #plantbased #vegetarian #vegansf #sfvegan #sfbayarea #foodies #veganfood #{place['cuisine'].replace(" ", "")}FoodSanFrancisco #{place['area'].replace(" ", "").replace("-", "")}"""
 
         text_input = WebDriverWait(self.driver, 5).until(
             EC.presence_of_element_located(
@@ -116,7 +120,7 @@ See the full review here
         location_input = WebDriverWait(self.driver, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='text']"))
         )
-        self.slow_type(location_input, f"{place['name']} Restaurant")
+        self.slow_type(location_input, f"{place['name']} {place['address']}")
         first_option = WebDriverWait(self.driver, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "[dir='auto']"))
         )
@@ -138,3 +142,110 @@ See the full review here
 
     def close_driver(self):
         self.driver.close()
+
+
+a = [
+    "idiots",
+    "$LUT$",
+    "dummies",
+    "FOOLS",
+    "bootlickers",
+    "antifa",
+    "cucks",
+    "brain-rotters",
+    "republicans",
+    "queen-harris-supporters",
+    "boomers",
+    "ingrates",
+    "peasants",
+    "know-nothings",
+    "meat sacks",
+    "social climbers",
+    "burdens",
+    "patriots",
+    "heros",
+    "globalists",
+    "soccer fans",
+    "sheep",
+    "voters",
+    "champions"
+    "self-actualized gigachads",
+    "inmates",
+    "consumers",
+    "members of the jury",
+    "edgers",
+    "master debaters",
+    "scum",
+    "poors",
+    "queer allies",
+    "brats",
+    "nerds",
+    "Floridians",
+    "tree chompers",
+    "guzzlers",
+    "suckers",
+    "Elon Fanboys",
+    "Tesla owners",
+    "hustlers",
+    "comrades",
+    "startup founders",
+    "Puse",
+    "ectomorphs",
+    "slimy invertebrates",
+    "new years resolution quitters",
+    "disappointments",
+    "dadbods",
+    "MMA fans",
+    "students of history",
+    "scholars of the bible",
+    "goys",
+    "prompt engineers",
+    "mad dogs",
+    "squires",
+    "gargoyles",
+    "mannequins",
+    "brothers in christ",
+]
+
+b = [
+    "lower-middle-class",
+    "half-assed",
+    "quarter-assed",
+    "fractional-reserve-assed",
+    "fire-bomb-ass",
+    "pointless",
+    "heroic",
+    "wombo combo",
+    "unfulfilling",
+    "deviant",
+    "frustrated",
+    "bicurious",
+    "heteroflexible",
+    "classically trained",
+    "European",
+    "redneck",
+    "semitic",
+    "hasidic",
+    "blessed",
+    "god fearing",
+    "brat summer",
+    "oceanic",
+    "faux-mediteranian",
+    "bullish",
+    "bearish",
+    "crypto-backed",
+    "neurodivergent",
+    "elon-esque",
+    "MAGA",
+    "stinky",
+    "blubbery",
+    "slimy",
+    "firm",
+    "succulent",
+    "anti-australian",
+    "goy",
+    "titanium",
+    "steel forged",
+    "deviant",
+    "Kafkaesque"
+]

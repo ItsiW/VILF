@@ -11,7 +11,7 @@ lat: 37.80018093869602
 lon: -122.27415367417397
 menu: https://www.gyu-kaku.com/wp-content/uploads/2022/04/hh_hm_vegetarian2203.pdf
 phone: "+15103610117"
-instagram_published: False
+instagram_published: True
 ---
 
 Edit: my friends went here and said it wasn't very good. So I should say that the following review was written when I was extremely hung over.
