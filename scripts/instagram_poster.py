@@ -66,23 +66,18 @@ class InstagramBot:
         self.close_popup("Cancel")
 
     def upload_post(self, place):
-        # Navigate to the home page and initiate the new post process
-        home_buttons = WebDriverWait(self.driver, 5).until(
-            EC.presence_of_all_elements_located((By.CSS_SELECTOR, '[aria-label="Home"]'))
-        )
-        self.click(home_buttons[0])
-        self.click(home_buttons[1])
-        self.click(home_buttons[0])
-        
-        # Initiate new post
+        # click around to avoid detection
+        self.click(self.driver.find_elements(By.CSS_SELECTOR, '[aria-label="Home"]')[0])
+        self.click(self.driver.find_elements(By.CSS_SELECTOR, '[aria-label="Home"]')[1])
+
+        # upload image
+        image_file_location = Path(f"../raw/food/{place['slug']}.jpg").resolve().as_posix()
+        self.click(self.driver.find_elements(By.CSS_SELECTOR, '[aria-label="Home"]')[0])
         new_post_button = WebDriverWait(self.driver, 5).until(
-            EC.presence_of_element_located((By.XPATH, "//*[text()='Post']"))
+            EC.presence_of_element_located((By.XPATH, f"//*[text()='Post']"))
         )
         self.click(new_post_button)
-        sleep(5 + 2 * random())
-
-        # Upload image
-        image_file_location = Path(f"raw/food/{place['slug']}.jpg").absolute().as_posix()
+        sleep(5 + 2*random())
         file_input = self.driver.find_elements(By.CSS_SELECTOR, 'input[type="file"]')[1]
         file_input.send_keys(image_file_location)
 
@@ -98,7 +93,7 @@ class InstagramBot:
 {place['blurb'][:1000 + int(10 * random())]}
 
 See the full review here
-{"https://vilf.org" + place['url']}
+{"vilf.org" + place['url']}
 
 #vegan #sanfrancisco #bayarea #sfbayarea #foodies #veganfood #{place['cuisine'].replace(" ", "")}FoodSanFrancisco #{place['area'].replace(" ", "").replace("-", "")}"""
         
