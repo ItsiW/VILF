@@ -11,7 +11,7 @@ lat: 37.7995298
 lon: -122.2722258
 menu:
 phone: "+15104651940"
-instagram_published: False
+instagram_published: True
 ---
 
 A cantonese place with everything on the menu. I was blessed with one of the worst mapo tofus I've had in my life. Clear and gluggy, and the only major flavor was salt. Just an enormous pile of goop.

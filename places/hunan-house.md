@@ -11,7 +11,7 @@ lat: 37.79516158308355
 lon: -122.40700267132775
 menu: https://hunanhousecatogo.com/menu/
 phone: "+14153981299"
-instagram_published: False
+instagram_published: True
 ---
 
 We ended up here because it was one of the few restaurants in Chinatown open late at night. We got a bunch of appetizers like the scallion pancake, **shredded potato salad**, and **marinated tofu** which were really nice. The tofu was a perfect crispy/silky in a thin salty sauce, and potato salad is always good. What let this place down was actually the main, we got fresh pepper eggplant which was very bland.

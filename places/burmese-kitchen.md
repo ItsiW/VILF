@@ -2,16 +2,16 @@
 name: Burmese Kitchen
 cuisine: Burmese
 address: 3815 Geary Blvd
-area: Richmond
+area: Inner Richmond
 lat: 37.78096563780466
 lon: -122.46036938077033
 phone: "+14154745569"
 menu: https://www.burmesekitchen.com/menu
 drinks: True
 visited: "2022-09-10"
-taste: 2
-value: 2
-instagram_published: False
+taste: 3
+value: 1
+instagram_published: True
 ---
 
 Very cute Burmese restaurant in Richmond. A very energetic man (I believe the owner) directed us to the patio out the back where we sat in some marquees with some heaters.

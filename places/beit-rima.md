@@ -11,7 +11,7 @@ lat: 37.7659340593549
 lon: -122.44968514756269
 menu: http://beitrimasf.com/menu/
 phone: "+14155661274"
-instagram_published: False
+instagram_published: True
 ---
 
 Really good Middle Eastern food. We got a literal feast, and a bottle of Palestinian wine. Between 4 of us it costed $35 a head including tax and tip. Good value for what we got. 

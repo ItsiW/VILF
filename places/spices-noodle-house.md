@@ -11,7 +11,7 @@ lat: 37.802068998066886
 lon: -122.27045356075722
 menu: https://order.online/store/spices-noodle-house-(china-taste)-oakland-543209/?hideModal=true&pickup=true
 phone: "+15102509577"
-instagram_published: False
+instagram_published: True
 ---
 
 This is the noodle satellite office of [Spices 3](/places/spices-3) across the road. There are a couple of vegan options, I got the **cold sesame noodles** which were just swimming in oil. But you know, sometimes you need that.

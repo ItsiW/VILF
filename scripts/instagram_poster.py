@@ -254,5 +254,12 @@ b = [
     "titanium",
     "steel forged",
     "deviant",
-    "Kafkaesque"
+    "Kafkaesque",
+    "roided",
+    "cruciferous",
+    "redundant",
+    "letcherous",
+    "majestic",
+    "celebratory",
+    "convivial",
 ]

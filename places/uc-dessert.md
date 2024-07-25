@@ -11,7 +11,7 @@ lat: 37.8004609460194
 lon: -122.2717596864737
 menu: http://www.ucdessert.com/col.jsp?id=112
 phone: "+15109228857"
-instagram_published: False
+instagram_published: True
 ---
 
 UC is an adorable Chinese dessert shop. From their menu:
