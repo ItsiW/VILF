@@ -381,6 +381,7 @@ class GoogleMapsScraper:
         md += "visited: \n"
         md += "taste: \n"
         md += "value: \n"
+        md += "instagram_published: False\n"
         md += "---\n\n"
         md += "<REVIEW>\n"
 

@@ -253,7 +253,6 @@ b = [
     "titanium",
     "steel forged",
     "deviant",
-<<<<<<< HEAD
     "Kafkaesque",
     "roided",
     "cruciferous",
@@ -262,7 +261,4 @@ b = [
     "majestic",
     "celebratory",
     "convivial",
-=======
-    "Kafkaesque"
->>>>>>> f39707acfff8065c8dad0ccae9f31af951ca7f7c
 ]
