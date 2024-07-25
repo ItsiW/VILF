@@ -11,6 +11,7 @@ lat: 37.802812265040345
 lon: -122.27011898696674
 menu: https://thebiryanikabab.com/menu
 phone: "+15108353777"
+instagram_published: True
 ---
 
 Indian/Pakistani place with a pretty generic veggie menu. Got the baingan bhartha and roti. It was fine.

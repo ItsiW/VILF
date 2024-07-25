@@ -11,6 +11,7 @@ lat: 37.376858175031934
 lon: -121.9615346846677
 menu: https://puranpoli.net/menu
 phone: "+14084045439"
+instagram_published: True
 ---
 
 Manan, leave review here with **recommendations**

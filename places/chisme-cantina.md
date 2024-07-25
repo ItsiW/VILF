@@ -11,6 +11,7 @@ lat: 37.788492720983356
 lon: -122.4148083
 menu: https://chismesf.com/menu
 phone: "+14153707070"
+instagram_published: True
 ---
 
 An overpriced Mexican fast-food restaurant with an awful artificial industrial vibe. The menu looked promising and we got jackfruit and eggplant tacos, and a coconut ceviche. Everything was kinda bland...

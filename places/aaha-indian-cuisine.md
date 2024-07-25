@@ -11,6 +11,7 @@ drinks: false
 visited: "2023-08-08"
 taste: 0
 value: 1
+instagram_published: False
 ---
 
 Honestly, pretty lackluster South Indian food. You're better off at [Udupi](/places/udupi-palace.md).

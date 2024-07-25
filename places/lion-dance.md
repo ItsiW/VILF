@@ -11,6 +11,7 @@ drinks: True
 visited: "2022-10-05"
 taste: 2
 value: 1
+instagram_published: False
 ---
 
 All vegan Singaporean restaurant with fresh ingredients purchased Oakland's Chinatown. They have incredible sandwhiches (only on Fridays and Saturdays): the **Tauhu Goreng sandwich** on Fridays and the **Shaobing sandwich** on Saturdays. Sometimes when my annoying colleague starts to drone on about programming environment hygeine or magpie swooping season, I can tune him out by just thinking about how savory and flavorful these sandwiches are. 

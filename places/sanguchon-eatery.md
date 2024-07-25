@@ -11,6 +11,7 @@ drinks: False
 visited: "2022-11-25"
 taste: 2
 value: 1
+instagram_published: False
 ---
 
 Ok someone please go verify this is actually vegan. I'm especially suspicious about the sauce. 

@@ -11,6 +11,7 @@ lat: 37.803377635118764
 lon: -122.27054229015248
 menu: https://www.goldenlotusvegan.co/menu
 phone: "+15108930383"
+instagram_published: True
 ---
 
 One of those Vegan Asian restaurants with everything on the menu. I got their **house clay pot rice**. It was a ton of carbs with some nice seasoning and veggies, a lot of ginger flavor. I paid $19 all up including tips and tax, so pricey for what it was.

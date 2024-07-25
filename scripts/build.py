@@ -7,15 +7,16 @@ import shutil
 from datetime import date
 from pathlib import Path
 
+import click
 import yaml
 from jinja2 import Environment, FileSystemLoader
 from markdown2 import markdown
 from mdplain import plain
 from PIL import Image
 from tqdm import tqdm
-import click
 
 SITE_URL = "https://vilf.org"
+
 
 @click.command()
 def build_vilf() -> None:
@@ -45,7 +46,7 @@ def build_vilf() -> None:
         static_fp = Path("img/food") / file_name
         thumb_fp = Path("img/thumb") / file_name
         if not (
-                (Path("static") / static_fp).exists() & (Path("static") / thumb_fp).exists()
+            (Path("static") / static_fp).exists() & (Path("static") / thumb_fp).exists()
         ):
             with Image.open(raw_jpg) as im:
                 assert im.size[0] / im.size[1] <= 16 / 9
@@ -131,16 +132,13 @@ def build_vilf() -> None:
     place_template = env.get_template("place.html")
     places = []
 
-
     taste_labels = ["DNR", "SGFI", "Good", "Phenomenal"]
     value_labels = ["Bad", "Fine", "Good", "Phenomenal"]
     rating_colors = ["#ef422b", "#efa72b", "#32af2d", "#2b9aef"]
     faded_color = "#cecece"
 
-
     def rating_to_formatting(rating, rating_labels):
         return rating_labels[rating], rating_colors[rating]
-
 
     def rating_html(rating, rating_labels):
         return "&nbsp;".join(
@@ -150,14 +148,11 @@ def build_vilf() -> None:
             ]
         )
 
-
     boolean_labels = ["Nah", "Yeah"]
     boolean_colors = ["#ef422b", "#2b9aef"]
 
-
     def boolean_to_formatting(boolean):
         return boolean_labels[boolean], boolean_colors[boolean]
-
 
     def boolean_html(boolean):
         return " ".join(
@@ -167,14 +162,11 @@ def build_vilf() -> None:
             ]
         )
 
-
     def format_title(meta):
         return f'{meta["name"]} — Tasty vegan food in {meta["area"]}, in the San Francisco Bay Area — Vegans In Love with Food'
 
-
     def format_description(meta):
         return f'Read our review on {meta["name"]} at {meta["address"]} in {meta["area"]}, and more tasty vegan {meta["cuisine"]} food in the San Francisco Bay Area from V.I.L.F!'
-
 
     def format_phone_number(meta):
         if meta["phone"] is None:
@@ -184,42 +176,41 @@ def build_vilf() -> None:
         assert number[:2] == "+1", meta["slug"]
         return f"({number[2:5]}) {number[5:8]}-{number[8:12]}"
 
-
     assert format_phone_number({"phone": "+12345678987"}) == "(234) 567-8987"
-
 
     def format_geodata(meta):
         return f'{meta["lat"]},{meta["lon"]}'
 
-
     def suffix(d):
         return "th" if 11 <= d <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(d % 10, "th")
-
 
     def custom_strftime(format_, t):
         return t.strftime(format_).replace("{S}", str(t.day) + suffix(t.day))
 
-
     def format_visited(visited):
         return custom_strftime("{S} %B %Y", visited)
-
 
     def format_blurb(md):
         return " ".join(plain(re.sub(r"\s+", " ", md.strip())).split(" ")[:50]) + "..."
 
-
     def get_fp_food_image(slug):
         static_fp = Path(f"img/food/{slug}.jpg")
-        return str(Path(f"/{static_fp}")) if (Path("static") / static_fp).exists() else None
-
+        return (
+            str(Path(f"/{static_fp}"))
+            if (Path("static") / static_fp).exists()
+            else None
+        )
 
     def get_fp_food_thumb(slug):
         static_fp = Path(f"img/thumb/{slug}.jpg")
-        return str(Path(f"/{static_fp}")) if (Path("static") / static_fp).exists() else None
-
+        return (
+            str(Path(f"/{static_fp}"))
+            if (Path("static") / static_fp).exists()
+            else None
+        )
 
     for place_md in Path("places").glob("*.md"):
-        try: 
+        try:
             slug = place_md.parts[-1][:-3]
             assert re.match(r"^[0-9a-z-]+$", slug), "Bad filename for " + str(place_md)
             relative_url = f"/places/{slug}/"
@@ -241,7 +232,9 @@ def build_vilf() -> None:
             meta["value_label"], meta["value_color"] = rating_to_formatting(
                 meta["value"], value_labels
             )
-            meta["drinks_label"], meta["drinks_color"] = boolean_to_formatting(meta["drinks"])
+            meta["drinks_label"], meta["drinks_color"] = boolean_to_formatting(
+                meta["drinks"]
+            )
             html = markdown(md.strip())
             meta["blurb"] = format_blurb(md)
             meta["food_image_path"] = get_fp_food_image(slug)
@@ -293,7 +286,10 @@ def build_vilf() -> None:
         "features": [
             {
                 "type": "Feature",
-                "geometry": {"type": "Point", "coordinates": [place["lon"], place["lat"]]},
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [place["lon"], place["lat"]],
+                },
                 "properties": {
                     key: value for key, value in place.items() if key in geojson_keys
                 },
@@ -320,7 +316,8 @@ def build_vilf() -> None:
                 description="Find tasty vegan food around the San Francisco Bay Area with V.I.L.F!",
                 # sort by taste desc, then value desc, then alphabetical by name
                 places=sorted(
-                    places, key=lambda item: (-item["taste"], -item["value"], item["slug"])
+                    places,
+                    key=lambda item: (-item["taste"], -item["value"], item["slug"]),
                 ),
             )
         )
@@ -331,7 +328,6 @@ def build_vilf() -> None:
             "changefreq": "daily",
         },
     )
-
 
     # latest page
     latest_dir = build_dir / "latest"
@@ -388,20 +384,19 @@ def build_vilf() -> None:
         },
     )
 
-
     def format_cuisine_title(cuisine):
         return f"Vegan {cuisine} food in the San Francisco Bay Area — Vegans In Love with Food"
 
-
     def format_cuisine_description(meta):
         return f"Read our reviews on vegan {cuisine} food and others in the Bay Area from V.I.L.F!"
-
 
     cuisine_template = env.get_template("cuisine.html")
 
     for cuisine in cuisine_names:
         slug = cuisine.lower().replace(" ", "-")
-        cuisine_places = [place["name"] for place in places if place["cuisine"] == cuisine]
+        cuisine_places = [
+            place["name"] for place in places if place["cuisine"] == cuisine
+        ]
         rendered = cuisine_template.render(
             title=format_cuisine_title(cuisine),
             description=format_cuisine_description(cuisine),
@@ -441,6 +436,7 @@ def build_vilf() -> None:
         o.write("User-agent: *\nDisallow:\n")
 
     print(f"Done building scripts with {len(places)} places")
+
 
 if __name__ == "__main__":
     build()

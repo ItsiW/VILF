@@ -11,6 +11,7 @@ drinks: False
 visited: "2024-03-19"
 taste: 0
 value: 1
+instagram_published: False
 ---
 
 Chicken was square,

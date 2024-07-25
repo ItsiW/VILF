@@ -11,6 +11,7 @@ drinks: False
 visited: "2022-09-12"
 taste: 0
 value: 0
+instagram_published: True
 ---
 
 Paid $10 for a plate of veggie dumplings. They were fine, wouldn't go back for them. This is the only vegan thing on the menu. They said the wonton noodle soup was vegan too. But then I pressed them on the broth. ALWAYS press them on the broth. It had chicken.

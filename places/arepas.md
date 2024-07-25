@@ -11,6 +11,7 @@ drinks: true
 visited: "2023-10-07"
 taste: 1
 value: 1
+instagram_published: False
 ---
 
 More of an overly snazzy vibe in this place than I was expecting. You can get the **arepas** in grilled or deep fried. Cheekily, I got the deep fried one.

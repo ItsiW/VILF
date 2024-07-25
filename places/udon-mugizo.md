@@ -11,6 +11,7 @@ drinks: true
 visited: "2023-09-26"
 taste: 1
 value: 1
+instagram_published: False
 ---
 
 Wow, yummy **udon** you must be thinking. Well they've got one vegan option and it's ok, a cold one. Looks pretty though.

@@ -11,6 +11,7 @@ drinks: False
 visited: "2022-10-01"
 taste: 1
 value: 2
+instagram_published: False
 ---
 
 This is a halal Mexican place, which means for sure the refried beans don't have lard. Huzzah. 

@@ -11,6 +11,7 @@ drinks: False
 visited: "2022-09-23"
 taste: 1
 value: 1
+instagram_published: False
 ---
 
 This place allows the CUSTOMER to select their own combination of noodle, sauce, and ingredients. I stand fully against this.

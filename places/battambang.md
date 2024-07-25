@@ -11,6 +11,7 @@ drinks: True
 visited: "2022-09-12"
 taste: 0
 value: 1
+instagram_published: True
 ---
 
 This is a nice Cambodian restaurant. All the flavors are nice but like everything vegetarian is a mixed veg dish. I've never had a mixed veg dish that landed. You gotta focus on one veg.

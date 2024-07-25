@@ -11,6 +11,7 @@ drinks: True
 visited: "2022-11-08"
 taste: 2
 value: 1
+instagram_published: False
 ---
 
 This is a souvlaki chain. They've got a vegan **Black Sheep Foods lamb souvlaki** option. It's very tasty and lamby.

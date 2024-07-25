@@ -11,6 +11,7 @@ lat: 37.80003399472605
 lon: -122.27216344828447
 menu:
 phone: "+15108349200"
+instagram_published: True
 ---
 
 This place has an enormous selection of baked chinese goods, dim sum, and take-away dishes for cheap. I came here at a suggestion of a coworker I asked if they had anything vegan and they said "everything has meat". It was true, even the seemingly vegetarian dishes in the window had pork bits or something. 
