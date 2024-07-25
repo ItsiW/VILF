@@ -12,7 +12,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
-
 class InstagramBot:
     def __init__(self, credentials_file):
         self.username, self.password = self.load_credentials(credentials_file)
@@ -254,6 +253,7 @@ b = [
     "titanium",
     "steel forged",
     "deviant",
+<<<<<<< HEAD
     "Kafkaesque",
     "roided",
     "cruciferous",
@@ -262,4 +262,7 @@ b = [
     "majestic",
     "celebratory",
     "convivial",
+=======
+    "Kafkaesque"
+>>>>>>> f39707acfff8065c8dad0ccae9f31af951ca7f7c
 ]
