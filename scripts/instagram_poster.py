@@ -211,6 +211,12 @@ a = [
     "gargoyles",
     "mannequins",
     "brothers in christ",
+    "Filth",
+    "losers",
+    "compatriots",
+    "crusties",
+    "cowards",
+    "CCP apologists"
 ]
 
 b = [
@@ -221,7 +227,6 @@ b = [
     "fire-bomb-ass",
     "pointless",
     "heroic",
-    "wombo combo",
     "unfulfilling",
     "deviant",
     "frustrated",
@@ -236,7 +241,7 @@ b = [
     "god fearing",
     "brat summer",
     "oceanic",
-    "faux-mediteranian",
+    "faux-mediterranean",
     "bullish",
     "bearish",
     "crypto-backed",
@@ -257,8 +262,15 @@ b = [
     "roided",
     "cruciferous",
     "redundant",
-    "letcherous",
+    "lecherous",
     "majestic",
     "celebratory",
     "convivial",
+    "tectonic",
+    "crusty",
+    "gooey",
+    "cowardly",
+    "appropriately caffeinated",
+    "whelming",
+    "ethnically ambiguous"
 ]

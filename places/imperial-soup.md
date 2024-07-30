@@ -11,7 +11,7 @@ drinks: False
 visited: "2022-10-09"
 taste: 1
 value: 2
-instagram_published: False
+instagram_published: True
 ---
 
 This is a little Chinese lunch spot. They've got one vegan thing on the menu which is rice with a topping of either **vegan fish and broccoli** or mixed mushroom. The whole thing is steamed in a lot of lotus leaf, which gives it a lovely smell.

@@ -11,7 +11,7 @@ drinks: False
 visited: "2022-09-19"
 taste: 2
 value: 1
-instagram_published: False
+instagram_published: True
 ---
 
 This place doesn't seem like the kind of place that has good falafel, but it does. I got the **falafel cauliflower vegan plate** which came with a bunch of stuff and it was actually pretty good. Not a very cohesive meal but all the elements were tasty.

@@ -11,7 +11,7 @@ drinks: False
 visited: "2022-10-08"
 taste: 2
 value: 2
-instagram_published: False
+instagram_published: True
 ---
 
 

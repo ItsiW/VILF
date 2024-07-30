@@ -11,7 +11,7 @@ drinks: True
 visited: "2022-10-31"
 taste: 1
 value: 2
-instagram_published: False
+instagram_published: True
 ---
 
 This place is one of the few places that claim to be the original Mission burrito. Still not sure what the difference is between a Mission burrito and all the other ones I've had in my life, but you go girlfriend.

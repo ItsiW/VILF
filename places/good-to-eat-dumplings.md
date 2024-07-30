@@ -11,7 +11,7 @@ drinks: True
 visited: "2022-09-21"
 taste: 2
 value: 2
-instagram_published: False
+instagram_published: True
 ---
 
 This is a highly tasty Taiwanese spot with a lot of vegan options (nearly half the menu). It was $96 (including tax and tip) for 5 people who ordered all the vegan options on the menu + extra spicy noodles. Portions are a little small but if you go with your pushover colleagues who don't advocate for themselves you can get a nice full meal here. The Spicy Noodles, **Tofu Wontons w/ Chili Vinegar**, and Taiwanese Golden Kimchi were highlights, although a low-light was their special of the day, which was an unremarkable root vegetable that came out too booger-y. 

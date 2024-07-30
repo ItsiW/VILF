@@ -1,5 +1,5 @@
 ---
-name: House of Dim Sum (Mission)
+name: House of Dim Sum
 cuisine: Chinese
 address: 3224 1/2 22nd St
 area: Mission District

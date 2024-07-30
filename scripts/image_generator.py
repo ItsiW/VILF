@@ -162,4 +162,6 @@ class ImageGenerator:
         return self.img
 
     def save_image(self, filepath):
+        if self.img.mode == 'RGBA':
+            self.img = self.img.convert('RGB')
         self.img.save(filepath)
