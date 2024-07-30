@@ -11,7 +11,7 @@ drinks: True
 visited: "2022-11-05"
 taste: 1
 value: 1
-instagram_published: False
+instagram_published: True
 ---
 
 Ramen shop with a **Vegan Ramen** option. They also have vegan mac salad.
