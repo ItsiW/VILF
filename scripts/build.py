@@ -435,8 +435,27 @@ def build_vilf() -> None:
     with open(build_dir / "robots.txt", "w") as o:
         o.write("User-agent: *\nDisallow:\n")
 
-    print(f"Done building scripts with {len(places)} places")
+    print(f"Done building VILF with {len(places)} places")
 
+    # Define the mapping of taste values to names
+    taste_labels = {0: "DNR", 1: "SGFI", 2: "Good", 3: "Phenomenal"}
+
+    # Initialize taste counts for each label
+    taste_counts = {0: 0, 1: 0, 2: 0, 3: 0}
+
+    # Count the occurrences of each 'taste' value
+    for place in places:
+        taste = place['taste']
+        if taste in taste_counts:
+            taste_counts[taste] += 1
+
+    # Calculate the total number of entries
+    total_entries = len(places)
+
+    # Calculate and print the percentage for each 'taste' value in order
+    for taste in sorted(taste_labels.keys()):
+        percentage = round((taste_counts[taste] / total_entries) * 100)
+        print(f"{taste_labels[taste]}: {percentage}%")
 
 if __name__ == "__main__":
     build()

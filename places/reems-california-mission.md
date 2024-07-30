@@ -11,7 +11,7 @@ drinks: True
 visited: "2022-11-11"
 taste: 1
 value: 1
-instagram_published: False
+instagram_published: True
 ---
 
 I'm giving this place a something going for it just because it's the only **zaatar bread** place I can find near where I go. It's not the best I've had (I miss you [Man'ousheh Grand](https://thegoodtaste.guide/places/manousheh-grand/) and [A1 Bakery](a1bakery.com.au/)) but what are you gonna do. The cardamom cold brew they have is very tasty though.
