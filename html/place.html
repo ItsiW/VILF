@@ -9,7 +9,7 @@
     <a href="{{ menu }}" target="_blank">Menu</a>
     {% endif %}
     {% if menu and phone_display %}
-     | 
+     |
     {% endif %}
     {% if phone_display %}
     <a href="tel:{{ phone }}">{{ phone_display }}</a>
@@ -25,10 +25,18 @@
     <p><b class="dnr">Do Not Recommend</b></p>
     {% endif %}
     {% if food_image_path %}
-    <img src="{{ food_image_path }}" alt="Vegan {{ cuisine }} food at {{ name }} in {{ area }}, San Francisco Bay Area" class="food-image"> 
+    <img src="{{ food_image_path }}" alt="Vegan {{ cuisine }} food at {{ name }} in {{ area }}, San Francisco Bay Area" class="food-image">
     {% endif %}
   <h3 class="notes">Remarks</h3>
-  {{ content }}
+    {% for review in reviews %}
+      <div>
+        <blockquote>
+          <p>{{ review.content }}</p>
+        </blockquote>
+        <p>—{{ review.author }}, {{ review.visited_display}}</p>
+      </div>
+
+    {% endfor %}
   <p class="sampling-date">Last sampled {{ visited_display }}.</p>
   <p class="review-form"><b><a href="https://forms.gle/sMNZHQZUkwGH3LL66">Leave a review for a restaurant you visited</a></b></p>
   <p class="contact-us">Complaints, compliments, suggestions or want to hang out and get some food?</p>

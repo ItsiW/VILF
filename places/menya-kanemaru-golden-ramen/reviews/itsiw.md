@@ -1,0 +1,10 @@
+---
+visited: "2022-11-13"
+taste: 1
+value: 1
+instagram_published: False
+---
+
+This **ramen place** has a whole bunch of vegan options. I went for the curry tantan ramen, which might have been a mistake because I don't love Japanese curry. It was alright, I want to try what else is there. They've also got non-ramen vegan shit.
+
+All in all cost $23 with tax and tips.

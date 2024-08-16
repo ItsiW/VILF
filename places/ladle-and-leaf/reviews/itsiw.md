@@ -1,0 +1,10 @@
+---
+visited: "2022-09-28"
+taste: 0
+value: 1
+instagram_published: True
+---
+
+There's this area in Downtown Oakland which is just a strip of chain restaurants. I like that they've clustered there so they can be avoided. I didn't know this was a chain but in context it makes a lot of sense.
+
+They said they only had one vegan soup, which was the smokey pea. It was fine, I wouldn't go back.
