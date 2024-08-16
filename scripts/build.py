@@ -212,9 +212,9 @@ def build_vilf() -> None:
     for place_path in Path("places").glob("*"):
         try:
             slug = place_path.parts[-1]
-            # assert re.match(r"^[0-9a-z-]+$", slug), "Bad filename for " + str(place)
+            assert re.match(r"^[0-9a-z-]+$", slug), "Bad filename for " + str(place)
             relative_url = f"/places/{slug}/"
-            with open(place_path.joinpath("place.md")) as f:
+            with open(place_path.joinpath("place.md"), 'r') as f:
                 _, frontmatter, md = f.read().split("---", 2)
             meta = yaml.load(frontmatter, Loader=yaml.Loader)
             meta["url"] = relative_url
@@ -245,8 +245,8 @@ def build_vilf() -> None:
                 review_meta["value_label"], review_meta["value_color"] = rating_to_formatting(
                     review_meta["value"], value_labels
                 )
-                # if meta["taste"] >= 1:
-                #     assert "**" in md, f"highlight food in {meta['slug']}"
+                if review_meta["taste"] >= 1:
+                    assert "**" in review_md, f"highlight food in {meta['slug']}"
 
                 review_meta["taste_html"] = rating_html(review_meta["taste"], taste_labels),
                 review_meta["value_html"] = rating_html(review_meta["value"], value_labels),
@@ -264,8 +264,6 @@ def build_vilf() -> None:
             meta["review_age"] = (date.today() - visited).days
             meta["taste"] = round(sum(tastes) / len(tastes))
             meta["value"] = round(sum(values) / len(values))
-            # if meta["taste"] >= 1:
-            #     assert "**" in md, f"highlight food in {meta['slug']}"
             meta["taste_label"], meta["taste_color"] = rating_to_formatting(
                 meta["taste"], taste_labels
             )
@@ -304,11 +302,8 @@ def build_vilf() -> None:
     unique_fields = ["name", "lat", "lon", "menu", "phone", "blurb"]
 
     for field in unique_fields:
-        for place in places:
-            field_list = []
-            if place[field] is not None:
-                field_list.append(place[field])
-            assert len(set(field_list)) == len(field_list), f"Reused {field} field"
+        field_list = [place[field] for place in places if place[field] is not None]
+        assert len(set(field_list)) == len(field_list), f"Reused {field} field"
 
     geojson_keys = [
         "name",
