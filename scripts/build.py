@@ -40,13 +40,13 @@ def build_vilf() -> None:
             os.makedirs(path)
 
     for raw_jpg in tqdm(
-        list(Path("raw/food").glob("*.jpg")), desc="processing food images"
+            list(Path("raw/food").glob("*.jpg")), desc="processing food images"
     ):
         file_name = raw_jpg.parts[-1]
         static_fp = Path("img/food") / file_name
         thumb_fp = Path("img/thumb") / file_name
         if not (
-            (Path("static") / static_fp).exists() & (Path("static") / thumb_fp).exists()
+                (Path("static") / static_fp).exists() & (Path("static") / thumb_fp).exists()
         ):
             with Image.open(raw_jpg) as im:
                 assert im.size[0] / im.size[1] <= 16 / 9
@@ -209,23 +209,63 @@ def build_vilf() -> None:
             else None
         )
 
-    for place_md in Path("places").glob("*.md"):
+    for place_path in Path("places").glob("*"):
         try:
-            slug = place_md.parts[-1][:-3]
-            assert re.match(r"^[0-9a-z-]+$", slug), "Bad filename for " + str(place_md)
+            slug = place_path.parts[-1]
+            # assert re.match(r"^[0-9a-z-]+$", slug), "Bad filename for " + str(place)
             relative_url = f"/places/{slug}/"
-            with open(place_md) as f:
+            with open(place_path.joinpath("place.md")) as f:
                 _, frontmatter, md = f.read().split("---", 2)
             meta = yaml.load(frontmatter, Loader=yaml.Loader)
             meta["url"] = relative_url
             meta["slug"] = slug
             meta["geodata"] = format_geodata(meta)
             meta["phone_display"] = format_phone_number(meta)
-            visited = date.fromisoformat(meta["visited"])
+            meta["drinks_label"], meta["drinks_color"] = boolean_to_formatting(
+                meta["drinks"]
+            )
+
+            reviews = []
+            tastes = []
+            values = []
+            visited = None
+            latest_review_md = None
+            for review_path in Path(place_path.joinpath("reviews")).glob("*.md"):
+                author = review_path.parts[-1][:-3]
+                with open(review_path, 'r') as f:
+                    _, review_frontmatter, review_md = f.read().split("---", 2)
+                    review_meta = yaml.load(review_frontmatter, Loader=yaml.Loader)
+                review_meta["author"] = author
+                review_visited = review_meta["visited"] = date.fromisoformat(review_meta["visited"])
+                review_meta["visited_display"] = format_visited(review_visited)
+                review_meta["review_age"] = (date.today() - review_visited).days
+                review_meta["taste_label"], review_meta["taste_color"] = rating_to_formatting(
+                    review_meta["taste"], taste_labels
+                )
+                review_meta["value_label"], review_meta["value_color"] = rating_to_formatting(
+                    review_meta["value"], value_labels
+                )
+                # if meta["taste"] >= 1:
+                #     assert "**" in md, f"highlight food in {meta['slug']}"
+
+                review_meta["taste_html"] = rating_html(review_meta["taste"], taste_labels),
+                review_meta["value_html"] = rating_html(review_meta["value"], value_labels),
+                review_meta["content"] = markdown(review_md.strip())
+                reviews.append(review_meta)
+                tastes.append(review_meta["taste"])
+                values.append(review_meta["value"])
+                if visited is None or review_visited > visited:
+                    visited = review_visited
+                    latest_review_md = review_md
+
+            reviews = sorted(reviews, key=lambda x: x["visited"], reverse=True)
+            meta["reviews"] = reviews
             meta["visited_display"] = format_visited(visited)
             meta["review_age"] = (date.today() - visited).days
-            if meta["taste"] >= 1:
-                assert "**" in md, f"highlight food in {meta['slug']}"
+            meta["taste"] = round(sum(tastes) / len(tastes))
+            meta["value"] = round(sum(values) / len(values))
+            # if meta["taste"] >= 1:
+            #     assert "**" in md, f"highlight food in {meta['slug']}"
             meta["taste_label"], meta["taste_color"] = rating_to_formatting(
                 meta["taste"], taste_labels
             )
@@ -235,8 +275,7 @@ def build_vilf() -> None:
             meta["drinks_label"], meta["drinks_color"] = boolean_to_formatting(
                 meta["drinks"]
             )
-            html = markdown(md.strip())
-            meta["blurb"] = format_blurb(md)
+            meta["blurb"] = format_blurb(latest_review_md)
             meta["food_image_path"] = get_fp_food_image(slug)
             meta["food_thumb_path"] = get_fp_food_thumb(slug)
             rendered = place_template.render(
@@ -246,7 +285,6 @@ def build_vilf() -> None:
                 taste_html=rating_html(meta["taste"], taste_labels),
                 value_html=rating_html(meta["value"], value_labels),
                 drinks_html=boolean_html(meta["drinks"]),
-                content=html,
             )
             out_dir = build_dir / "places" / slug
             out_dir.mkdir(exist_ok=True, parents=True)
@@ -261,13 +299,16 @@ def build_vilf() -> None:
                 }
             )
         except Exception as e:
-            print(place_md.name, e)
+            print(place_path.name, e)
 
     unique_fields = ["name", "lat", "lon", "menu", "phone", "blurb"]
 
     for field in unique_fields:
-        field_list = [place[field] for place in places if place[field] is not None]
-        assert len(set(field_list)) == len(field_list), f"Reused {field} field"
+        for place in places:
+            field_list = []
+            if place[field] is not None:
+                field_list.append(place[field])
+            assert len(set(field_list)) == len(field_list), f"Reused {field} field"
 
     geojson_keys = [
         "name",
@@ -367,7 +408,7 @@ def build_vilf() -> None:
                 cuisines=[
                     {
                         "name": cuisine,
-                        "url": f"/cuisines/{cuisine.lower().replace(' ','-')}/",
+                        "url": f"/cuisines/{cuisine.lower().replace(' ', '-')}/",
                         "len": len(
                             [place for place in places if place["cuisine"] == cuisine]
                         ),
