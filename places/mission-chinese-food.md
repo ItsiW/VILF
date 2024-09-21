@@ -11,7 +11,7 @@ drinks: True
 visited: "2022-11-16"
 taste: 2
 value: 1
-instagram_published: False
+instagram_published: True
 ---
 
 This Chinese restaurant has a bewildering and comforting vibe. The food is top notch. We got the **mapo tofu** (very good, but the tofu to sauce ratio was off), the **bacon and rice cakes** (without bacon), and the **taiwanese eggplant**. All of it was very tasty. Doesn't feel Americanized.

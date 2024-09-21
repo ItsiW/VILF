@@ -272,5 +272,6 @@ b = [
     "cowardly",
     "appropriately caffeinated",
     "whelming",
-    "ethnically ambiguous"
+    "ethnically ambiguous",
+    "SBF-endorsed"
 ]

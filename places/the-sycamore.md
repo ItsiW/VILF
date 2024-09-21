@@ -11,7 +11,7 @@ drinks: true
 visited: "2023-01-21"
 taste: 1
 value: 2
-instagram_published: False
+instagram_published: True
 ---
 
 Good pub with good **fries**
