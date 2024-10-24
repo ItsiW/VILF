@@ -8,7 +8,7 @@ lon: -122.4227429
 phone: "+14155276577"
 menu: https://www.menya-kanemaru.com/menus
 drinks: True
-visited: "2022-11-13"
+visited: "2024-09-08"
 taste: 1
 value: 1
 instagram_published: True
@@ -17,3 +17,5 @@ instagram_published: True
 This **ramen place** has a whole bunch of vegan options. I went for the curry tantan ramen, which might have been a mistake because I don't love Japanese curry. It was alright, I want to try what else is there. They've also got non-ramen vegan shit.
 
 All in all cost $23 with tax and tips.
+
+UPDATE: went back and got a daily special soy milk ramen which was alright but my friend got the **tomato miso ramen** and that was really good!!

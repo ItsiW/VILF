@@ -16,4 +16,4 @@ instagram_published: False
 
 From the name and outside, you might assume this is a generic and bad Middle Eastern place, but actually it's good AND quirky. You want to make your way to the back patio and eat out there with all the people going full hog on the shisha.
 
-We got a bunch of food, all of it was good. **Falafel**, **cauliflower**, **baba ghannouj**, **zatar manakeesh**, and especially **makdous**. Each dish is under $10, so a good way to snack and get some of that fruity smoke in you. 
+We got a bunch of food, all of it was good. **Falafel**, **baba ghannouj**, **zatar manakeesh**, and especially the **cauliflower** and **makdous**. Each dish is under $10, so a good way to snack and get some of that fruity smoke in you. 
