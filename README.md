@@ -36,6 +36,11 @@ pip install -r requirements.txt
 ./vilf build
 ```
 
+or for automatically running modified files during development
+```bash
+ls | entr ./vilf build
+```
+
 ### **4. Serve static files locally**
 
 ```bash
