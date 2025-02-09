@@ -51,12 +51,34 @@
     h1, h2, h3 {
       font-weight: bold;
     }
+    .left {
+      flex-grow: 1;
+    }
     .vilf {
       margin: 0;
       color: #fff;
       font-size: 3em;
       font-weight: 400;
       line-height: 1em;
+      display: inline-block;
+    }
+    .social-link {
+      color: white;
+      font-size: 3em;
+      margin-left: 0.5em;
+      text-decoration: none;
+      display: inline-block;
+      vertical-align: baseline;  /* Change to baseline */
+      line-height: 0;           /* Change to 0 */
+    }
+    .social-link i {
+      line-height: 1;          /* Add this */
+      vertical-align: middle;   /* Keep this */
+    }
+    @media (max-width: 720px) {
+      .social-link, .social-link i {
+        font-size: 1.5em;
+      }
     }
     .vilf > a {
       text-decoration: none;
@@ -309,6 +331,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Emilys+Candy&display=swap" rel="stylesheet"> 
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet"> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z7XL0RM921"></script>
@@ -323,6 +346,9 @@
   <section class="header">
     <div class="left">
       <span class="vilf"><a href="/">Vegans In Love with Food<span class="tm">&trade;</span></a></span>
+      <a href="https://www.instagram.com/VILF_SF/" target="_blank" class="social-link">
+        <i class="fab fa-instagram"></i>
+      </a>
       <p class="subtitle">A definitive vegan companion to the Bay Area</p>
     </div>
     <div class="right">
