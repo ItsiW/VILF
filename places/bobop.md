@@ -11,7 +11,7 @@ drinks: false
 visited: "2023-03-30"
 taste: 1
 value: 1
-instagram_published: False
+instagram_published: True
 ---
 
 This place makes Chobop, tofu skins stuffed with rice and with toppings. Similar to Japanese inari. They are fun little snaccccs with a bunch of vegan options. Pictured is the **impossible** one. Tasty.
