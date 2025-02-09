@@ -121,16 +121,16 @@ See the full review here
         self.slow_type(text_input, text)
         self.click(self.driver.find_element(By.XPATH, f"//*[text()='New post']"))
 
-        # Add location based on first option that comes up
-        self.click(self.driver.find_element(By.XPATH, "//*[text()='Add Location']"))
-        location_input = WebDriverWait(self.driver, 5).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='text']"))
-        )
-        self.slow_type(location_input, f"{place['name']} {place['address']}")
-        first_option = WebDriverWait(self.driver, 5).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "[dir='auto']"))
-        )
-        self.click(first_option)
+        # # Add location based on first option that comes up
+        # self.click(self.driver.find_element(By.XPATH, "//*[text()='Add Location']"))
+        # location_input = WebDriverWait(self.driver, 5).until(
+        #     EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='text']"))
+        # )
+        # self.slow_type(location_input, f"{place['name']} {place['address']}")
+        # first_option = WebDriverWait(self.driver, 5).until(
+        #     EC.presence_of_element_located((By.CSS_SELECTOR, "[dir='auto']"))
+        # )
+        # self.click(first_option)
 
         # Share the post
         share_button = WebDriverWait(self.driver, 5).until(

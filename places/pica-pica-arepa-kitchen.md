@@ -11,7 +11,7 @@ drinks: true
 visited: "2023-03-14"
 taste: 0
 value: 1
-instagram_published: False
+instagram_published: True
 ---
 
 Apologies for how terrible their website is to navigate.
