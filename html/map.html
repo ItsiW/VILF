@@ -194,29 +194,34 @@ map.on("load", function () {
     map.on('click', 'place-markers', (e) => {
       const clickedFeature = e.features[0];
       
-      if (activeFeature && activeFeature.id === clickedFeature.id) {
-        // Second click on same feature - open URL
+      // Use some unique property, for example 'name':
+      if (
+        activeFeature &&
+        activeFeature.properties.name === clickedFeature.properties.name
+      ) {
+        // Second click on the same marker -> open URL
         location.href = clickedFeature.properties.url;
         activeFeature = null;
         popup.remove();
-      } else {
-        // First click - show popup
-        activeFeature = clickedFeature;
-        createPopup(e);
+        return;
+      }
+      
+      // Otherwise, we just opened a new popup
+      popup.remove();
+      activeFeature = clickedFeature;
+      createPopup(e);
 
-        // Add click handler to popup
-        const popupElement = popup.getElement();
-        if (popupElement) {
-          popupElement.addEventListener('click', () => {
-            if (activeFeature) {
-              location.href = activeFeature.properties.url;
-              activeFeature = null;
-              popup.remove();
-            }
-          });
-        }
+      // Also handle clicks on the popup to open the link
+      const popupElement = popup.getElement();
+      if (popupElement) {
+        popupElement.addEventListener('click', () => {
+          location.href = clickedFeature.properties.url;
+          activeFeature = null;
+          popup.remove();
+        });
       }
     });
+
 
     // Close popup and reset active feature on any map interaction
     map.on('drag', () => {
