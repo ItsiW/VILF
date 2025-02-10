@@ -11,7 +11,7 @@ drinks: False
 visited: "2023-05-23"
 taste: 2
 value: 2
-instagram_published: False
+instagram_published: True
 ---
 
 I fucking love Pakwan. It is a straight hit of greasy flavor to the system served with fresh **roti**. When you get the curries take away they come with a cm or two of oil at the top of the container, like there should be. The vibe is the exact vibe you want while consuming these delicacies.

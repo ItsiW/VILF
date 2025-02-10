@@ -1,17 +1,17 @@
 ---
 name: Chome
 cuisine: Japanese
-address: 2193 Mission St
+address: 3601 26th St
 area: Mission District
-lat: 37.7620526
-lon: -122.4191961
-phone: "+14157570922"
+lat: 37.7487266
+lon: -122.4215717
+phone: "+14156559623"
 menu: 
 drinks: True
 visited: "2023-06-03"
 taste: 2
 value: 1
-instagram_published: False
+instagram_published: True
 ---
 
 This place always has a crazy long line out the front. Should take like 30 mins - 1 hour to get seated. It's this little Japanese restaurant that serves little plates. It's incredibly cozy inside. 

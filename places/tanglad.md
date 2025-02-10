@@ -11,7 +11,7 @@ drinks: False
 visited: "2023-06-04"
 taste: 0
 value: 1
-instagram_published: False
+instagram_published: True
 ---
 
 Booooo! Bad vegan pho... tastes like salty water.

@@ -156,7 +156,7 @@ map.on("load", function () {
     const popupElement = popup.getElement();
     if (popupElement) {
       popupElement.addEventListener('click', () => {
-        if (activeFeature && activeFeature.id === feature.id) {
+        if (activeFeature && activeFeature.url === feature.url) {
           location.href = feature.properties.url;
           activeFeature = null;
           popup.remove();
