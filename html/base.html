@@ -117,7 +117,7 @@
     }
     .links > a {
       display: inline-block;
-      padding: 0.3em 1.1em;
+      padding: 0.3em 0.6em;
       margin: 0.2em;
       font-size: 1.5em;
       color: #fff;
@@ -128,6 +128,19 @@
     }
     .links > a:hover {
       background-color: #ffffff9d;
+    }
+    .links > a.substack-link {
+      padding: 0;
+      background-color: #E87D54;
+      line-height: 0;
+    }
+    .links > a.substack-link img {
+      height: 2em;
+      vertical-align: middle;
+      filter: brightness(0);
+    }
+    .links > a.substack-link:hover {
+      background-color: #F19474;
     }
     .links {
       margin-bottom: 0;
@@ -363,6 +376,7 @@
         <a href="/latest/">Latest</a>
         <a href="/cuisines/">Cuisines</a>
         <a href="/about/">About</a>
+        <a href="https://news.vilf.org" class="substack-link"><img src="https://substackcdn.com/image/fetch/w_256,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack.com%2Fimg%2Fsubstack.png" alt="Substack"></a>
       </p>
     </div>
   </section>
