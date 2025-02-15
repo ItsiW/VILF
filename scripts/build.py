@@ -253,11 +253,10 @@ def build_vilf() -> None:
             with open(out_dir / "index.html", "w") as o:
                 o.write(rendered)
             places.append(meta)
-
             sitemap.append(
                 {
                     "url": f"{SITE_URL}{relative_url}",
-                    "lastmod": visited,
+                    "lastmod": min(visited, date(2025, 2, 15)),
                 }
             )
         except Exception as e:
