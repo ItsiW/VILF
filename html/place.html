@@ -24,6 +24,9 @@
     {% if taste==0 %}
     <p><b class="dnr">Do Not Recommend</b></p>
     {% endif %}
+    {% if taste==1 %}
+    <p><b class="sgfi">Something Going For It</b></p>
+    {% endif %}
     {% if food_image_path %}
     <img src="{{ food_image_path }}" alt="Vegan {{ cuisine }} food at {{ name }} in {{ area }}, San Francisco Bay Area" class="food-image"> 
     {% endif %}
