@@ -256,7 +256,7 @@ def build_vilf() -> None:
             sitemap.append(
                 {
                     "url": f"{SITE_URL}{relative_url}",
-                    "lastmod": min(visited, date(2025, 2, 15)),
+                    "lastmod": max(visited, date(2025, 2, 15)),
                 }
             )
         except Exception as e:
