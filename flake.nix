@@ -6,7 +6,7 @@
     nix2container.inputs.nixpkgs.follows = "canivete/nixpkgs";
   };
   outputs = inputs:
-    inputs.canivete.lib.mkFlake {inherit inputs;} {
+    inputs.canivete.lib.mkFlake {inherit inputs;} [] {
       imports = [./infra];
       # TODO implement pre-commit across entire repo
       perSystem.pre-commit.settings = {

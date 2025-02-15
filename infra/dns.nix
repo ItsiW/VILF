@@ -1,16 +1,16 @@
 {
   config,
-  nix,
+  lib,
   ...
-}:
-with nix; let
+}: let
   inherit (config.vilf) domain;
+  inherit (lib) mkOption forEach nameValuePair listToAttrs range replaceStrings types pipe attrValues mergeAttrsList mapAttrs mergeAttrs;
   dns_name = "${domain}.";
 in {
   options.vilf.domain = mkOption {
-    type = str;
+    type = types.str;
     default = "vilf.org";
-    description = mdDoc "Hosting domain of VILF";
+    description = "Hosting domain of VILF";
   };
   config = {
     google.services = ["dns"];

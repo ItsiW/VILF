@@ -37,6 +37,7 @@ pip install -r requirements.txt
 ```
 
 or for automatically running modified files during development
+
 ```bash
 ls | entr ./vilf build
 ```

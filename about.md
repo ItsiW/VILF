@@ -33,7 +33,7 @@ Reviews are provided by a rotating cast of reviewers along with their friends, b
 
 V.I.L.F is a fork of [The Good Taste Guide](https://thegoodtaste.guide), a similar vegan guide made for New York City. It was originally created by its Editor-in-Chief [Itsi Weinstock](https://itsiweinstock.com), and Senior Taste Augmentation Engineer [Aapeli Vuorinen](https://www.aapelivuorinen.com).
 
-Infrastructure support for V.I.L.F is provided by Principal Deliciousness Developer [Tristan Schrader](https://www.tristanschrader.com/).
+Infrastructure support for V.I.L.F is provided by Principal Deliciousness Developer [Tristan Schrader](https://tristanschrader.com/).
 
 The code is open source with an MIT license and can be found on our [GitHub repository](https://github.com/itsiw/vilf).
 
