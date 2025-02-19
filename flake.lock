@@ -76,6 +76,7 @@
     "canivete": {
       "inputs": {
         "arion": "arion",
+        "climod": "climod",
         "disko": "disko",
         "dream2nix": "dream2nix",
         "flake-parts": "flake-parts",
@@ -101,16 +102,32 @@
         "terranix": "terranix"
       },
       "locked": {
-        "lastModified": 1736725020,
-        "narHash": "sha256-C4xBERNeE94P5Bcv7p+YnDIthioksEih1OcuqVkVWKc=",
+        "lastModified": 1739940089,
+        "narHash": "sha256-4AGZiwhMi7kuV851EmwgAxODz+1h/whbpq9Zm8QQKt8=",
         "owner": "schradert",
         "repo": "canivete",
-        "rev": "a89892cbfec35cebc2de40c259d4837634f9d50a",
+        "rev": "24e989c684b468078de670c7d5911bc9e9bf4cbc",
         "type": "github"
       },
       "original": {
         "owner": "schradert",
         "repo": "canivete",
+        "type": "github"
+      }
+    },
+    "climod": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1669486888,
+        "narHash": "sha256-BLvyAl+taQAd+bnkUYsAcEIB15pwtJ9zSZkg7od2RBA=",
+        "owner": "nixosbrasil",
+        "repo": "climod",
+        "rev": "64f6c5495db03185803105d5babd2906a3fdcd99",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixosbrasil",
+        "repo": "climod",
         "type": "github"
       }
     },

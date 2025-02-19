@@ -1,16 +1,15 @@
 {
   config,
-  nix,
+  lib,
   ...
-}:
-with nix; {
+}: {
   google.services = ["storage" "compute"];
   data.google_iam_policy.bucket.binding = let
     roles."roles/storage.admin" = ["projectOwner:${config.provider.google.project}"];
     roles."roles/storage.objectViewer" = ["allUsers"];
     roles."roles/storage.objectAdmin" = ["\${ google_service_account.vilfer.member }"];
   in
-    mapAttrsToList (role: members: {inherit role members;}) roles;
+    lib.mapAttrsToList (role: members: {inherit role members;}) roles;
   resource = {
     google_storage_bucket.main = {
       depends_on = ["google_project_service.storage"];

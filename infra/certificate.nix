@@ -1,17 +1,16 @@
 {
   config,
-  nix,
+  lib,
   ...
-}:
-with nix; let
+}: let
   inherit (config.vilf) domain;
 in {
   google.services = ["certificatemanager"];
   resource = {
-    google_certificate_manager_dns_authorization = mapAttrs (_: cfg:
-      mergeAttrs cfg {
+    google_certificate_manager_dns_authorization = lib.mapAttrs (_: cfg:
+      lib.mergeAttrs cfg {
         depends_on = ["google_project_service.certificatemanager"];
-        name = replaceStrings ["."] ["-"] cfg.domain;
+        name = lib.replaceStrings ["."] ["-"] cfg.domain;
       }) {
       root = {inherit domain;};
       www.domain = "www.${domain}";
