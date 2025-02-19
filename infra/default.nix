@@ -7,14 +7,21 @@
     ...
   }: let
     inherit (lib) genAttrs getExe mkOption types;
-    auth = pkgs.writeShellApplication {
-      name = "auth";
-      runtimeInputs = with pkgs; [gh google-cloud-sdk gum];
+    auth-gcp = pkgs.writeShellApplication {
+      name = "auth-gcp";
+      runtimeInputs = with pkgs; [google-cloud-sdk gum];
       text = ''
-        if ! gcloud auth application-default print-access-token; then
+        if ! gcloud auth ''${ADC:+application-default print-access-token} ''${ADC:-list --filter 'status:ACTIVE' --format 'value(ACCOUNT)'}; then
             gum log --level warn "No account authenticated with gcloud. Authenticating with Google APIs now..."
-            gcloud auth application-default login
+            gcloud auth ''${ADC:+application-default} login
         fi
+      '';
+    };
+    auth-gcp-adc = pkgs.wrapFlags auth-gcp "--set ADC 1";
+    auth-github = pkgs.writeShellApplication {
+      name = "auth-github";
+      runtimeInputs = with pkgs; [gh gum];
+      text = ''
         if ! gh auth status; then
             gum log --level warn "No account authenticated with gh. Authenticating with GitHub APIs now..."
             gh auth login
@@ -25,7 +32,7 @@
     apps.default = self'.apps.tofu;
     apps.tofu = {
       type = "app";
-      program = getExe (pkgs.wrapFlags config.canivete.opentofu.script "--run \"${getExe auth}\" --add-flags \"--workspace main\"");
+      program = getExe (pkgs.wrapFlags config.canivete.opentofu.script "--run \"${getExe auth-gcp-adc}\" --run \"${getExe auth-github}\" --add-flags \"--workspace main\"");
       meta.description = "Deploy infrastructure (wrapper around OpenTofu CLI)";
     };
     canivete.devShells.shells.default.packages = with pkgs; [gh google-cloud-sdk];
