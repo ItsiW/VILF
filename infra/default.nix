@@ -1,16 +1,40 @@
 {
   perSystem = {
+    config,
     lib,
     pkgs,
+    self',
     ...
-  }: {
-    packages.sops = pkgs.sops;
+  }: let
+    inherit (lib) genAttrs getExe mkOption types;
+    auth = pkgs.writeShellApplication {
+      name = "auth";
+      runtimeInputs = with pkgs; [gh google-cloud-sdk gum];
+      text = ''
+        if ! gcloud auth application-default print-access-token; then
+            gum log --level warn "No account authenticated with gcloud. Authenticating with Google APIs now..."
+            gcloud auth application-default login
+        fi
+        if ! gh auth status; then
+            gum log --level warn "No account authenticated with gh. Authenticating with GitHub APIs now..."
+            gh auth login
+        fi
+      '';
+    };
+  in {
+    apps.default = self'.apps.tofu;
+    apps.tofu = {
+      type = "app";
+      program = getExe (pkgs.wrapFlags config.canivete.opentofu.script "--run \"${getExe auth}\" --add-flags \"--workspace main\"");
+      meta.description = "Deploy infrastructure (wrapper around OpenTofu CLI)";
+    };
+    canivete.devShells.shells.default.packages = with pkgs; [gh google-cloud-sdk];
     canivete.opentofu.workspaces.main = {
       plugins = ["opentofu/google" "opentofu/random" "integrations/github"];
       modules.main = {config, ...}: {
         imports = [./dns.nix ./server.nix ./certificate.nix ./bucket.nix ./network.nix];
-        options.google.services = lib.mkOption {
-          type = with lib.types; listOf str;
+        options.google.services = mkOption {
+          type = types.listOf types.str;
           default = [];
           description = "Service APIs to enable in the project";
         };
@@ -29,7 +53,7 @@
           };
           resource = {
             google_billing_project_info.main.billing_account = "\${ data.google_billing_account.main.id }";
-            google_project_service = lib.genAttrs config.google.services (name: {
+            google_project_service = genAttrs config.google.services (name: {
               depends_on = ["google_billing_project_info.main" "data.google_project_service.serviceusage" "data.google_project_service.cloudresourcemanager"];
               service = "${name}.googleapis.com";
             });
