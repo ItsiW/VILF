@@ -74,6 +74,11 @@ in {
             "google-site-verification=MoMPhxfm9W0rOK06GVkZwXh8pGF8aFL_QSk4GcPMD6c"
           ];
         };
+        news-cname = {
+          name = "news.${dns_name}";
+          type = "CNAME";
+          rrdatas = ["target.substack-custom-domains.com."];
+        };
       };
     in
       pipe records [
