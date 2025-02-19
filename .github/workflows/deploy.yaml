@@ -27,4 +27,8 @@ jobs:
 
       - uses: google-github-actions/setup-gcloud@v0
 
-      - run: gsutil -m rsync -R build gs://vilf-org
+      - uses: cachix/install-nix-action@v30
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: nix run .#deploy

@@ -6,7 +6,7 @@
     self',
     ...
   }: let
-    inherit (lib) genAttrs getExe mkOption types;
+    inherit (lib) genAttrs getExe mkOption readFile types;
     auth-gcp = pkgs.writeShellApplication {
       name = "auth-gcp";
       runtimeInputs = with pkgs; [google-cloud-sdk gum];
@@ -28,6 +28,18 @@
         fi
       '';
     };
+    deploy = pkgs.writeShellApplication {
+      name = "deploy";
+      runtimeInputs = with pkgs; [yq google-cloud-sdk gum];
+      runtimeEnv = let
+        inherit (config.canivete.opentofu.workspaces.main.composition.config) resource;
+      in {
+        BUCKET = resource.google_storage_bucket.main.name;
+        DIRECTORY = "build";
+        URL_MAP = resource.google_compute_url_map.main.name;
+      };
+      text = readFile ./deploy-nix.sh;
+    };
   in {
     apps.default = self'.apps.tofu;
     apps.tofu = {
@@ -35,7 +47,13 @@
       program = getExe (pkgs.wrapFlags config.canivete.opentofu.script "--run \"${getExe auth-gcp-adc}\" --run \"${getExe auth-github}\" --add-flags \"--workspace main\"");
       meta.description = "Deploy infrastructure (wrapper around OpenTofu CLI)";
     };
+    apps.deploy = {
+      type = "app";
+      program = getExe deploy;
+      meta.description = "Update static files in production";
+    };
     canivete.devShells.shells.default.packages = with pkgs; [gh google-cloud-sdk];
+    canivete.just.recipes.deploy = getExe (pkgs.wrapFlags deploy "--run \"${getExe auth-gcp}\"");
     canivete.opentofu.workspaces.main = {
       plugins = ["opentofu/google" "opentofu/random" "integrations/github"];
       modules.main = {config, ...}: {
