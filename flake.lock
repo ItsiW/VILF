@@ -102,11 +102,11 @@
         "terranix": "terranix"
       },
       "locked": {
-        "lastModified": 1739940089,
-        "narHash": "sha256-4AGZiwhMi7kuV851EmwgAxODz+1h/whbpq9Zm8QQKt8=",
+        "lastModified": 1739992700,
+        "narHash": "sha256-qtR+gw9Rc+T2WSlNxY77BdxXPpZtFzgMTYfa5OUwpUQ=",
         "owner": "schradert",
         "repo": "canivete",
-        "rev": "24e989c684b468078de670c7d5911bc9e9bf4cbc",
+        "rev": "dd11bedd9235e4300f2d0aa28ef781fb0cb1bff7",
         "type": "github"
       },
       "original": {

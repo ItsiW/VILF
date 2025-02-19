@@ -8,6 +8,7 @@
   outputs = inputs:
     inputs.canivete.lib.mkFlake {inherit inputs;} [] {
       imports = [./infra];
+      perSystem.canivete.sops.enable = true;
       # TODO implement pre-commit across entire repo
       perSystem.pre-commit.settings = {
         excludes = ["static" "scripts" "raw" "places" "html"];
