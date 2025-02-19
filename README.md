@@ -52,35 +52,7 @@ python3 -m http.server 8080 --directory build
 
 Open [`localhost:8080`](localhost:8080) (if you open `0.0.0.0:8080` then the map will not render).
 
-## Helpful infra commands
-
-### **1. Push static files to bucket**
-
-```bash
-# Requires roles/storage.objectAdmin on gs://vilf-org
-gsutil -m rsync -R build gs://vilf-org
-```
-
-### **2. Invalidate Cloud CDN cache**
-
-```bash
-# Requires roles/owner on projects/vilf-com
-gcloud compute url-maps invalidate-cdn-cache vilf-lb --path /
-```
-
-### **3. Track SSL propagation status**
-
-```bash
-openssl s_client -showcerts -servername scripts.org -connect $(dig +short A vilf.org):443 -verify 99 -verify_return_error
-```
-
-### **4. Manage infrastructure**
-
-We use [OpenTofu](https://opentofu.org/) to deploy infrastructure as code primarily to GCP. Install the tool and running it in `./infra` for more details. This will read the configuration from `main.tf.json` to determine what to administer. This file is generated from the configuration in `default.nix`, which requires the [Nix package manager](https://nixos.org/) to interpret. Once installed and the development shell activated, run `vilf tofu` to manage further.
-
-### **5. Nix development shell**
-
-We use a Nix development shell to currently to manage infrastructure and autoformat code. It will likely accumulate more functionality too. After installing [Nix: the package manager](https://nixos.org/download/), you can enter the development shell by running `nix develop`. In this shell you can run `pre-commit` to run repository commit hooks (autoformatting, linting, etc.), as well as access repository tools through the `vilf` executable.
+## [Managing infrastructure](infra/README.md)
 
 ## Tools for contributors
 
