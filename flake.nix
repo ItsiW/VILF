@@ -7,7 +7,7 @@
   };
   outputs = inputs:
     inputs.canivete.lib.mkFlake {inherit inputs;} [] {
-      imports = [./infra];
+      imports = [./infra ./pkgs];
       perSystem.canivete = {
         sops.enable = true;
         # TODO implement pre-commit across entire repo

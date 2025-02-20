@@ -25,7 +25,7 @@
         inherit (config.canivete.opentofu.workspaces.main.composition.config) resource;
       in {
         BUCKET = resource.google_storage_bucket.main.name;
-        DIRECTORY = "build";
+        DIRECTORY = "result";
         URL_MAP = resource.google_compute_url_map.main.name;
       };
       text = readFile ./scripts/deploy-nix.sh;
