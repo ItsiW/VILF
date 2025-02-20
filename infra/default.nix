@@ -11,7 +11,13 @@
       name = "auth-gcp";
       runtimeInputs = with pkgs; [google-cloud-sdk gum];
       text = ''
-        if ! gcloud auth ''${ADC:+application-default print-access-token} ''${ADC:-list --filter 'status:ACTIVE' --format 'value(ACCOUNT)'}; then
+        if [[ -n $ADC ]]; then
+            auth_check_args=(application-default print-access-token)
+        else
+            auth_check_args=(list --filter status:ACTIVE --format "value(ACCOUNT)")
+        fi
+
+        if ! gcloud auth "''${auth_check_args[@]}" &>/dev/null; then
             gum log --level warn "No account authenticated with gcloud. Authenticating with Google APIs now..."
             gcloud auth ''${ADC:+application-default} login
         fi
@@ -22,7 +28,7 @@
       name = "auth-github";
       runtimeInputs = with pkgs; [gh gum];
       text = ''
-        if ! gh auth status; then
+        if ! gh auth status &>/dev/null; then
             gum log --level warn "No account authenticated with gh. Authenticating with GitHub APIs now..."
             gh auth login
         fi
