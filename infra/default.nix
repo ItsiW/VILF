@@ -10,29 +10,13 @@
     auth-gcp = pkgs.writeShellApplication {
       name = "auth-gcp";
       runtimeInputs = with pkgs; [google-cloud-sdk gum];
-      text = ''
-        if [[ -n $ADC ]]; then
-            auth_check_args=(application-default print-access-token)
-        else
-            auth_check_args=(list --filter status:ACTIVE --format "value(ACCOUNT)")
-        fi
-
-        if ! gcloud auth "''${auth_check_args[@]}" &>/dev/null; then
-            gum log --level warn "No account authenticated with gcloud. Authenticating with Google APIs now..."
-            gcloud auth ''${ADC:+application-default} login
-        fi
-      '';
+      text = readFile ./scripts/auth-gcp.sh;
     };
     auth-gcp-adc = pkgs.wrapFlags auth-gcp "--set ADC 1";
     auth-github = pkgs.writeShellApplication {
       name = "auth-github";
       runtimeInputs = with pkgs; [gh gum];
-      text = ''
-        if ! gh auth status &>/dev/null; then
-            gum log --level warn "No account authenticated with gh. Authenticating with GitHub APIs now..."
-            gh auth login
-        fi
-      '';
+      text = readFile ./scripts/auth-github.sh;
     };
     deploy = pkgs.writeShellApplication {
       name = "deploy";
@@ -44,7 +28,7 @@
         DIRECTORY = "build";
         URL_MAP = resource.google_compute_url_map.main.name;
       };
-      text = readFile ./deploy-nix.sh;
+      text = readFile ./scripts/deploy-nix.sh;
     };
   in {
     apps.default = self'.apps.tofu;

@@ -15,7 +15,7 @@
 #   deploy = pkgs.writeShellApplication {
 #     name = "deploy";
 #     runtimeInputs = with pkgs; [git google-cloud-sdk jq postgresql python312];
-#     text = builtins.readFile ./deploy.sh;
+#     text = builtins.readFile ./scripts/deploy.sh;
 #   };
 #   server = let
 #     libraries = with pkgs.python3Packages; lib.concat [fastapi uvicorn] uvicorn.optional-dependencies.standard;
