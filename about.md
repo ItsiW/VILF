@@ -12,7 +12,7 @@ V.I.L.F is a collaborative and critical project that aims to showcase the ubiqui
 
 Our philosophy is that vegan food can be, and is, competitive with non-vegan food. Good food is good food.
 
-We mostly target food under $20 per person and try to only review places at the restaurant and not with delivery.
+We mostly target food under $20 per person and try to only review places at the restaurant and not with delivery. And we don't review pizza, bagels or burgers. Or desserts. Grow up.
 
 ## Creating a Review
 
