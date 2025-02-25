@@ -21,15 +21,15 @@ Also after tip and tax, for a huge feast, it was $20 a head.
 It's a Sichuan/Hunan restaurant. Tons and tons of vegan options, we only got into a little of it. 
 
 Get:
-- numbing spicy cucumbers (incredible)
-- Mung Bean Noodle
-- Spicy Fried Tofu w/ Explosive Chili 
-- Fire Burst! Cabbage w/Garlic
+- **Numbing spicy cucumbers** (incredible)
+- **Mung Bean Noodle**
+- **Spicy Fried Tofu w/ Explosive Chili** 
+- **Fire Burst! Cabbage w/Garlic**
 
 Don't get
 - Hunan steamed eggplant with chili
 - Stinky tofu (unless you like it, but maybe you should explore and try it)
 - Iron Pot mixed Tofu
-- Sesame Noodles
+- Sesame Noodles (it's fine but nothing like [Huangcheng](/places/huangcheng))
 
 Way more to explore, I will be here again.
