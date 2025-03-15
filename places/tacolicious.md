@@ -8,10 +8,12 @@ lon: -122.4213678
 phone: "+14156496077"
 menu: https://www.tacolicious.com/menus/#eat
 drinks: True
-visited: "2022-12-05"
-taste: 2
+visited: "2025-02-17"
+taste: 0
 value: 1
 instagram_published: True
 ---
 
-Nice tacos, very expensive at like $9 each after tip and tax. They have two vegan tacos, the **sweet potato and kale** and the **mushroom carnitas** that they can make vegan.
+Much nicer than the name "Tacolicious" would imply. Decent tacos and salsas and sides but nothing I'm dreaming of since then. Honestly the best thing was the salsa and chips they give you free when you get there.
+
+Like $30 a head for 3 tacos and 2 sides shared.

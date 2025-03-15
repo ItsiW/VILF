@@ -2,18 +2,34 @@
 name: Spices 3
 cuisine: Chinese
 drinks: True
-visited: "2022-08-06"
+visited: "2025-02-24"
 address: 370 12th St
 area: Downtown Oakland
-taste: 1
-value: 2
+taste: 2
+value: 3
 lat: 37.802305882468936
 lon: -122.27004915721817
-menu: https://order.mealkeyway.com/merchant/774675624b30566763665969787245344a78653569773d3d/main
+menu: https://www.bestfoodtodayus.com/ordering/restaurant/menu?restaurant_uid=1b46614b-2a6b-4463-8fff-68ba208a3c79
 phone: "+15106258889"
-instagram_published: True
+instagram_published: False
 ---
 
-This is a **Sichuan place** with a menu that is frankly too large. However that means there's a lot of veggie options. However that means there's a lot of ways to order the wrong thing. I think I got something ok, but coulda been better. I got the Hunan steamed eggplant with chili, it was fine, standard eggplant in gluggy sauce. Some of the fried dishes looked a lot better. Also they've got an entire stinky tofu section.
+One would think looking at a place with a menu this large that it would be bad. But it is, in fact, pretty great. I can't believe I've been sitting on this place for so long.
 
-I think I'd only come here again with a lot of people to try some things.
+Also after tip and tax, for a huge feast, it was $20 a head.
+
+It's a Sichuan/Hunan restaurant. Tons and tons of vegan options, we only got into a little of it. 
+
+Get:
+- **Numbing spicy cucumbers** (incredible)
+- **Mung Bean Noodle**
+- **Spicy Fried Tofu w/ Explosive Chili** 
+- **Fire Burst! Cabbage w/Garlic**
+
+Don't get
+- Hunan steamed eggplant with chili
+- Stinky tofu (unless you like it, but maybe you should explore and try it)
+- Iron Pot mixed Tofu
+- Sesame Noodles (it's fine but nothing like [Huangcheng](/places/huangcheng))
+
+Way more to explore, I will be here again.
