@@ -1,6 +1,6 @@
 ---
 name: Pica Pica Arepa Kitchen
-cuisine: Venezuelan
+cuisine: Latin American
 address: 401 Valencia St
 area: Mission District
 lat: 37.7664583

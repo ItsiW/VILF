@@ -1,6 +1,6 @@
 ---
 name: Sanguchon Eatery
-cuisine: Peruvian
+cuisine: Latin American
 address: 1182 Valencia St
 area: Mission District
 lat: 37.7540894

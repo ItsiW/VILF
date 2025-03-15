@@ -1,6 +1,6 @@
 ---
 name: Shangri-La Vegan on Telegraph
-cuisine: Tibetan 
+cuisine: Himalayan 
 address: 4905 Telegraph Ave
 area: Oakland
 lat: 37.835959

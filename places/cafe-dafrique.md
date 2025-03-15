@@ -1,6 +1,6 @@
 ---
 name: Cafe Eritrea D'Afrique
-cuisine: Eritrean
+cuisine: Ethiopian
 drinks: True
 visited: "2022-08-31"
 address: 4069 Telegraph Ave

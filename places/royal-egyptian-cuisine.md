@@ -1,6 +1,6 @@
 ---
 name: Royal Egyptian Cuisine
-cuisine: Egyptian
+cuisine: Middle Eastern
 address: Emeryville Greenway
 area: Emeryville
 lat: 37.850414

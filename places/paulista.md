@@ -1,6 +1,6 @@
 ---
 name: Paulista
-cuisine: Brazilian
+cuisine: Latin American
 address: 4239 Park Blvd
 area: East Oakland
 lat: 37.8077644

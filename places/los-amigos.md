@@ -1,6 +1,6 @@
 ---
 name: Los Amigos
-cuisine: Salvadorian
+cuisine: Latin American
 address: 530 Valencia St
 area: Mission District
 lat: 37.76439630588356

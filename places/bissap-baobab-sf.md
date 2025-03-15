@@ -1,6 +1,6 @@
 ---
 name: Bissap Baobab
-cuisine: Senegalese
+cuisine: West African
 address: 2243 Mission St
 area: Mission District
 lat: 37.7611234

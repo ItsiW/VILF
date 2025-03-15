@@ -1,6 +1,6 @@
 ---
 name: "Panchitas Restaurant #2"
-cuisine: Salvadorian
+cuisine: Latin American
 drinks: False
 visited: "2022-08-12"
 address: 3091 16th St

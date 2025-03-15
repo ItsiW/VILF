@@ -1,6 +1,6 @@
 ---
 name: Peña Pachamama
-cuisine: Bolivian
+cuisine: Latin American
 address: 1630 Powell St
 area: North Beach
 lat: 37.79972847126628

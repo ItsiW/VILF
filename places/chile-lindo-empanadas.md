@@ -1,6 +1,6 @@
 ---
 name: Chile Lindo Empanadas
-cuisine: Chilean
+cuisine: Latin American
 address: 2944 16th St
 area: Mission District
 lat: 37.7652621
