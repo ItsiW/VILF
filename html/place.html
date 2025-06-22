@@ -22,10 +22,10 @@
   },
   "servesCuisine": "{{ cuisine }}",
   "priceRange": "$",
-  "acceptsReservations": "False",
-  {% if phone %}"telephone": "{{ phone }}",{% endif %}
-  {% if menu %}"hasMenu": "{{ menu }}",{% endif %}
-  {% if food_image_path %}"image": "{{ SITE_URL }}{{ food_image_path }}",{% endif %}
+  "acceptsReservations": "False",{% if phone %}
+  "telephone": "{{ phone }}",{% endif %}{% if menu %}
+  "hasMenu": "{{ menu }}",{% endif %}{% if food_image_path %}
+  "image": "{{ SITE_URL }}{{ food_image_path }}",{% endif %}
   "aggregateRating": {
     "@type": "AggregateRating",
     "ratingValue": "{{ (taste + 1) }}",
