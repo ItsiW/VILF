@@ -432,7 +432,20 @@ def build_vilf() -> None:
         )
 
     with open(build_dir / "robots.txt", "w") as o:
-        o.write("User-agent: *\nDisallow:\n")
+        robots_content = f"""User-agent: *
+Disallow: /raw/
+Disallow: /scripts/
+Disallow: /*.geojson$
+
+# Allow all other content
+Allow: /
+
+# Sitemap
+Sitemap: {SITE_URL}/sitemap.xml
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1"""
+        o.write(robots_content)
 
     print(f"Done building VILF with {len(places)} places")
 

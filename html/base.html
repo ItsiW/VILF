@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <title>{{ title }}</title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
@@ -17,6 +17,14 @@
 
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
+
+  {% if url %}
+  <link rel="canonical" href="{{ SITE_URL }}{{ url }}" />
+  <meta property="og:url" content="{{ SITE_URL }}{{ url }}" />
+  {% else %}
+  <link rel="canonical" href="{{ SITE_URL }}/" />
+  <meta property="og:url" content="{{ SITE_URL }}/" />
+  {% endif %}
 
   <link rel="apple-touch-icon" href="{{ SITE_URL }}/favicon.png" />
 

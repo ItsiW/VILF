@@ -1,6 +1,6 @@
 ---
 name: Delah Coffee
-cuisine: Yemeni
+cuisine: Middle Eastern
 address: 370 4th St
 area: Soma
 lat: 37.78101652708919

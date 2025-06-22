@@ -1,4 +1,52 @@
 {% extends "base.html" %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "{{ title }}",
+  "description": "{{ description }}",
+  "url": "{{ SITE_URL }}/best/",
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": "Best Vegan Restaurants in San Francisco Bay Area",
+    "description": "The official V.I.L.F list of the best vegan restaurants in the San Francisco Bay Area, ranked by taste and value",
+    "numberOfItems": {{ places|length }},
+    "itemListOrder": "https://schema.org/ItemListOrderDescending",
+    "itemListElement": [
+      {% for place in places %}
+      {
+        "@type": "ListItem",
+        "position": {{ loop.index }},
+        "item": {
+          "@type": "Restaurant",
+          "name": "{{ place.name }}",
+          "url": "{{ SITE_URL }}{{ place.url }}",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "{{ place.address }}",
+            "addressLocality": "{{ place.area }}",
+            "addressRegion": "CA",
+            "addressCountry": "US"
+          },
+          "servesCuisine": "{{ place.cuisine }}",
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "{{ (place.taste + 1) }}",
+            "bestRating": "4",
+            "worstRating": "1",
+            "ratingCount": "1"
+          }
+        }
+      }{% if not loop.last %},{% endif %}
+      {% endfor %}
+    ]
+  }
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <section class="content">
   <h1 class="page-header">The Official V.I.L.F List</h1>

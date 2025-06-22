@@ -1,4 +1,92 @@
 {% extends "base.html" %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  "name": "{{ name }}",
+  "description": "{{ description }}",
+  "url": "{{ SITE_URL }}{{ url }}",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "{{ address }}",
+    "addressLocality": "{{ area }}",
+    "addressRegion": "CA",
+    "addressCountry": "US"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": {{ lat }},
+    "longitude": {{ lon }}
+  },
+  "servesCuisine": "{{ cuisine }}",
+  "priceRange": "$",
+  "acceptsReservations": "False",
+  {% if phone %}"telephone": "{{ phone }}",{% endif %}
+  {% if menu %}"hasMenu": "{{ menu }}",{% endif %}
+  {% if food_image_path %}"image": "{{ SITE_URL }}{{ food_image_path }}",{% endif %}
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ (taste + 1) }}",
+    "bestRating": "4",
+    "worstRating": "1",
+    "ratingCount": "1"
+  },
+  "review": {
+    "@type": "Review",
+    "reviewRating": {
+      "@type": "Rating",
+      "ratingValue": "{{ (taste + 1) }}",
+      "bestRating": "4",
+      "worstRating": "1"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "Vegans In Love with Food"
+    },
+    "datePublished": "{{ visited }}",
+    "reviewBody": "{{ blurb | replace('"', '\\"') }}",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Vegans In Love with Food",
+      "url": "{{ SITE_URL }}"
+    }
+  },
+  "openingHours": [],
+  "paymentAccepted": "Cash, Credit Card",
+  "currenciesAccepted": "USD"
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ SITE_URL }}/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "{{ cuisine }} Restaurants",
+      "item": "{{ SITE_URL }}/cuisines/{{ cuisine.lower().replace(' ','-') }}/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "{{ name }}",
+      "item": "{{ SITE_URL }}{{ url }}"
+    }
+  ]
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <section class="content">
   <h1 class="name">{{ name }}</h1>

@@ -1,4 +1,60 @@
 {% extends "base.html" %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "{{ title }}",
+  "description": "{{ description }}",
+  "url": "{{ SITE_URL }}/latest/",
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": "Latest Vegan Restaurant Reviews in San Francisco Bay Area",
+    "description": "The most recent vegan restaurant reviews from V.I.L.F in the San Francisco Bay Area",
+    "numberOfItems": {{ places|length }},
+    "itemListOrder": "https://schema.org/ItemListOrderDescending",
+    "itemListElement": [
+      {% for place in places %}
+      {
+        "@type": "ListItem",
+        "position": {{ loop.index }},
+        "item": {
+          "@type": "Review",
+          "itemReviewed": {
+            "@type": "Restaurant",
+            "name": "{{ place.name }}",
+            "url": "{{ SITE_URL }}{{ place.url }}",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "{{ place.address }}",
+              "addressLocality": "{{ place.area }}",
+              "addressRegion": "CA",
+              "addressCountry": "US"
+            },
+            "servesCuisine": "{{ place.cuisine }}"
+          },
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "{{ (place.taste + 1) }}",
+            "bestRating": "4",
+            "worstRating": "1"
+          },
+          "author": {
+            "@type": "Organization",
+            "name": "Vegans In Love with Food"
+          },
+          "datePublished": "{{ place.visited }}",
+          "reviewBody": "{{ place.blurb | replace('"', '\\"') }}"
+        }
+      }{% if not loop.last %},{% endif %}
+      {% endfor %}
+    ]
+  }
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <section class="content">
   <h1 class="page-header">Latest Reviews</h1>

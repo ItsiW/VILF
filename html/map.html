@@ -2,6 +2,69 @@
 {% block extra_head %}
 <script src="https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.js"></script>
 <link href="https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.css" rel="stylesheet" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Vegans In Love with Food",
+  "alternateName": "V.I.L.F",
+  "url": "{{ SITE_URL }}",
+  "description": "{{ description }}",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "{{ SITE_URL }}/cuisines/{search_term_string}/"
+    },
+    "query-input": "required name=search_term_string"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Vegans In Love with Food",
+    "url": "{{ SITE_URL }}",
+    "logo": "{{ SITE_URL }}/favicon.png",
+    "sameAs": [
+      "https://www.instagram.com/VILF_SF/",
+      "https://news.vilf.org"
+    ]
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Vegans In Love with Food",
+  "alternateName": "V.I.L.F",
+  "url": "{{ SITE_URL }}",
+  "logo": "{{ SITE_URL }}/favicon.png",
+  "description": "A collaborative and critical project that aims to showcase the ubiquity of good vegan food in the San Francisco Bay Area",
+  "foundingLocation": {
+    "@type": "Place",
+    "name": "San Francisco Bay Area",
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 37.7749,
+      "longitude": -122.4194
+    }
+  },
+  "areaServed": {
+    "@type": "Place",
+    "name": "San Francisco Bay Area"
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "email": "contact@vilf.org",
+    "contactType": "customer service"
+  },
+  "sameAs": [
+    "https://www.instagram.com/VILF_SF/",
+    "https://news.vilf.org"
+  ]
+}
+</script>
 {% endblock %}
 {% block content %}
 
