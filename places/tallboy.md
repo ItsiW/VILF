@@ -8,7 +8,7 @@ lon: -122.2636764
 phone: "+19196278464"
 menu: https://www.tallboy.bar/menu
 drinks: True
-visited: "2025=03-02"
+visited: "2025-03-02"
 taste: 2
 value: 1
 instagram_published: False

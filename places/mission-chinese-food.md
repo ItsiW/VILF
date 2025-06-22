@@ -8,7 +8,7 @@ lon: -122.4195
 phone: "+14158632800"
 menu: https://www.missionchinesefood.com/
 drinks: True
-visited: "2022-11-16"
+visited: "2025-06-06"
 taste: 2
 value: 1
 instagram_published: True
@@ -19,3 +19,6 @@ This Chinese restaurant has a bewildering and comforting vibe. The food is top n
 What I cannot recommend is the giant shared pandan drink we got which paired with just about nothing we ordered.
 
 It ended up being pricey (like $40 a head) but you could definitely eat here for cheaper and they have lunch specials.
+
+Edit:
+Went back in 2025. Rice cakes were still good, **chinese kimchi** is great. Don't get the cucumber salad or garlic rice.
