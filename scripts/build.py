@@ -168,6 +168,17 @@ def build_vilf() -> None:
     def format_description(meta):
         return f'Read our review on {meta["name"]} at {meta["address"]} in {meta["area"]}, and more tasty vegan {meta["cuisine"]} food in the San Francisco Bay Area from V.I.L.F!'
 
+    def format_description_with_dishes(meta, md):
+        """Generate enhanced meta description with specific dishes mentioned"""
+        # Extract dishes marked with ** from review text
+        dishes = re.findall(r'\*\*(.*?)\*\*', md)
+        
+        if dishes:
+            dishes_text = ", ".join(dishes[:2])  # Max 2 dishes for meta description
+            return f'Read our review on {meta["name"]} featuring {dishes_text} at {meta["address"]} in {meta["area"]}, and more tasty vegan {meta["cuisine"]} food in the San Francisco Bay Area from V.I.L.F!'
+        else:
+            return f'Read our review on {meta["name"]} at {meta["address"]} in {meta["area"]}, and more tasty vegan {meta["cuisine"]} food in the San Francisco Bay Area from V.I.L.F!'
+
     def format_phone_number(meta):
         if meta["phone"] is None:
             return
@@ -192,6 +203,17 @@ def build_vilf() -> None:
 
     def format_blurb(md):
         return " ".join(plain(re.sub(r"\s+", " ", md.strip())).split(" ")[:50]) + "..."
+
+    def format_alt_text(meta, md):
+        """Generate enhanced alt text with specific dishes mentioned"""
+        base_alt = f"Vegan {meta['cuisine']} food at {meta['name']} in {meta['area']}, San Francisco Bay Area"
+        
+        # Extract dishes marked with ** from review text
+        dishes = re.findall(r'\*\*(.*?)\*\*', md)
+        if dishes:
+            dishes_text = ", ".join(dishes[:3])  # Max 3 dishes
+            return f"{base_alt} featuring {dishes_text}"
+        return base_alt
 
     def get_fp_food_image(slug):
         static_fp = Path(f"img/food/{slug}.jpg")
@@ -237,12 +259,13 @@ def build_vilf() -> None:
             )
             html = markdown(md.strip())
             meta["blurb"] = format_blurb(md)
+            meta["alt_text"] = format_alt_text(meta, md)
             meta["food_image_path"] = get_fp_food_image(slug)
             meta["food_thumb_path"] = get_fp_food_thumb(slug)
             rendered = place_template.render(
                 **meta,
                 title=format_title(meta),
-                description=format_description(meta),
+                description=format_description_with_dishes(meta, md),
                 taste_html=rating_html(meta["taste"], taste_labels),
                 value_html=rating_html(meta["value"], value_labels),
                 drinks_html=boolean_html(meta["drinks"]),
