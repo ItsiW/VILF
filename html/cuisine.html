@@ -1,4 +1,74 @@
 {% extends "base.html" %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "{{ title }}",
+  "description": "{{ description }}",
+  "url": "{{ SITE_URL }}/cuisines/{{ cuisine.lower().replace(' ','-') }}/",
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": "Vegan {{ cuisine }} Restaurants in San Francisco Bay Area",
+    "description": "A curated list of the best vegan {{ cuisine }} restaurants in the San Francisco Bay Area",
+    "numberOfItems": {{ places|length }},
+    "itemListElement": [
+      {% for place in places %}
+      {
+        "@type": "ListItem",
+        "position": {{ loop.index }},
+        "item": {
+          "@type": "Restaurant",
+          "name": "{{ place.name }}",
+          "url": "{{ SITE_URL }}{{ place.url }}",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "{{ place.address }}",
+            "addressLocality": "{{ place.area }}",
+            "addressRegion": "CA",
+            "addressCountry": "US"
+          },
+          "servesCuisine": "{{ place.cuisine }}",
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "{{ (place.taste + 1) }}",
+            "bestRating": "4",
+            "worstRating": "1",
+            "ratingCount": "1"
+          }
+        }
+      }{% if not loop.last %},{% endif %}
+      {% endfor %}
+    ]
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "{{ SITE_URL }}/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Cuisines",
+        "item": "{{ SITE_URL }}/cuisines/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "{{ cuisine }}",
+        "item": "{{ SITE_URL }}/cuisines/{{ cuisine.lower().replace(' ','-') }}/"
+      }
+    ]
+  }
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <section class="content">
   <h1 class="page-header">Vegan {{ cuisine }} food in the San Francisco Bay Area</h1>

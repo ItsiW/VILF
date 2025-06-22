@@ -1,6 +1,6 @@
 ---
 name: Yemen Kitchen
-cuisine: Yemeni
+cuisine: Middle Eastern
 address: 219 Jones St
 area: Tenderloin
 lat: 37.78332190211085
