@@ -28,7 +28,7 @@
 
   <link rel="apple-touch-icon" href="{{ SITE_URL }}/favicon.png" />
 
-  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta name="viewport" content="initial-scale=1,maximum-scale=5,user-scalable=yes" />
   <style>
     body, html {
       margin: 0;
@@ -354,7 +354,9 @@
   <link rel="preload" href="https://fonts.gstatic.com/s/lato/v24/S6uyw4BMUTPHjx4wXiWtFCc.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="https://fonts.gstatic.com/s/emilycandy/v19/WBLgrEbUbFlYW6-M8CeAS6mKrwXhQQ.woff2" as="font" type="font/woff2" crossorigin>
   
-  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Emilys+Candy&family=Roboto+Slab&display=swap" rel="stylesheet"> 
+  <!-- Load fonts asynchronously to prevent render blocking -->
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Emilys+Candy&family=Roboto+Slab&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Emilys+Candy&family=Roboto+Slab&display=swap" rel="stylesheet"></noscript> 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <!-- Google tag (gtag.js) -->
