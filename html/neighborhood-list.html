@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="content">
+  <h1 class="page-header">Neighborhoods</h1>
+  {% for neighborhood in neighborhoods %}
+  <h2 class="name"><a href="{{ neighborhood.url }}">{{ neighborhood.name }}</a></h2>
+    {% if neighborhood.len == 1 %}
+    <p class="cuisine-list">{{ neighborhood.len }} review</p>
+    {% else %}
+    <p class="cuisine-list">{{ neighborhood.len }} reviews</p>
+    {% endif %}
+  {% endfor %}
+</section>
+{% endblock %} 

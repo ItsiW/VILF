@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "{{ title }}",
+  "description": "{{ description }}",
+  "url": "{{ SITE_URL }}/neighborhoods/{{ neighborhood.lower().replace(' ','-') }}/",
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": "Vegan Restaurants in {{ neighborhood }}, San Francisco Bay Area",
+    "description": "A curated list of the best vegan restaurants in {{ neighborhood }}, San Francisco Bay Area",
+    "numberOfItems": {{ places|length }},
+    "itemListElement": [
+      {% for place in places %}
+      {
+        "@type": "ListItem",
+        "position": {{ loop.index }},
+        "item": {
+          "@type": "Restaurant",
+          "name": "{{ place.name }}",
+          "url": "{{ SITE_URL }}{{ place.url }}",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "{{ place.address }}",
+            "addressLocality": "{{ place.area }}",
+            "addressRegion": "CA",
+            "addressCountry": "US"
+          },
+          "servesCuisine": "{{ place.cuisine }}",
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "{{ (place.taste + 1) }}",
+            "bestRating": "4",
+            "worstRating": "1",
+            "ratingCount": "1"
+          }
+        }
+      }{% if not loop.last %},{% endif %}
+      {% endfor %}
+    ]
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "{{ SITE_URL }}/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Neighborhoods",
+        "item": "{{ SITE_URL }}/neighborhoods/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "{{ neighborhood }}",
+        "item": "{{ SITE_URL }}/neighborhoods/{{ neighborhood.lower().replace(' ','-') }}/"
+      }
+    ]
+  }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="content">
+  <h1>{% if places|length == 1 %}Best restaurant{% else %}Best {{ places|length }} restaurants{% endif %} with vegan food in {{ neighborhood }}</h1>
+  
+  {% for place in places %}
+  <h2 class="name first-element"><a href="{{ place.url }}">{{ place.name }}</a></h2>
+  <p class="list-info address">{{ place.address }}, {{ place.area }}</p>
+  <p class="list-info"><a href="/cuisines/{{ place.cuisine.lower().replace(' ','-') }}/">{{ place.cuisine }} food</a></p>
+  <p class="list-info"><b style="color: {{ place.taste_color }}">{{ place.taste_label }}</b> taste. <b style="color: {{ place.value_color }}">{{ place.value_label }}</b> value.</p>
+  {% endfor %}
+</section>
+{% endblock %} 

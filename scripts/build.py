@@ -480,6 +480,73 @@ def build_vilf() -> None:
             )
         )
 
+    # neighborhood pages
+    neighborhood_names = sorted(set([place["area"] for place in places]))
+    
+    neighborhoods_dir = build_dir / "neighborhoods"
+    neighborhoods_dir.mkdir(exist_ok=True, parents=True)
+    
+    def format_neighborhood_title(neighborhood):
+        return f"Vegan food in {neighborhood} — San Francisco Bay Area — Vegans In Love with Food"
+
+    def format_neighborhood_description(neighborhood):
+        return f"Find the best vegan restaurants in {neighborhood}, San Francisco Bay Area. Curated reviews from V.I.L.F!"
+
+    neighborhood_template = env.get_template("neighborhood.html")
+    
+    # Track neighborhoods with 3+ restaurants for the index page
+    neighborhoods_with_pages = []
+
+    for neighborhood in neighborhood_names:
+        slug = neighborhood.lower().replace(" ", "-")
+        neighborhood_places = [
+            place for place in places if place["area"] == neighborhood
+        ]
+        
+        # Only create pages for neighborhoods with 3+ restaurants
+        if len(neighborhood_places) >= 3:
+            rendered = neighborhood_template.render(
+                title=format_neighborhood_title(neighborhood),
+                description=format_neighborhood_description(neighborhood),
+                neighborhood=neighborhood,
+                places=sorted(
+                    neighborhood_places,
+                    key=lambda item: (-item["taste"], -item["value"], item["slug"]),
+                ),
+            )
+            neighborhood_dir = build_dir / "neighborhoods" / slug
+            neighborhood_dir.mkdir(exist_ok=True, parents=True)
+            with open(neighborhood_dir / "index.html", "w") as o:
+                o.write(rendered)
+
+            sitemap.append(
+                {
+                    "url": f"{SITE_URL}/neighborhoods/{slug}/",
+                    "changefreq": "weekly",
+                }
+            )
+            
+            # Track for index page
+            neighborhoods_with_pages.append({
+                "name": neighborhood,
+                "url": f"/neighborhoods/{slug}/",
+                "len": len(neighborhood_places)
+            })
+
+    # Create neighborhoods index page
+    with open(neighborhoods_dir / "index.html", "w") as o:
+        o.write(
+            env.get_template("neighborhood-list.html").render(
+                neighborhoods=sorted(neighborhoods_with_pages, key=lambda x: -x["len"])
+            )
+        )
+    sitemap.append(
+        {
+            "url": f"{SITE_URL}/neighborhoods/",
+            "changefreq": "weekly",
+        }
+    )
+
     with open(build_dir / "robots.txt", "w") as o:
         robots_content = f"""User-agent: *
 Disallow: /raw/
