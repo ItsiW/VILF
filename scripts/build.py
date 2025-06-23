@@ -29,10 +29,10 @@ def build_vilf() -> None:
     build_dir = Path("./build")
     shutil.rmtree(build_dir, ignore_errors=True)
 
-    # scale, crop and store standardised images
-    food_image_target_size = (1920, 1080)
+    # scale, crop and store standardised images  
+    food_image_target_size = (1200, 675)  # Balanced: good quality + reasonable file size
     food_thumb_target_size = (426, 240)
-    jpg_quality = 75
+    jpg_quality = 82  # Higher quality for better visual appeal
 
     for img_type in ["food", "thumb"]:
         path = Path(f"static/img/{img_type}")
