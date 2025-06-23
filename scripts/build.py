@@ -43,11 +43,21 @@ def build_vilf() -> None:
         list(Path("raw/food").glob("*.jpg")), desc="processing food images"
     ):
         file_name = raw_jpg.parts[-1]
-        static_fp = Path("img/food") / file_name
-        thumb_fp = Path("img/thumb") / file_name
-        if not (
-            (Path("static") / static_fp).exists() & (Path("static") / thumb_fp).exists()
-        ):
+        file_stem = raw_jpg.stem
+        static_fp_jpg = Path("img/food") / file_name
+        static_fp_webp = Path("img/food") / f"{file_stem}.webp"
+        thumb_fp_jpg = Path("img/thumb") / file_name
+        thumb_fp_webp = Path("img/thumb") / f"{file_stem}.webp"
+        
+        # Check if all formats exist
+        files_exist = all([
+            (Path("static") / static_fp_jpg).exists(),
+            (Path("static") / static_fp_webp).exists(),
+            (Path("static") / thumb_fp_jpg).exists(),
+            (Path("static") / thumb_fp_webp).exists()
+        ])
+        
+        if not files_exist:
             with Image.open(raw_jpg) as im:
                 assert im.size[0] / im.size[1] <= 16 / 9
                 im = im.convert("RGB")
@@ -65,8 +75,13 @@ def build_vilf() -> None:
                     food_image_target_size[1] + pixels_to_crop,
                 )
                 im_cropped = im.crop((left, upper, right, lower))
+                
+                # Save full-size images in both formats
                 im_cropped.save(
-                    fp=Path("static") / static_fp, format="JPEG", quality=jpg_quality
+                    fp=Path("static") / static_fp_jpg, format="JPEG", quality=jpg_quality
+                )
+                im_cropped.save(
+                    fp=Path("static") / static_fp_webp, format="WEBP", quality=jpg_quality
                 )
 
                 # thumbnails for images on map
@@ -74,7 +89,10 @@ def build_vilf() -> None:
                     (food_thumb_target_size[0], food_thumb_target_size[1])
                 )
                 im_thumb.save(
-                    fp=Path("static") / thumb_fp, format="JPEG", quality=jpg_quality
+                    fp=Path("static") / thumb_fp_jpg, format="JPEG", quality=jpg_quality
+                )
+                im_thumb.save(
+                    fp=Path("static") / thumb_fp_webp, format="WEBP", quality=jpg_quality
                 )
 
     shutil.copytree(Path("static"), build_dir)
@@ -216,20 +234,28 @@ def build_vilf() -> None:
         return base_alt
 
     def get_fp_food_image(slug):
-        static_fp = Path(f"img/food/{slug}.jpg")
-        return (
-            str(Path(f"/{static_fp}"))
-            if (Path("static") / static_fp).exists()
-            else None
-        )
+        # Prefer WebP if available, fallback to JPEG
+        webp_fp = Path(f"img/food/{slug}.webp")
+        jpg_fp = Path(f"img/food/{slug}.jpg")
+        
+        if (Path("static") / webp_fp).exists():
+            return str(Path(f"/{webp_fp}"))
+        elif (Path("static") / jpg_fp).exists():
+            return str(Path(f"/{jpg_fp}"))
+        else:
+            return None
 
     def get_fp_food_thumb(slug):
-        static_fp = Path(f"img/thumb/{slug}.jpg")
-        return (
-            str(Path(f"/{static_fp}"))
-            if (Path("static") / static_fp).exists()
-            else None
-        )
+        # Prefer WebP if available, fallback to JPEG
+        webp_fp = Path(f"img/thumb/{slug}.webp")
+        jpg_fp = Path(f"img/thumb/{slug}.jpg")
+        
+        if (Path("static") / webp_fp).exists():
+            return str(Path(f"/{webp_fp}"))
+        elif (Path("static") / jpg_fp).exists():
+            return str(Path(f"/{jpg_fp}"))
+        else:
+            return None
 
     for place_md in Path("places").glob("*.md"):
         try:

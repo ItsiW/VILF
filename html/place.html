@@ -116,7 +116,15 @@
     <p><b class="sgfi">Something Going For It</b></p>
     {% endif %}
     {% if food_image_path %}
-    <img src="{{ food_image_path }}" alt="{{ alt_text }}" class="food-image"> 
+    <picture>
+      {% if food_image_path.endswith('.webp') %}
+      <source srcset="{{ food_image_path }}" type="image/webp">
+      <source srcset="{{ food_image_path.replace('.webp', '.jpg') }}" type="image/jpeg">
+      <img src="{{ food_image_path.replace('.webp', '.jpg') }}" alt="{{ alt_text }}" class="food-image">
+      {% else %}
+      <img src="{{ food_image_path }}" alt="{{ alt_text }}" class="food-image">
+      {% endif %}
+    </picture>
     {% endif %}
   <h3 class="notes">Remarks</h3>
   {{ content }}
