@@ -120,9 +120,9 @@
       {% if food_image_path.endswith('.webp') %}
       <source srcset="{{ food_image_path }}" type="image/webp">
       <source srcset="{{ food_image_path.replace('.webp', '.jpg') }}" type="image/jpeg">
-      <img src="{{ food_image_path.replace('.webp', '.jpg') }}" alt="{{ alt_text }}" class="food-image" loading="lazy">
+      <img src="{{ food_image_path.replace('.webp', '.jpg') }}" alt="{{ alt_text }}" class="food-image" loading="lazy" width="800" height="600">
       {% else %}
-      <img src="{{ food_image_path }}" alt="{{ alt_text }}" class="food-image" loading="lazy">
+      <img src="{{ food_image_path }}" alt="{{ alt_text }}" class="food-image" loading="lazy" width="800" height="600">
       {% endif %}
     </picture>
     {% endif %}
