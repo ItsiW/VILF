@@ -303,8 +303,8 @@ map.on("load", function () {
     "filter": [">=", ["zoom"], 14]
   });
 
-  // preload thumbnails
-  imagePreloader();
+  // preload thumbnails after a short delay to prevent blocking
+  setTimeout(imagePreloader, 1000);
 
   const popup = new maplibregl.Popup({ 
     offset: 8, 
