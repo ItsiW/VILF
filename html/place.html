@@ -2,11 +2,21 @@
 
 {% block extra_head %}
 <style>
-.food-image {
+.food-image-container {
   margin-top: 1rem;
-  width: auto;
-  max-width: 100%;
-  height: auto;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio (9/16 = 0.5625) */
+  position: relative;
+  background-color: #ffffff;
+}
+.food-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .sampling-date {
   font-style: italic;
@@ -141,15 +151,17 @@
     <p><b class="sgfi">Something Going For It</b></p>
     {% endif %}
     {% if food_image_path %}
-    <picture>
-      {% if food_image_path.endswith('.webp') %}
-      <source srcset="{{ food_image_path }}" type="image/webp">
-      <source srcset="{{ food_image_path.replace('.webp', '.jpg') }}" type="image/jpeg">
-      <img src="{{ food_image_path.replace('.webp', '.jpg') }}" alt="{{ alt_text }}" class="food-image" loading="lazy" width="800" height="450">
-      {% else %}
-      <img src="{{ food_image_path }}" alt="{{ alt_text }}" class="food-image" loading="lazy" width="800" height="450">
-      {% endif %}
-    </picture>
+    <div class="food-image-container">
+      <picture>
+        {% if food_image_path.endswith('.webp') %}
+        <source srcset="{{ food_image_path }}" type="image/webp">
+        <source srcset="{{ food_image_path.replace('.webp', '.jpg') }}" type="image/jpeg">
+        <img src="{{ food_image_path.replace('.webp', '.jpg') }}" alt="{{ alt_text }}" class="food-image" loading="lazy" width="1200" height="675">
+        {% else %}
+        <img src="{{ food_image_path }}" alt="{{ alt_text }}" class="food-image" loading="lazy" width="1200" height="675">
+        {% endif %}
+      </picture>
+    </div>
     {% endif %}
   <h3 class="notes">Remarks</h3>
   {{ content }}
