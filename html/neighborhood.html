@@ -1,6 +1,25 @@
 {% extends "base.html" %}
 
 {% block extra_head %}
+<style>
+#load-more {
+  margin: 2rem auto;
+  display: block;
+  padding: 1rem 2rem;
+  background: #750395;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1em;
+  cursor: pointer;
+}
+#load-more:hover {
+  background: #8a0aab;
+}
+#remaining-restaurants {
+  display: none;
+}
+</style>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -73,11 +92,39 @@
 <section class="content">
   <h1>{% if places|length == 1 %}Best restaurant{% else %}Best {{ places|length }} restaurants{% endif %} with vegan food in {{ neighborhood }}</h1>
   
-  {% for place in places %}
-  <h2 class="name first-element"><a href="{{ place.url }}">{{ place.name }}</a></h2>
-  <p class="list-info address">{{ place.address }}, {{ place.area }}</p>
-  <p class="list-info"><a href="/cuisines/{{ place.cuisine.lower().replace(' ','-') }}/">{{ place.cuisine }} food</a></p>
-  <p class="list-info"><b style="color: {{ place.taste_color }}">{{ place.taste_label }}</b> taste. <b style="color: {{ place.value_color }}">{{ place.value_label }}</b> value.</p>
-  {% endfor %}
+  <div id="restaurant-list">
+    {% for place in places[:20] %}
+    <div class="restaurant-item">
+      <h2 class="name first-element"><a href="{{ place.url }}">{{ place.name }}</a></h2>
+      <p class="list-info address">{{ place.address }}, {{ place.area }}</p>
+      <p class="list-info"><a href="/cuisines/{{ place.cuisine.lower().replace(' ','-') }}/">{{ place.cuisine }} food</a></p>
+      <p class="list-info"><b style="color: {{ place.taste_color }}">{{ place.taste_label }}</b> taste. <b style="color: {{ place.value_color }}">{{ place.value_label }}</b> value.</p>
+    </div>
+    {% endfor %}
+  </div>
+  
+  {% if places|length > 20 %}
+  <button id="load-more" onclick="loadMoreRestaurants()">
+    Show More Restaurants ({{ places|length - 20 }} remaining)
+  </button>
+  
+  <div id="remaining-restaurants">
+    {% for place in places[20:] %}
+    <div class="restaurant-item">
+      <h2 class="name first-element"><a href="{{ place.url }}">{{ place.name }}</a></h2>
+      <p class="list-info address">{{ place.address }}, {{ place.area }}</p>
+      <p class="list-info"><a href="/cuisines/{{ place.cuisine.lower().replace(' ','-') }}/">{{ place.cuisine }} food</a></p>
+      <p class="list-info"><b style="color: {{ place.taste_color }}">{{ place.taste_label }}</b> taste. <b style="color: {{ place.value_color }}">{{ place.value_label }}</b> value.</p>
+    </div>
+    {% endfor %}
+  </div>
+  
+  <script>
+    function loadMoreRestaurants() {
+      document.getElementById('remaining-restaurants').style.display = 'block';
+      document.getElementById('load-more').style.display = 'none';
+    }
+  </script>
+  {% endif %}
 </section>
 {% endblock %} 

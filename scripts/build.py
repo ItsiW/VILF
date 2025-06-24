@@ -359,16 +359,16 @@ def build_vilf() -> None:
     best_dir = build_dir / "best"
     best_dir.mkdir(exist_ok=True, parents=True)
     with open(best_dir / "index.html", "w") as o:
+        sorted_places = sorted(
+            places,
+            key=lambda item: (-item["taste"], -item["value"], item["slug"]),
+        )
         o.write(
             env.get_template("best.html").render(
                 title="Vegans In Love with Food",
-                description="Find tasty vegan food around the San Francisco Bay Area with V.I.L.F!",
+                description=f"The best {len(sorted_places)} restaurants for vegan food in the San Francisco Bay Area with V.I.L.F!",
                 url="/best/",
-                # sort by taste desc, then value desc, then alphabetical by name
-                places=sorted(
-                    places,
-                    key=lambda item: (-item["taste"], -item["value"], item["slug"]),
-                ),
+                places=sorted_places,
             )
         )
     sitemap.insert(
