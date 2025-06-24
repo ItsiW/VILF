@@ -251,9 +251,12 @@
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-Z7XL0RM921');
+  
+  // Defer GA configuration until after page loads to avoid blocking main thread
+  window.addEventListener('load', function() {
+    gtag('js', new Date());
+    gtag('config', 'G-Z7XL0RM921');
+  });
 </script>
 <body>
   <section class="header">
