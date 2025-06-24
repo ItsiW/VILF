@@ -33,7 +33,7 @@
     body, html {
       margin: 0;
       padding: 0;
-      font-family: 'Lato', sans-serif;
+      font-family: 'Lato', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
     }
     body {
       height: 100vh;
@@ -53,7 +53,7 @@
       color: inherit;
     }
     h1, h2, h3, .vilf {
-      font-family: 'Emilys Candy', cursive;
+      font-family: 'Emilys Candy', 'Brush Script MT', 'Comic Sans MS', cursive;
       font-weight: bold;
     }
     h1, h2, h3 {
@@ -101,7 +101,7 @@
     }
     .subtitle {
       font-size: 1.4em;
-      font-family: 'Roboto Slab', sans-serif;
+      font-family: 'Roboto Slab', 'Times New Roman', Georgia, serif;
       color: #fff;
       margin: 0;
       margin-top: .2em;
@@ -238,12 +238,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   
-  <!-- Preload critical fonts for faster rendering -->
-  <link rel="preload" href="https://fonts.gstatic.com/s/lato/v24/S6uyw4BMUTPHjx4wXiWtFCc.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="https://fonts.gstatic.com/s/emilycandy/v19/WBLgrEbUbFlYW6-M8CeAS6mKrwXhQQ.woff2" as="font" type="font/woff2" crossorigin>
-  
-  <!-- Load fonts asynchronously to prevent render blocking -->
-  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Emilys+Candy&family=Roboto+Slab&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <!-- Optimized font loading with font-display: swap for better performance -->
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Emilys+Candy&family=Roboto+Slab&display=swap" rel="stylesheet" media="print" onload="this.media='all'; this.onload=null;">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Emilys+Candy&family=Roboto+Slab&display=swap" rel="stylesheet"></noscript> 
 </head>
 <!-- Google tag (gtag.js) -->
