@@ -137,6 +137,7 @@ def build_vilf() -> None:
         o.write(
             env.get_template("about.html").render(
                 **meta,
+                url="/about/",
                 content=html,
             )
         )
@@ -362,6 +363,7 @@ def build_vilf() -> None:
             env.get_template("best.html").render(
                 title="Vegans In Love with Food",
                 description="Find tasty vegan food around the San Francisco Bay Area with V.I.L.F!",
+                url="/best/",
                 # sort by taste desc, then value desc, then alphabetical by name
                 places=sorted(
                     places,
@@ -385,6 +387,7 @@ def build_vilf() -> None:
             env.get_template("latest.html").render(
                 title="Latest Reviews from Vegans In Love with Food",
                 description="Find tasty vegan food around the San Francisco Bay Area!",
+                url="/latest/",
                 # sort by age then standard
                 places=sorted(
                     places,
@@ -412,6 +415,7 @@ def build_vilf() -> None:
     with open(cuisines_dir / "index.html", "w") as o:
         o.write(
             env.get_template("cuisine-list.html").render(
+                url="/cuisines/",
                 cuisines=[
                     {
                         "name": cuisine,
@@ -448,6 +452,7 @@ def build_vilf() -> None:
         rendered = cuisine_template.render(
             title=format_cuisine_title(cuisine),
             description=format_cuisine_description(cuisine),
+            url=f"/cuisines/{slug}/",
             cuisine=cuisine,
             places=sorted(
                 [place for place in places if place["cuisine"] == cuisine],
@@ -508,6 +513,7 @@ def build_vilf() -> None:
             rendered = neighborhood_template.render(
                 title=format_neighborhood_title(neighborhood),
                 description=format_neighborhood_description(neighborhood),
+                url=f"/neighborhoods/{slug}/",
                 neighborhood=neighborhood,
                 places=sorted(
                     neighborhood_places,
@@ -537,6 +543,7 @@ def build_vilf() -> None:
     with open(neighborhoods_dir / "index.html", "w") as o:
         o.write(
             env.get_template("neighborhood-list.html").render(
+                url="/neighborhoods/",
                 neighborhoods=sorted(neighborhoods_with_pages, key=lambda x: -x["len"])
             )
         )
