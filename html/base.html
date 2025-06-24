@@ -248,11 +248,27 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   
-  // Defer GA configuration until after page loads to avoid blocking main thread
-  window.addEventListener('load', function() {
-    gtag('js', new Date());
-    gtag('config', 'G-Z7XL0RM921');
+  // Defer GA configuration with bounce tracking
+  let gaLoaded = false;
+  function loadGA() {
+    if (!gaLoaded) {
+      gtag('js', new Date());
+      gtag('config', 'G-Z7XL0RM921');
+      gaLoaded = true;
+    }
+  }
+  
+  // Load GA on first user interaction
+  ['mousedown', 'touchstart', 'keydown', 'scroll'].forEach(event => {
+    document.addEventListener(event, loadGA, { once: true, passive: true });
   });
+  
+  // Track bounces: load GA when user is about to leave
+  window.addEventListener('beforeunload', loadGA, { once: true });
+  document.addEventListener('visibilitychange', loadGA, { once: true });
+  
+  // Fallback: load after 1.5 seconds
+  setTimeout(loadGA, 1500);
 </script>
 <body>
   <section class="header">
