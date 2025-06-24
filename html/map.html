@@ -177,7 +177,9 @@
 </div>
 
 <script>
-maplibregl.accessToken = "pk.eyJ1IjoidHJpc2NodGFuZGVyIiwiYSI6ImNsNmZwNXY2MDAxOWEzZG41b213NWJ2ZjIifQ.pMjBga8kA5XQuDw19WQ8TQ";
+// Defer heavy map initialization until after critical rendering
+function initializeMap() {
+  maplibregl.accessToken = "pk.eyJ1IjoidHJpc2NodGFuZGVyIiwiYSI6ImNsNmZwNXY2MDAxOWEzZG41b213NWJ2ZjIifQ.pMjBga8kA5XQuDw19WQ8TQ";
 
 var map = new maplibregl.Map({
   container: "map",
@@ -431,6 +433,15 @@ function imagePreloader() {
     }
   }
   preload(...{{ thumbnails }});
+}
+
+} // End of initializeMap function
+
+// Initialize map after critical rendering, or when browser is idle
+if (window.requestIdleCallback) {
+  requestIdleCallback(initializeMap);
+} else {
+  setTimeout(initializeMap, 100);
 }
 
 </script>
