@@ -29,7 +29,7 @@ with nix; {
       name = bucket_name;
       bucket_name = "\${ google_storage_bucket.main.name }";
       enable_cdn = true;
-      compression_mode = "DISABLED";
+      compression_mode = "AUTOMATIC";
       custom_response_headers = ["Strict-Transport-Security:max-age=31536000; includeSubDomains; preload"];
     };
   };
