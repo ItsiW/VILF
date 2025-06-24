@@ -543,6 +543,8 @@ def build_vilf() -> None:
     with open(neighborhoods_dir / "index.html", "w") as o:
         o.write(
             env.get_template("neighborhood-list.html").render(
+                title="Vegan Food by Neighborhood in San Francisco Bay Area — V.I.L.F",
+                description=f"Find the best vegan restaurants in each neighborhood in the San Francisco Bay Area from V.I.L.F!",
                 url="/neighborhoods/",
                 neighborhoods=sorted(neighborhoods_with_pages, key=lambda x: -x["len"])
             )

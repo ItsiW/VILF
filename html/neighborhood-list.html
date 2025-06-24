@@ -1,4 +1,36 @@
 {% extends "base.html" %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Vegan Food by Neighborhood in San Francisco Bay Area",
+  "description": "Find the best vegan restaurants organized by neighborhood in the San Francisco Bay Area",
+  "url": "{{ SITE_URL }}/neighborhoods/",
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": "Neighborhoods with Vegan Restaurants",
+    "description": "San Francisco Bay Area neighborhoods with the best vegan food options",
+    "numberOfItems": {{ neighborhoods|length }},
+    "itemListElement": [
+      {% for neighborhood in neighborhoods %}
+      {
+        "@type": "ListItem",
+        "position": {{ loop.index }},
+        "item": {
+          "@type": "Place",
+          "name": "{{ neighborhood.name }}",
+          "url": "{{ SITE_URL }}{{ neighborhood.url }}"
+        }
+      }{% if not loop.last %},{% endif %}
+      {% endfor %}
+    ]
+  }
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <section class="content">
   <h1 class="page-header">Neighborhoods</h1>
