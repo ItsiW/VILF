@@ -11,7 +11,7 @@ drinks: False
 visited: "2024-03-09"
 taste: 2
 value: 2
-instagram_published: False
+instagram_published: True
 ---
 
 Excellent **biang biang noodles**. Got the plain garlic one with added tofu and spicy pickled veg. Also the **black fungus** was really good.

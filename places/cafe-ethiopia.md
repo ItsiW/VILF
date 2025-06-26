@@ -11,7 +11,7 @@ drinks: True
 visited: "2024-02-23"
 taste: 1
 value: 2
-instagram_published: False
+instagram_published: True
 ---
 
 Good objectively because all Ethiopian food is. But not as good as other Ethiopian places.
