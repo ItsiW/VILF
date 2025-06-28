@@ -94,6 +94,62 @@
 }
 </script>
 
+<!-- Article Schema for Image Thumbnails -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "{{ name }}: {{ cuisine }} Restaurant Review in {{ area }}",
+  "description": "{{ description }}",
+  "url": "{{ SITE_URL }}{{ url }}",
+  {% if food_image_path %}
+  "image": [
+    {
+      "@type": "ImageObject",
+      "url": "{{ SITE_URL }}{{ food_image_path }}",
+      "width": 1200,
+      "height": 675,
+      "caption": "{{ alt_text if alt_text else 'Vegan food at ' + name }}"
+    }
+  ],
+  {% endif %}
+  "datePublished": "{{ visited }}",
+  "dateModified": "{{ visited }}",
+  "author": {
+    "@type": "Organization",
+    "name": "Vegans In Love with Food",
+    "url": "{{ SITE_URL }}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Vegans In Love with Food",
+    "url": "{{ SITE_URL }}",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ SITE_URL }}/favicon.png",
+      "width": 512,
+      "height": 512
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ SITE_URL }}{{ url }}"
+  },
+  "about": {
+    "@type": "Restaurant",
+    "name": "{{ name }}",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "{{ address }}",
+      "addressLocality": "{{ area }}",
+      "addressRegion": "CA",
+      "addressCountry": "US"
+    },
+    "servesCuisine": "{{ cuisine }}"
+  }
+}
+</script>
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
