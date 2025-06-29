@@ -11,6 +11,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
+import undetected_chromedriver as uc
 
 class InstagramBot:
     def __init__(self, credentials_file):
@@ -44,14 +45,58 @@ class InstagramBot:
             print(e)
 
     def launch_instagram(self):
-        chrome_options = Options()
-        chrome_options.add_argument("--disable-notifications")
-        mobile_emulation = {"deviceName": "Nexus 5"}
-        chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
-        service = Service(ChromeDriverManager().install())
-        driver = webdriver.Chrome(service=service, options=chrome_options)
-        driver.get("https://www.instagram.com/")
-        return driver
+        try:
+            # Try undetected-chromedriver first (best for Instagram automation)
+            print("Trying undetected-chromedriver...")
+            chrome_options = uc.ChromeOptions()
+            chrome_options.add_argument("--disable-notifications")
+            mobile_emulation = {"deviceName": "Nexus 5"}
+            chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
+            
+            driver = uc.Chrome(options=chrome_options)
+            driver.get("https://www.instagram.com/")
+            print("Successfully launched with undetected-chromedriver")
+            return driver
+            
+        except Exception as e:
+            print(f"Undetected-chromedriver failed: {e}")
+            print("Falling back to regular ChromeDriver...")
+            
+            # Fallback to regular ChromeDriver with multiple options
+            chrome_options = Options()
+            chrome_options.add_argument("--disable-notifications")
+            mobile_emulation = {"deviceName": "Nexus 5"}
+            chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
+            
+            # Try to install ChromeDriver with fallback options
+            try:
+                service = Service(ChromeDriverManager().install())
+            except ValueError as e:
+                if "There is no such driver by url" in str(e):
+                    print(f"ChromeDriver auto-detection failed: {e}")
+                    print("Trying with latest stable version...")
+                    try:
+                        # Try with latest stable version
+                        service = Service(ChromeDriverManager(version="stable").install())
+                    except Exception as e2:
+                        print(f"Latest stable version also failed: {e2}")
+                        print("Trying system ChromeDriver...")
+                        try:
+                            # Try to use system-installed chromedriver
+                            service = Service("/usr/bin/chromedriver")
+                        except Exception:
+                            # Final fallback - let selenium find chromedriver
+                            print("Using default service (requires chromedriver in PATH)")
+                            service = None
+                else:
+                    raise e
+            
+            if service:
+                driver = webdriver.Chrome(service=service, options=chrome_options)
+            else:
+                driver = webdriver.Chrome(options=chrome_options)
+            driver.get("https://www.instagram.com/")
+            return driver
 
     def login(self):
         login_button_1 = WebDriverWait(self.driver, 10).until(
