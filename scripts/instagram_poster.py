@@ -261,7 +261,22 @@ a = [
     "compatriots",
     "crusties",
     "cowards",
-    "CCP apologists"
+    "CCP apologists",
+    "horndogs"
+    "Women",
+    "Republicans",
+    "fiscal conservatives",
+    "goys",
+    "boytoys",
+    "sex pests",
+    "haters",
+    "drunk drivers",
+    "Attorneys-at-law",
+    "thespians",
+    "situationships",
+    "simps",
+    "former scientologists",
+    "manscapers",
 ]
 
 b = [
@@ -318,5 +333,22 @@ b = [
     "appropriately caffeinated",
     "whelming",
     "ethnically ambiguous",
-    "SBF-endorsed"
+    "SBF-endorsed",
+    "anal-retentive",
+    "Catholic",
+    "circumcised",
+    "in-tact",
+    "post-racial",
+    "sweaty",
+    "somewhat Limp",
+    "rock hard",
+    "emotionally available",
+    "pseudo-intellectual",
+    "buxsom",
+    "hyper-sexualized",
+    "miserly",
+    "Sacramento-core",
+    "gentrified",
+    "player-hating",
+    "rent controlled",
 ]
