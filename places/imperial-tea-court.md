@@ -11,7 +11,7 @@ drinks: False
 visited: "2024-03-31"
 taste: 0
 value: 1
-instagram_published: False
+instagram_published: True
 ---
 
 Very terrible veggie bun. Most frozen ones are better. Only $3.75.

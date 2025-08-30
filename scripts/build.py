@@ -122,7 +122,7 @@ def build_vilf() -> None:
         o.write(
             env.get_template("error.html").render(
                 title="Vegans In Love with Food",
-                description="An error occured.",
+                description="An error occurred.",
             )
         )
 

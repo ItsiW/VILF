@@ -14,4 +14,4 @@ value: 1
 instagram_published: False
 ---
 
-You know Ethiopian food. I don't excactly know the difference with this but it's very similar and very tasty and this is good even by Ethiopian food standards which is very high. $27 a head including tips and tax for the **vegetarian combo plate**.
+You know Ethiopian food. I don't exactly know the difference with this but it's very similar and very tasty and this is good even by Ethiopian food standards which is very high. $27 a head including tips and tax for the **vegetarian combo plate**.
