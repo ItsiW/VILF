@@ -11,7 +11,7 @@ drinks: True
 visited: "2024-04-17"
 taste: 1
 value: 0
-instagram_published: False
+instagram_published: True
 ---
 
 This is the sibling restaurant of [Shizen](/places/shizen), pretty much the same vegan sushi menu with different names of stuff. There's a bunch of things that are great including the **brussel sprouts** and some of the **rolls** (I forget which ones are the good ones). There's some pretty meh stuff too even though it looks pretty. 
