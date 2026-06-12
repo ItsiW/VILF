@@ -333,7 +333,7 @@ b = [
     "appropriately caffeinated",
     "whelming",
     "ethnically ambiguous",
-    "SBF-endorsed",
+    "FTX-sponsored",
     "anal-retentive",
     "Catholic",
     "circumcised",
