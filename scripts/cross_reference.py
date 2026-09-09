@@ -7,12 +7,14 @@ any mismatch or error so it can gate a commit.
 """
 
 import sys
+from pathlib import Path
 
 import click
 import yaml
 
+from . import auditlog
 from .places import CONTACT_FIELDS, CORE_FIELDS, Place, PlacesError, get_place, search_text
-from .schema import load_place
+from .schema import load_place, write_place
 
 LAT_RES = 1e-4
 LON_RES = 1e-4
@@ -62,6 +64,39 @@ def compare(meta: dict, place: Place, contact: bool) -> tuple[list[str], list[st
     return mismatches, info
 
 
+def apply_fixes(meta: dict, place: Place, contact: bool) -> list[str]:
+    """Overwrite meta in place with Google's values; return the field names changed.
+
+    Name is editorial and never touched. Website is only filled when absent.
+    Coordinates are rounded to 7 decimals (about 1 cm) so files don't pick up float noise.
+    """
+    changed = []
+    if place.street_address and meta.get("address") != place.street_address:
+        meta["address"] = place.street_address
+        changed.append("address")
+    if _is_number(place.lat) and _is_number(place.lon):
+        lat, lon = round(place.lat, 7), round(place.lon, 7)
+        if (
+            not _is_number(meta.get("lat"))
+            or not _is_number(meta.get("lon"))
+            or abs(meta["lat"] - lat) > LAT_RES
+            or abs(meta["lon"] - lon) > LON_RES
+        ):
+            meta["lat"], meta["lon"] = lat, lon
+            changed.append("coordinates")
+    if place.city and not meta.get("city"):
+        meta["city"] = place.city
+        changed.append("city")
+    if contact:
+        if (meta.get("phone") or None) != (place.phone or None):
+            meta["phone"] = place.phone
+            changed.append("phone")
+        if place.website and not meta.get("website"):
+            meta["website"] = place.website
+            changed.append("website")
+    return changed
+
+
 @click.command()
 @click.argument("files", type=click.Path(exists=True, dir_okay=False), nargs=-1)
 @click.option(
@@ -69,31 +104,51 @@ def compare(meta: dict, place: Place, contact: bool) -> tuple[list[str], list[st
     is_flag=True,
     help="Also fetch phone and website (Enterprise billing tier, one call per file).",
 )
-def cross_reference_md(files, contact):
+@click.option(
+    "--fix",
+    is_flag=True,
+    help="Write Google's address, coordinates, city (and with --contact: phone, website) "
+    "back into files that have a place_id. Names are never changed. Appends to AUDIT_LOG.md.",
+)
+def cross_reference_md(files, contact, fix):
     """Check place files against Google Places.
 
     Files with a place_id are looked up directly; others are matched by a text
     search on the name and address (noted in the output). Name and address must
     match exactly, coordinates within 1e-4 degrees. Exits 1 if any file
-    mismatches or errors, so it can gate a commit.
+    mismatches or errors, so it can gate a commit. With --fix, files that have
+    a place_id are corrected in place and only remaining problems (name
+    differences, unlinked files, errors) count as mismatches.
     """
     if not files:
         click.echo("No files to check.")
         return
     fields = CONTACT_FIELDS if contact else CORE_FIELDS
     reports = {}
+    fixed = {}
     click.echo("\nTesting files:")
     for file in files:
         note = None
         info = []
         try:
-            meta, _ = load_place(file)
+            meta, body = load_place(file)
             # load_place only defaults the optional keys; resolve/compare need these two
             missing = [key for key in ("name", "address") if meta.get(key) is None]
             if missing:
                 raise ValueError(f"missing {', '.join(missing)}")
             place, note = resolve(meta, fields)
             mismatches, info = compare(meta, place, contact)
+            if fix and mismatches and meta.get("place_id"):
+                changed = apply_fixes(meta, place, contact)
+                if changed:
+                    write_place(file, meta, body)
+                    fixed[file] = changed
+                    info.append("fixed: " + ", ".join(changed))
+                mismatches, _ = compare(meta, place, contact)
+                if meta["name"] != place.name:
+                    # editorial; report but don't fail the run
+                    mismatches = [m for m in mismatches if not m.startswith("Current name")]
+                    info.append(f"name kept: {meta['name']} | Google: {place.name}")
         except (PlacesError, ValueError, yaml.YAMLError) as e:
             mismatches = [str(e)]
         mark = "✘ " if mismatches else "✔ "
@@ -102,6 +157,17 @@ def cross_reference_md(files, contact):
             click.echo("  " + line)
         if mismatches:
             reports[file] = mismatches
+
+    if fix:
+        counts = {}
+        for changed in fixed.values():
+            for field in changed:
+                counts[field] = counts.get(field, 0) + 1
+        detail = ", ".join(f"{k} {v}" for k, v in sorted(counts.items())) or "nothing"
+        summary = f"{len(files)} files checked, {len(fixed)} fixed ({detail}), {len(reports)} still flagged"
+        places_dir = Path(files[0]).resolve().parent
+        auditlog.append(places_dir, "check --fix", summary)
+        click.echo("\n" + summary + f" (logged to {auditlog.FILENAME})")
 
     if reports:
         click.echo("\nThe following files may need inspection:\n")

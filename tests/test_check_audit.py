@@ -235,3 +235,89 @@ def test_audit_all_operational(tmp_path, monkeypatch):
     result = runner.invoke(audit_places, ["--directory", str(tmp_path)])
     assert result.exit_code == 0, result.output
     assert "All 1 audited places are OPERATIONAL." in result.output
+
+
+# --- check --fix, audit --delete, audit log ---
+
+
+def repo_layout(tmp_path):
+    """A scratch repo root with places/ and raw/food/, so AUDIT_LOG.md and photos land where the commands expect."""
+    places_dir = tmp_path / "places"
+    places_dir.mkdir()
+    (tmp_path / "raw" / "food").mkdir(parents=True)
+    return tmp_path, places_dir
+
+
+def test_check_fix_applies_google_values(tmp_path, monkeypatch):
+    repo, places_dir = repo_layout(tmp_path)
+    file = write(places_dir, "lion", address="1 Wrong St", lat=37.9, lon=-122.0, phone="+15105550000", website=None)
+    monkeypatch.setattr(cross_reference, "get_place", lion)
+    result = runner.invoke(cross_reference_md, ["--contact", "--fix", file])
+    assert result.exit_code == 0, result.output
+    assert "fixed: address, coordinates, phone, website" in result.output
+    meta, body = cross_reference.load_place(file)
+    assert meta["address"] == LION.street_address
+    assert meta["lat"] == round(LION.lat, 7) and meta["lon"] == round(LION.lon, 7)
+    assert meta["phone"] == LION.phone and meta["website"] == LION.website
+    assert meta["name"] == "Lion Dance Cafe" and body == "\n**Dish**\n"
+    log = (repo / "AUDIT_LOG.md").read_text()
+    assert "check --fix: 1 files checked, 1 fixed (address 1, coordinates 1, phone 1, website 1), 0 still flagged" in log
+
+
+def test_check_fix_keeps_name_and_skips_unlinked(tmp_path, monkeypatch):
+    repo, places_dir = repo_layout(tmp_path)
+    renamed = write(places_dir, "renamed", name="Lion Dance Café (old name)", lat=37.9)
+    unlinked = write(places_dir, "unlinked", place_id=None, lat=37.9)
+    monkeypatch.setattr(cross_reference, "get_place", lion)
+    monkeypatch.setattr(cross_reference, "search_text", lambda q, fields=None: [LION])
+    result = runner.invoke(cross_reference_md, ["--fix", renamed, unlinked])
+    assert result.exit_code == 1, result.output  # the unlinked file is still flagged
+    assert "name kept: Lion Dance Café (old name) | Google: Lion Dance Cafe" in result.output
+    assert cross_reference.load_place(renamed)[0]["name"] == "Lion Dance Café (old name)"
+    assert cross_reference.load_place(renamed)[0]["lat"] == round(LION.lat, 7)
+    assert cross_reference.load_place(unlinked)[0]["lat"] == 37.9  # untouched: no place_id
+    assert "1 fixed" in result.output and "1 still flagged" in result.output
+
+
+def test_audit_delete_removes_closed_review_and_photo(tmp_path, monkeypatch):
+    repo, places_dir = repo_layout(tmp_path)
+    write(places_dir, "open", place_id="A")
+    write(places_dir, "closed", name="Shuttered Vegan Diner", place_id="B")
+    write(places_dir, "temp", name="Temp Cafe", place_id="C")
+    (repo / "raw" / "food" / "closed.jpg").write_bytes(b"jpg")
+    (repo / "raw" / "food" / "open.jpg").write_bytes(b"jpg")
+    responses = {
+        "A": place_with_status("OPERATIONAL"),
+        "B": parse_place(load("details_closed.json")),
+        "C": place_with_status("CLOSED_TEMPORARILY"),
+    }
+    monkeypatch.setattr(audit, "get_place", lambda place_id, fields=None: responses[place_id])
+    result = runner.invoke(audit_places, ["--directory", str(places_dir), "--delete"])
+    assert result.exit_code == 0, result.output
+    assert "No previous audit logged." in result.output
+    assert "Deleted 1 permanently closed place(s): closed" in result.output
+    assert not (places_dir / "closed.md").exists() and not (repo / "raw" / "food" / "closed.jpg").exists()
+    assert (places_dir / "temp.md").exists() and (places_dir / "open.md").exists()
+    assert (repo / "raw" / "food" / "open.jpg").exists()
+    log = (repo / "AUDIT_LOG.md").read_text()
+    assert "audit: 3 audited, 0 without place_id; permanently closed: closed (deleted); temporarily closed: temp" in log
+    # a second run reports the previous audit
+    result = runner.invoke(audit_places, ["--directory", str(places_dir), "--no-log"])
+    assert "Last audit: " in result.output and "(0 days ago)" in result.output
+    assert log == (repo / "AUDIT_LOG.md").read_text()  # --no-log appended nothing
+
+
+def test_auditlog_last(tmp_path):
+    from datetime import date
+
+    from scripts import auditlog
+
+    repo, places_dir = repo_layout(tmp_path)
+    assert auditlog.last(places_dir, "audit") is None
+    auditlog.append(places_dir, "audit", "first", today=date(2026, 1, 5))
+    auditlog.append(places_dir, "check --fix", "x", today=date(2026, 2, 1))
+    auditlog.append(places_dir, "audit", "second", today=date(2026, 3, 9))
+    assert auditlog.last(places_dir, "audit") == date(2026, 3, 9)
+    assert auditlog.last(places_dir, "check --fix") == date(2026, 2, 1)
+    text = (repo / "AUDIT_LOG.md").read_text()
+    assert text.startswith("# Audit log") and text.endswith("- 2026-03-09 audit: second\n")

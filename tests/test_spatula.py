@@ -311,4 +311,4 @@ def test_save_photo_rules(tmp_path, monkeypatch, capsys):
 def test_cli_registers_commands():
     from scripts.cli import cli
 
-    assert set(cli.commands) == {"build", "spatula", "check", "audit"}
+    assert set(cli.commands) == {"build", "spatula", "check", "audit", "enrich"}
