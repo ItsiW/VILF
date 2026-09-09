@@ -1,3 +1,4 @@
 #!/bin/bash
 
-python3 -m scripts.cli $@
+cd "$(dirname "$0")" || exit 1
+exec uv run --quiet python -m scripts.cli "$@"

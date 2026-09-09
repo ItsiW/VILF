@@ -5,7 +5,19 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      UV_LOCKED: "1"
     steps:
-      - uses: actions/checkout@v3
-      - run: python3 -m pip install -r requirements.txt
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.0.1
+        with:
+          enable-cache: true
+      - run: uv python install
+      - run: uv sync
+      - run: uv run pytest
       - run: ./vilf build
+      - uses: actions/upload-artifact@v7
+        with:
+          name: build
+          path: build/
+          retention-days: 7

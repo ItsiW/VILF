@@ -1,0 +1,36 @@
+[project]
+name = "vilf"
+version = "0.1.0"
+description = "Vegans In Love with Food: static site of vegan restaurant reviews"
+requires-python = ">=3.12"
+dependencies = [
+    # scripts/build.py
+    "click>=8.1",
+    "jinja2>=3.1",
+    "markdown2>=2.5",
+    "mdplain>=1.0",
+    "pillow>=11",
+    "pyyaml>=6",
+    "tqdm>=4.66",
+    # scripts/spatula.py (imported by cli.py, so the build needs these importable too)
+    "selenium>=4.30",
+    "unidecode>=1.3",
+    "webdriver-manager>=4.0",
+]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+# scripts/instagram_poster.py + scripts/image_generator.py (run directly, not via ./vilf)
+instagram = [
+    "undetected-chromedriver>=3.5",
+    "matplotlib>=3.9",
+    # undetected-chromedriver imports distutils, gone in 3.12+; setuptools provides the shim
+    "setuptools>=70",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

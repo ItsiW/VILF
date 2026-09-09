@@ -1,36 +1,18 @@
 # Vegans In Love with Food™
 
-## Running locally on linux
+## Running locally
 
-### **1. Activate virtual python environment**
+Dependencies are managed with [uv](https://docs.astral.sh/uv/). Run everything from the repo root.
 
-If using `conda`:
-
-```bash
-# Makes environment if it doesn't exist
-conda env list | grep VILF || conda create --name VILF
-
-# Activates the environment
-conda activate VILF
-```
-
-If using `virtualenv`:
+### **1. Install dependencies**
 
 ```bash
-# Makes environment if it doesn't exist
-[[ -f venv/bin/activate ]] || virtualenv venv
-
-# Activates the environment
-source venv/bin/activate
+uv sync
 ```
 
-### **2. Install dependencies**
+This creates `.venv/` with the Python version from `.python-version` (downloaded if needed) and the packages pinned in `uv.lock`. Add `--group instagram` if you want to run the Instagram poster.
 
-```bash
-pip install -r requirements.txt
-```
-
-### **3. Build static files**
+### **2. Build static files**
 
 ```bash
 ./vilf build
@@ -41,15 +23,21 @@ or for automatically running modified files during development
 ls | entr ./vilf build
 ```
 
-### **4. Serve static files locally**
+### **3. Serve static files locally**
 
 ```bash
 python3 -m http.server 8080 --directory build
 ```
 
-### **5. Visit website**
+### **4. Visit website**
 
 Open [`localhost:8080`](localhost:8080) (if you open `0.0.0.0:8080` then the map will not render).
+
+### **5. Run the tests**
+
+```bash
+uv run pytest
+```
 
 ## Helpful infra commands
 

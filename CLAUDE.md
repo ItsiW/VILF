@@ -4,17 +4,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-VILF (Vegans In Love with Food) is a static site of vegan restaurant reviews for the SF Bay Area, deployed to https://vilf.org. Content is one markdown file per restaurant in `places/`, with a YAML frontmatter block for metadata and the review body below it. A Python build script renders everything into `build/` via Jinja2 templates. There is no framework, no test suite, and no linter for the Python code.
+VILF (Vegans In Love with Food) is a static site of vegan restaurant reviews for the SF Bay Area, deployed to https://vilf.org. Content is one markdown file per restaurant in `places/`, with a YAML frontmatter block for metadata and the review body below it. A Python build script renders everything into `build/` via Jinja2 templates. There is no framework and no linter for the Python code; the only test is a pytest smoke test in `tests/` that runs the real build.
 
 `IDEAS.md` at the repo root tracks future work. The next planned project is moving reviews out of markdown files into a database, started from scratch (an earlier SQLite prototype was deleted in the September 2026 cleanup).
 
 ## Commands
 
-All CLI entry points go through the `./vilf` wrapper, which runs `python3 -m scripts.cli`. Run from the repo root.
+All CLI entry points go through the `./vilf` wrapper, which runs `uv run python -m scripts.cli`. Run from the repo root. Dependencies live in `pyproject.toml` (core, plus an `instagram` group for the poster and a `dev` group with pytest) and are locked in `uv.lock`: edit `pyproject.toml`, then run `uv lock`; CI uses `uv sync --locked`. Python is pinned by `.python-version`.
 
 ```bash
-pip install -r requirements.txt          # deps (pinned; Pillow needs libjpeg/zlib on Linux)
+uv sync                                  # deps into .venv (add --group instagram for the poster)
 ./vilf build                             # full site build into build/ (wipes it first)
+uv run pytest                            # smoke test: runs the real build and checks its outputs
 python3 -m http.server 8080 --directory build   # serve locally; use localhost, not 0.0.0.0, or the map won't render
 ls | entr ./vilf build                   # rebuild on change during development
 
@@ -64,6 +65,6 @@ Jinja2, all extending `base.html`, which holds the nav, global CSS, and Google A
 
 ## Deploy and infra
 
-- GitHub Actions: PRs to `develop` run `./vilf build` as a check. Pushes to `develop` build and `gsutil rsync` the `build/` directory to the `gs://vilf-org` bucket, authenticating with the `VILF_CREDS` secret. So merging to `develop` is a production deploy.
+- GitHub Actions: PRs to `develop` run `uv run pytest` and `./vilf build` as a check and upload `build/` as a workflow artifact (7-day retention) for preview. Pushes to `develop` build (uv, Python from `.python-version`) and `gsutil rsync` the `build/` directory to the `gs://vilf-org` bucket, authenticating with the `VILF_CREDS` secret. So merging to `develop` is a production deploy.
 - CDN cache invalidation is manual: `gcloud compute url-maps invalidate-cdn-cache vilf-lb --path /`.
 - `infra/` is OpenTofu config generated from Nix (`flake.nix` imports it via the canivete framework): GCP project `vilf-com`, bucket, load balancer, certificate, DNS, and the service account whose key is pushed into the GitHub secret. `infra/deploy.sh` and the commented-out block in `server.nix` are a half-finished design for a server that dumps reviews from a Postgres `submission` table into `places/` and rebuilds. This was never enabled and is the closest prior art for the database migration.

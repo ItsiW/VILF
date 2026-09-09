@@ -5,19 +5,19 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      UV_LOCKED: "1"
+      UV_NO_DEV: "1"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
 
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v4
+      - uses: astral-sh/setup-uv@v10.0.1
         with:
-          python-version: '3.10'
+          enable-cache: true
 
-      - name: Install system dependencies
-        run: sudo apt-get update && sudo apt-get install -y libjpeg-dev zlib1g-dev
+      - run: uv python install
 
-      - name: Install dependencies
-        run: python3 -m pip install --prefer-binary -r requirements.txt
+      - run: uv sync
 
       - run: ./vilf build
 
