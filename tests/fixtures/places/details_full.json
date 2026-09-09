@@ -1,0 +1,36 @@
+{
+  "id": "ChIJfixtureLionDance",
+  "types": ["vegan_restaurant", "restaurant", "food", "point_of_interest", "establishment"],
+  "nationalPhoneNumber": "(510) 555-0199",
+  "internationalPhoneNumber": "+1 510-555-0199",
+  "formattedAddress": "380 17th St, Oakland, CA 94612, USA",
+  "addressComponents": [
+    {"longText": "380", "shortText": "380", "types": ["street_number"], "languageCode": "en-US"},
+    {"longText": "17th Street", "shortText": "17th St", "types": ["route"], "languageCode": "en"},
+    {"longText": "Downtown Oakland", "shortText": "Downtown Oakland", "types": ["neighborhood", "political"], "languageCode": "en"},
+    {"longText": "Oakland", "shortText": "Oakland", "types": ["locality", "political"], "languageCode": "en"},
+    {"longText": "Alameda County", "shortText": "Alameda County", "types": ["administrative_area_level_2", "political"], "languageCode": "en"},
+    {"longText": "California", "shortText": "CA", "types": ["administrative_area_level_1", "political"], "languageCode": "en"},
+    {"longText": "United States", "shortText": "US", "types": ["country", "political"], "languageCode": "en"},
+    {"longText": "94612", "shortText": "94612", "types": ["postal_code"], "languageCode": "en-US"}
+  ],
+  "location": {"latitude": 37.8061, "longitude": -122.2683},
+  "googleMapsUri": "https://maps.google.com/?cid=1",
+  "websiteUri": "https://example.com/lion-dance",
+  "regularOpeningHours": {
+    "openNow": true,
+    "weekdayDescriptions": [
+      "Monday: Closed",
+      "Tuesday: 11:30 AM – 8:00 PM",
+      "Wednesday: 11:30 AM – 8:00 PM",
+      "Thursday: 11:30 AM – 8:00 PM",
+      "Friday: 11:30 AM – 9:00 PM",
+      "Saturday: 11:30 AM – 9:00 PM",
+      "Sunday: Closed"
+    ]
+  },
+  "businessStatus": "OPERATIONAL",
+  "priceLevel": "PRICE_LEVEL_MODERATE",
+  "displayName": {"text": "Lion Dance Cafe", "languageCode": "en"},
+  "primaryType": "vegan_restaurant"
+}

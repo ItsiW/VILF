@@ -15,6 +15,18 @@ from mdplain import plain
 from PIL import Image
 from tqdm import tqdm
 
+from .schema import (
+    BOOLEAN_COLORS,
+    BOOLEAN_LABELS,
+    FADED_COLOR,
+    RATING_COLORS,
+    TASTE_LABELS,
+    VALUE_LABELS,
+    load_place,
+    validate_place,
+    validate_unique,
+)
+
 SITE_URL = "https://vilf.org"
 
 
@@ -151,33 +163,25 @@ def build_vilf() -> None:
     place_template = env.get_template("place.html")
     places = []
 
-    taste_labels = ["DNR", "SGFI", "Good", "Phenomenal"]
-    value_labels = ["Bad", "Fine", "Good", "Phenomenal"]
-    rating_colors = ["#ef422b", "#efa72b", "#32af2d", "#2b9aef"]
-    faded_color = "#cecece"
-
     def rating_to_formatting(rating, rating_labels):
-        return rating_labels[rating], rating_colors[rating]
+        return rating_labels[rating], RATING_COLORS[rating]
 
     def rating_html(rating, rating_labels):
         return "&nbsp;".join(
             [
-                f'<span style="color: {color if rating == ix else faded_color}" aria-hidden="{"false" if rating == ix else "true"}">{label}</span>'
-                for ix, (label, color) in enumerate(zip(rating_labels, rating_colors))
+                f'<span style="color: {color if rating == ix else FADED_COLOR}" aria-hidden="{"false" if rating == ix else "true"}">{label}</span>'
+                for ix, (label, color) in enumerate(zip(rating_labels, RATING_COLORS))
             ]
         )
 
-    boolean_labels = ["Nah", "Yeah"]
-    boolean_colors = ["#ef422b", "#2b9aef"]
-
     def boolean_to_formatting(boolean):
-        return boolean_labels[boolean], boolean_colors[boolean]
+        return BOOLEAN_LABELS[boolean], BOOLEAN_COLORS[boolean]
 
     def boolean_html(boolean):
         return " ".join(
             [
-                f'<span style="color: {color if boolean == ix else faded_color}" aria-hidden="{"false" if boolean == ix else "true"}">{label}</span>'
-                for ix, (label, color) in enumerate(zip(boolean_labels, boolean_colors))
+                f'<span style="color: {color if boolean == ix else FADED_COLOR}" aria-hidden="{"false" if boolean == ix else "true"}">{label}</span>'
+                for ix, (label, color) in enumerate(zip(BOOLEAN_LABELS, BOOLEAN_COLORS))
             ]
         )
 
@@ -258,14 +262,19 @@ def build_vilf() -> None:
         else:
             return None
 
+    place_problems = 0
+
     for place_md in Path("places").glob("*.md"):
         try:
             slug = place_md.parts[-1][:-3]
-            assert re.match(r"^[0-9a-z-]+$", slug), "Bad filename for " + str(place_md)
             relative_url = f"/places/{slug}/"
-            with open(place_md) as f:
-                _, frontmatter, md = f.read().split("---", 2)
-            meta = yaml.load(frontmatter, Loader=yaml.Loader)
+            meta, md = load_place(place_md)
+            problems = validate_place(meta, md, slug)
+            if problems:
+                for problem in problems:
+                    print(place_md.name, problem)
+                place_problems += len(problems)
+                continue
             meta["url"] = relative_url
             meta["slug"] = slug
             meta["geodata"] = format_geodata(meta)
@@ -273,13 +282,11 @@ def build_vilf() -> None:
             visited = date.fromisoformat(meta["visited"])
             meta["visited_display"] = format_visited(visited)
             meta["review_age"] = (date.today() - visited).days
-            if meta["taste"] >= 1:
-                assert "**" in md, f"highlight food in {meta['slug']}"
             meta["taste_label"], meta["taste_color"] = rating_to_formatting(
-                meta["taste"], taste_labels
+                meta["taste"], TASTE_LABELS
             )
             meta["value_label"], meta["value_color"] = rating_to_formatting(
-                meta["value"], value_labels
+                meta["value"], VALUE_LABELS
             )
             meta["drinks_label"], meta["drinks_color"] = boolean_to_formatting(
                 meta["drinks"]
@@ -293,8 +300,8 @@ def build_vilf() -> None:
                 **meta,
                 title=format_title(meta),
                 description=format_description_with_dishes(meta, md),
-                taste_html=rating_html(meta["taste"], taste_labels),
-                value_html=rating_html(meta["value"], value_labels),
+                taste_html=rating_html(meta["taste"], TASTE_LABELS),
+                value_html=rating_html(meta["value"], VALUE_LABELS),
                 drinks_html=boolean_html(meta["drinks"]),
                 content=html,
             )
@@ -311,12 +318,18 @@ def build_vilf() -> None:
             )
         except Exception as e:
             print(place_md.name, e)
+            place_problems += 1
 
-    unique_fields = ["name", "lat", "lon", "menu", "phone", "blurb"]
+    if place_problems:
+        print(f"Build failed: {place_problems} problem(s) in places/, see above")
+        raise SystemExit(1)
 
-    for field in unique_fields:
-        field_list = [place[field] for place in places if place[field] is not None]
-        assert len(set(field_list)) == len(field_list), f"Reused {field} field"
+    problems = validate_unique(places)
+    for problem in problems:
+        print(problem)
+    if problems:
+        print(f"Build failed: {len(problems)} uniqueness problem(s)")
+        raise SystemExit(1)
 
     geojson_keys = [
         "name",
@@ -575,7 +588,7 @@ Crawl-delay: 1"""
     print(f"Done building VILF with {len(places)} places")
 
     # Define the mapping of taste values to names
-    taste_labels = {0: "DNR", 1: "SGFI", 2: "Good", 3: "Phenomenal"}
+    taste_labels = dict(enumerate(TASTE_LABELS))
 
     # Initialize taste counts for each label
     taste_counts = {0: 0, 1: 0, 2: 0, 3: 0}
