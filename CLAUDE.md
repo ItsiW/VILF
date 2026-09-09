@@ -69,6 +69,6 @@ Templates in `html/` extend `base.html` (nav, CSS, deferred Google Analytics, an
 
 ## Deploy and infra
 
-- GitHub Actions: PRs to `develop` run pytest and the build and upload `build/` as a 7-day artifact. Pushes to `develop` build with full git history (for lastmod), `gsutil rsync` to `gs://vilf-org`, fix Content-Type on the text/markdown outputs, and ping IndexNow. So merging to `develop` is a production deploy.
+- GitHub Actions: PRs to `develop` run pytest and the build and upload `build/` as a 7-day artifact. Pushes to `develop` build with full git history (for lastmod), `gsutil rsync -d` to `gs://vilf-org` (deletes pages of removed reviews), fix Content-Type on the text/markdown outputs, and ping IndexNow. So merging to `develop` is a production deploy.
 - CDN cache invalidation is manual: `gcloud compute url-maps invalidate-cdn-cache vilf-lb --path /`.
 - `infra/` is OpenTofu generated from Nix (`flake.nix` via canivete): GCP project `vilf-com`, bucket, load balancer, certificate, DNS, and the service account whose key is the `VILF_CREDS` secret. `infra/deploy.sh` is a never-enabled Postgres-to-markdown deploy script that still references the deleted `requirements.txt`; it is the closest prior art for the database migration.

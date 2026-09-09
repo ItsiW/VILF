@@ -45,7 +45,7 @@ uv run pytest
 
 ```bash
 # Requires roles/storage.objectAdmin on gs://vilf-org
-gsutil -m rsync -R build gs://vilf-org
+gsutil -m rsync -R -d build gs://vilf-org
 ```
 
 ### **2. Invalidate Cloud CDN cache**
