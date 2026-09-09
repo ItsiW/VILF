@@ -4,67 +4,71 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-VILF (Vegans In Love with Food) is a static site of vegan restaurant reviews for the SF Bay Area, deployed to https://vilf.org. Content is one markdown file per restaurant in `places/`, with a YAML frontmatter block for metadata and the review body below it. A Python build script renders everything into `build/` via Jinja2 templates. There is no framework and no linter for the Python code; the only test is a pytest smoke test in `tests/` that runs the real build.
+VILF (Vegans In Love with Food) is a static site of vegan restaurant reviews for the SF Bay Area, deployed to https://vilf.org. Content is one markdown file per restaurant in `places/`, with a YAML frontmatter block for metadata and the review body below it. A Python build script renders everything into `build/` via Jinja2 templates. Restaurant metadata is linked to Google Places by a `place_id` and kept in sync with the Places API through the CLI. There is no framework and no linter; `tests/` is a pytest suite that runs the real build and exercises every CLI command offline against recorded API fixtures.
 
-`IDEAS.md` at the repo root tracks future work. The next planned project is moving reviews out of markdown files into a database, started from scratch (an earlier SQLite prototype was deleted in the September 2026 cleanup).
+`IDEAS.md` tracks future work. The next big project is moving reviews out of markdown into a database, started from scratch. `AUDIT_LOG.md` records when the data was last checked against Google.
 
 ## Commands
 
-All CLI entry points go through the `./vilf` wrapper, which runs `uv run python -m scripts.cli`. Run from the repo root. Dependencies live in `pyproject.toml` (core, plus an `instagram` group for the poster and a `dev` group with pytest) and are locked in `uv.lock`: edit `pyproject.toml`, then run `uv lock`; CI uses `uv sync --locked`. Python is pinned by `.python-version`.
+All CLI entry points go through the `./vilf` wrapper (`uv run python -m scripts.cli`, works from any directory). Dependencies live in `pyproject.toml` (core, plus an `instagram` group for the poster and a `dev` group with pytest) and are locked in `uv.lock`: edit `pyproject.toml`, then `uv lock`; CI uses `uv sync --locked`. Python is pinned by `.python-version`. Anything that talks to Google needs `GOOGLE_PLACES_API_KEY` in `.env` (gitignored; see `.env.example`).
 
 ```bash
 uv sync                                  # deps into .venv (add --group instagram for the poster)
-./vilf build                             # full site build into build/ (wipes it first)
-uv run pytest                            # smoke test: runs the real build and checks its outputs
+./vilf build                             # full site build into build/ (wipes it first); exits 1 on bad data
+uv run pytest                            # ~350 offline tests including a real build
 python3 -m http.server 8080 --directory build   # serve locally; use localhost, not 0.0.0.0, or the map won't render
-ls | entr ./vilf build                   # rebuild on change during development
 
-./vilf spatula                           # interactive Google Maps scraper -> new places/<slug>.md
-./vilf spatula -s 'Lion Dance Cafe'      # skip the prompt
-./vilf spatula --url '<google maps url>' # manual URL mode
-./vilf check $(git diff --staged --name-only places/)   # re-scrape staged place files and diff address/lat/lon
+./vilf spatula -s 'Lion Dance Cafe'      # new review: search Google, pick, prompt for ratings, write places/<slug>.md
+./vilf spatula --place-id ChIJ... --photo ~/photo.jpg   # skip the search; drop the photo into raw/food/<slug>.jpg
+./vilf check --contact --fix places/*.md # compare (and correct) address/coords/phone/website against Google
+./vilf enrich                            # link reviews without a place_id (nearest match within 150 m), fill city
+./vilf audit --delete                    # delete permanently closed reviews + photos; report temporary closures
+uv run python -m scripts.places 'query' --details   # raw API lookup for debugging
 ```
 
-`spatula` and `check` drive headless Chrome through Selenium and webdriver-manager, so they need Chrome installed and network access. The build itself does not.
+Nix users get a dev shell via `nix develop` (direnv through `.envrc`); its pre-commit hooks only cover Nix formatting, markdownlint and lychee, and block direct commits to `develop`. uv is not in that shell yet.
 
-Nix users get a dev shell via `nix develop` (direnv picks it up through `.envrc`). Pre-commit hooks there only cover Nix formatting, markdownlint, and lychee link checking, and explicitly exclude `static`, `scripts`, `raw`, `places`, and `html`. The hooks also block direct commits to `develop`.
+## Data model (scripts/schema.py)
+
+`schema.py` is the single source of truth: the ordered field list, rating labels and colours, `load_place`, `validate_place`, `validate_unique`, `dump_frontmatter`, `write_place`. Every command reads and writes place files through it, so files stay in canonical key order with `True`/`False` booleans and quoted `visited`/`phone`.
+
+```yaml
+name, cuisine, address, area, lat, lon, phone, menu, drinks, visited, taste, value, instagram_published, city, place_id, website
+```
+
+- Required: name, cuisine, address, area, lat, lon, drinks, visited, taste, value. The rest are optional; `city`, `place_id` and `website` are only written when set.
+- `taste` and `value` are integers 0–3. Taste labels: DNR / SGFI / Good / Phenomenal. Value labels: Bad / Fine / Good / Phenomenal.
+- `phone` is `+1` plus 10 digits or empty. `menu` and `website` must start with http(s). `visited` is a quoted ISO date.
+- If `taste >= 1` the body must bold at least one dish with `**...**`; the bolded dishes feed meta descriptions and alt text.
+- `name`, `menu`, `phone`, the (lat, lon) pair, and the first 50 words of the body must be unique across all places.
+- `area` is the neighbourhood (drives `/neighborhoods/`); `city` is the real city (drives `addressLocality` in JSON-LD). A YAML value containing ` #` must be quoted or it is silently truncated as a comment; the writer does this for you.
+- Two files are deliberately unlinked (no `place_id`) and always show in audit counts: `fiji-airways` (joke entry) and `boba-binge` (branch gone from Maps).
 
 ## Build pipeline (scripts/build.py)
 
-`build_vilf` is one long function. The order matters because later stages consume the `places` list built by the place-page stage:
+`build_vilf` is one long function; later stages consume the `places` list built by the place loop.
 
-1. **Images.** Every `raw/food/<slug>.jpg` is resized to 1200x675 and center-cropped (asserts aspect ratio ≤ 16:9), then written as JPEG and WebP to `static/img/food/` plus 426x240 thumbnails to `static/img/thumb/`. Existing outputs are skipped, so `static/img/` (gitignored) acts as a cache. Delete it to force regeneration.
-2. **`static/` is copied wholesale to `build/`.**
-3. **Place pages.** Each `places/<slug>.md` is split on `---`, frontmatter parsed with PyYAML, body rendered with markdown2. The slug must match `^[0-9a-z-]+$` and is the URL (`/places/<slug>/`). The food image is looked up by slug, so `raw/food/<slug>.jpg` must match the markdown filename. Errors in a single place are caught and printed, not fatal, so watch build output for skipped places.
-4. **Derived pages** from the `places` list: `/best/` (sorted taste desc, value desc, slug), `/latest/` (by review age), `/cuisines/` and `/cuisines/<slug>/`, `/neighborhoods/` and `/neighborhoods/<slug>/` (only areas with 3+ places get a page), `places.geojson` for the map, `sitemap.xml`, `robots.txt`.
-5. Prints a taste-rating percentage breakdown at the end.
+1. **Images.** `raw/food/<slug>.jpg` → 1200x675 JPEG+WebP in `static/img/food/` and 426x240 thumbs in `static/img/thumb/` (asserts aspect ≤ 16:9). Existing outputs are skipped, so `static/img/` (gitignored) is a cache; delete it to regenerate.
+2. **`static/` is copied to `build/`.**
+3. **Place pages.** `schema.load_place` + `validate_place` per file; problems print as `<file>.md <message>` and the build exits 1 at the end if any occurred. The food image is found by slug, so `raw/food/<slug>.jpg` must match the filename. Each place gets `modified` from one `git log` call (fallback: `visited`), used for sitemap lastmod and JSON-LD dateModified.
+4. **Derived pages**: `/best/` (taste, value, slug), `/latest/`, `/cuisines/*`, `/neighborhoods/*` (areas with 3+ places), `places.geojson` for the map, `sitemap.xml`, `robots.txt`.
+5. **AI-readable outputs**: `llms.txt`, `llms-full.txt`, `places.json`, and `places/<slug>.md` per review (linked from each page with `rel=alternate`). A plain-text `Verdict:` line is rendered on each review and reused there.
 
-### Place frontmatter
+Templates in `html/` extend `base.html` (nav, CSS, deferred Google Analytics, an `extra_head` block). `map.html` is the homepage (MapLibre reading `/places.geojson`). `place.html` carries the JSON-LD Restaurant and Article blocks; free-text values go through `| tojson`.
 
-```yaml
-name, cuisine, address, area, lat, lon, phone, menu, drinks, visited, taste, value, instagram_published
-```
+## Google Places integration
 
-- `taste` and `value` are integers 0–3. Labels: taste = DNR / SGFI / Good / Phenomenal; value = Bad / Fine / Good / Phenomenal. Colors are hardcoded in build.py and mirrored in the templates and map legend.
-- `phone` must be `+1` followed by 10 digits or null; the build asserts this.
-- `visited` is an ISO date string, quoted.
-- If `taste >= 1` the review body must bold at least one dish with `**...**`. The build asserts this, and the bolded dishes feed the meta description and alt text.
-- The build asserts `name`, `lat`, `lon`, `menu`, `phone`, and the first 50 words of the review are unique across all places. A copy-pasted review or a duplicate phone number fails the build.
-- `area` is free text (neighborhood, not city) and drives the neighborhood pages.
-
-## Templates (html/)
-
-Jinja2, all extending `base.html`, which holds the nav, global CSS, and Google Analytics. `map.html` is the homepage: MapLibre GL loading `/places.geojson`, with a symbol layer for restaurant labels at zoom 14+. `place.html` receives the frontmatter fields plus derived ones (`taste_html`, `value_html`, `drinks_html`, `visited_display`, `phone_display`, `food_image_path`, `alt_text`, `blurb`). Every page embeds JSON-LD structured data, so SEO fields in build.py and templates are coupled.
+- `scripts/places.py`: thin client for Places API (New). `search_text` (Bay Area location bias) and `get_place`, `parse_place` into a `Place` dataclass, E.164 phones, `distance_m`. Field masks are explicit because billing follows the priciest field: `CORE_FIELDS` is Pro tier (id, name, address components, location, business status, Maps URL); `CONTACT_FIELDS` adds phone, website, hours and is Enterprise tier. Only request CONTACT when the caller asked for it. Free monthly quotas dwarf this site's volume.
+- `scripts/spatula.py` (new reviews), `scripts/cross_reference.py` (`check`), `scripts/enrich.py`, `scripts/audit.py`, `scripts/auditlog.py` build on it. `check --fix` never changes names, keeps unit/suite details in addresses (`same_street`), and rounds coordinates to 7 decimals. `audit --delete` removes only `CLOSED_PERMANENTLY` places.
+- Tests never hit the network: fixtures in `tests/fixtures/places/` and an autouse guard on `places._request`.
 
 ## Other scripts
 
-- `scripts/spatula.py`: `GoogleMapsScraper` class plus the `scrape_and_gen_md` click command. Writes a frontmatter skeleton with `instagram_published: False`. The filename slug is derived from the restaurant name, with `-N` suffixes on collision.
-- `scripts/cross_reference.py`: the `check` command. Re-scrapes each file and compares address and coordinates at 1e-4 resolution.
-- `scripts/instagram_poster.py` and `scripts/image_generator.py`: Selenium bot that logs into Instagram using `scripts/credentials.json` (gitignored) and posts reviews with `instagram_published: False`, composing an image from the food photo, logo, and fonts in `scripts/`. Not wired into the CLI; run directly. It has been fragile against Instagram changes.
-- `scripts/Untitled.ipynb`: scratch notebook, mostly poster/Instagram experiments.
+- `scripts/indexnow.py`: after deploy, submits sitemap URLs modified in the last 2 days to IndexNow (Bing and friends; Google has no equivalent). The public key lives in `static/<key>.txt`.
+- `scripts/instagram_poster.py`, `scripts/image_generator.py`, `scripts/instagram_scratch.ipynb`: Selenium bot posting reviews with `instagram_published: False`. Needs `uv sync --group instagram` and `scripts/credentials.json` (gitignored). Not wired into the CLI, fragile, untouched by the 2026 overhaul.
 
 ## Deploy and infra
 
-- GitHub Actions: PRs to `develop` run `uv run pytest` and `./vilf build` as a check and upload `build/` as a workflow artifact (7-day retention) for preview. Pushes to `develop` build (uv, Python from `.python-version`) and `gsutil rsync` the `build/` directory to the `gs://vilf-org` bucket, authenticating with the `VILF_CREDS` secret. So merging to `develop` is a production deploy.
+- GitHub Actions: PRs to `develop` run pytest and the build and upload `build/` as a 7-day artifact. Pushes to `develop` build with full git history (for lastmod), `gsutil rsync` to `gs://vilf-org`, fix Content-Type on the text/markdown outputs, and ping IndexNow. So merging to `develop` is a production deploy.
 - CDN cache invalidation is manual: `gcloud compute url-maps invalidate-cdn-cache vilf-lb --path /`.
-- `infra/` is OpenTofu config generated from Nix (`flake.nix` imports it via the canivete framework): GCP project `vilf-com`, bucket, load balancer, certificate, DNS, and the service account whose key is pushed into the GitHub secret. `infra/deploy.sh` and the commented-out block in `server.nix` are a half-finished design for a server that dumps reviews from a Postgres `submission` table into `places/` and rebuilds. This was never enabled and is the closest prior art for the database migration.
+- `infra/` is OpenTofu generated from Nix (`flake.nix` via canivete): GCP project `vilf-com`, bucket, load balancer, certificate, DNS, and the service account whose key is the `VILF_CREDS` secret. `infra/deploy.sh` is a never-enabled Postgres-to-markdown deploy script that still references the deleted `requirements.txt`; it is the closest prior art for the database migration.

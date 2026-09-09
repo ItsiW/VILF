@@ -24,7 +24,7 @@ def remove_tracked(path: Path) -> None:
     """Delete a file, through git when it is tracked so the deletion is staged."""
     try:
         subprocess.run(
-            ["git", "rm", "-q", "--", str(path)], check=True, capture_output=True, cwd=path.parent
+            ["git", "rm", "-q", "--", str(path.resolve())], check=True, capture_output=True, cwd=path.resolve().parent
         )
     except (subprocess.CalledProcessError, FileNotFoundError):
         path.unlink(missing_ok=True)

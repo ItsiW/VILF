@@ -31,4 +31,9 @@ jobs:
 
       - run: gsutil -m rsync -R build gs://vilf-org
 
+      # gsutil guesses Content-Type from the extension; make the AI-readable files explicit
+      - run: |
+          gsutil -m setmeta -h 'Content-Type:text/plain; charset=utf-8' gs://vilf-org/llms.txt gs://vilf-org/llms-full.txt
+          gsutil -m setmeta -h 'Content-Type:text/markdown; charset=utf-8' 'gs://vilf-org/places/*.md'
+
       - run: uv run python -m scripts.indexnow

@@ -184,3 +184,16 @@ If anything is wrong, the metadata will be displayed:
 ```
 
 Checks the Google business status of every place file that has a `place_id` (one Pro-tier call each; files without a `place_id` are only counted) and lists the ones that are permanently closed, temporarily closed, or have an unknown status. Informational: it always exits 0.
+
+### Keeping the data fresh
+
+All of these need `GOOGLE_PLACES_API_KEY` in `.env` (see Setup). Every run of `audit` and `check --fix` appends a line to `AUDIT_LOG.md`, and `audit` prints when the last audit happened, so that file is the answer to "is it time to re-check everything?".
+
+```bash
+./vilf enrich                          # link reviews that lack a place_id (nearest Google match within 150 m); fills city
+./vilf check --contact --fix places/*.md   # pull Google's phone, website, coordinates and street into files with a place_id
+./vilf audit --delete                  # remove reviews Google marks permanently closed (and their raw/food photo)
+```
+
+`check --fix` never changes a restaurant's name and keeps unit or suite details you recorded; `audit --delete` only deletes permanently closed places and reports temporary closures. Two reviews are deliberately unlinked and will always show up as "without a place_id": `fiji-airways` (a joke entry) and `boba-binge` (the branch reviewed no longer exists on Maps).
+

@@ -218,9 +218,6 @@ def build_vilf() -> None:
     def format_title(meta):
         return f'{meta["name"]} — Tasty vegan food in {meta["area"]}, in the San Francisco Bay Area — Vegans In Love with Food'
 
-    def format_description(meta):
-        return f'Read our review on {meta["name"]} at {meta["address"]} in {meta["area"]}, and more tasty vegan {meta["cuisine"]} food in the San Francisco Bay Area from V.I.L.F!'
-
     def format_description_with_dishes(meta, md):
         """Generate enhanced meta description with specific dishes mentioned"""
         # Extract dishes marked with ** from review text
@@ -755,4 +752,4 @@ Crawl-delay: 1"""
         print(f"{taste_labels[taste]}: {percentage}%")
 
 if __name__ == "__main__":
-    build()
+    build_vilf()
