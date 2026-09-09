@@ -68,8 +68,10 @@ principles:
 - **deploy.yaml** still uses `google-github-actions/auth@v0` and `setup-gcloud@v0`
   (Node16-era): likeliest next CI breakage. Bump when you can watch a deploy. Add a
   Dependabot config for github-actions and uv (setup-uv has no floating major tag).
-- **After the first deploy**, confirm `/llms.txt`, `/places/*.md` and `/places.json` are
-  served with the right Content-Type and that CDN invalidation covers them.
+- **CDN invalidation is still manual** after each deploy (`gcloud compute url-maps
+  invalidate-cdn-cache vilf-lb --path /`). Give the deploy service account permission and add
+  it as the last workflow step so deleted pages vanish immediately instead of after an hour.
+- **Vercel's GitHub app** emails about the repo on every push; disconnect it in Vercel if unwanted.
 - `infra/deploy.sh` still pip-installs the deleted `requirements.txt`; delete it or port to
   uv once the database design settles. Add uv to the Nix dev shell.
 - **Instagram poster.** Untouched, still Selenium (`uv sync --group instagram`). Either move
