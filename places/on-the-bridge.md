@@ -3,8 +3,8 @@ name: On The Bridge
 cuisine: Japanese
 address: "1582 Webster St #206, Floor 2 - Japan Center Malls"
 area: Japantown
-lat: 37.78504631643694
-lon: -122.43157323619293
+lat: 37.785125
+lon: -122.4313129
 phone: "+14159227765"
 menu: http://onthebridgesf.com/#menu
 drinks: True
@@ -14,6 +14,7 @@ value: 2
 instagram_published: True
 city: San Francisco
 place_id: ChIJZ8d24biAhYARl_5dDyTynQA
+website: http://onthebridgesf.com/?utm_source=gmb&utm_medium=referral
 ---
 
 This place is so cool I almost don't want to tell people about it. It's a Japanese diner on the second floor of an arcade, in a bridge that links two buildings. It is so kitschy in the best way possible, the walls are lined with anime paraphernalia (including some playing on the tvs) and tons of sakes and beers. You sit at a little counter and it's a very comfortable atmosphere. 

@@ -14,6 +14,7 @@ value: 1
 instagram_published: True
 city: San Francisco
 place_id: ChIJnYD5q69_j4ARDH9_cuPacdE
+website: https://www.taishokenusa.com/
 ---
 
 They've got two vegetable ramens here, I got the yuzu shio ramen. It was definitely nice, kind of mild. I haven't thought about it since so not recommended. And costed $23.51 with tax and tip so pretty pricey.

@@ -14,6 +14,7 @@ value: 1
 instagram_published: True
 city: Oakland
 place_id: ChIJJ1Q_ErSAj4ARIcFfIbD6u-Q
+website: http://thebiryanikabab.com/
 ---
 
 Indian/Pakistani place with a pretty generic veggie menu. Got the baingan bhartha and roti. It was fine.

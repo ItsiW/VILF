@@ -5,7 +5,7 @@ address: 401 N Mt Shasta Blvd
 area: Mt Shasta
 lat: 41.314280130575895
 lon: -122.31394525254055
-phone: 
+phone: "+15305688121"
 menu: https://www.drizzleburger.com/flavors
 drinks: True
 visited: "2025-08-03"
@@ -14,6 +14,7 @@ value: 0
 instagram_published: False
 city: Mount Shasta
 place_id: ChIJwYxncijnzVQR9lV4YGI0eeg
+website: http://www.drizzleburger.com/
 ---
 
 Yaks Shack, now rebranded as Drizzle. I was told this was the place to go to in Shasta.

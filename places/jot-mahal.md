@@ -14,6 +14,7 @@ value: 0
 instagram_published: True
 city: Berkeley
 place_id: ChIJbzCLGaF-hYARBrP_H3j2SHs
+website: https://smorefood.com/order-online/jotmahal-palace-of-indian-cuisine-berkeley-94709-okfs8rpz?utm_source=gmb&utm_medium=website
 ---
 
 Truly terrible Indian buffet. The vegan selection was limited, but fairly bland. Chickpeas and pakoras. 

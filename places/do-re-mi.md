@@ -5,7 +5,7 @@ address: 3491 19th St
 area: Mission District
 lat: 37.760046496464376
 lon: -122.42112677063992
-phone: 
+phone: "+14158006792"
 menu: https://doremirice.com/menu
 drinks: False
 visited: "2025-07-13"
@@ -14,6 +14,7 @@ value: 3
 instagram_published: False
 city: San Francisco
 place_id: ChIJFeo-ae5_j4ARvrM-J6y9398
+website: http://doremirice.com/
 ---
 
 Oh joyous day. Warm fresh onigiri for the pure among us. 

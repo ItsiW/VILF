@@ -5,7 +5,7 @@ address: 2243 Mission St
 area: Mission District
 lat: 37.7611234
 lon: -122.4191329
-phone: "+14159603406"
+phone: "+14152354606"
 menu: https://www.bissapbaobab.com/menu
 drinks: True
 visited: "2022-12-09"
@@ -14,6 +14,7 @@ value: 1
 instagram_published: True
 city: San Francisco
 place_id: ChIJfUASMXh_j4AR6qoReFQ7mP0
+website: https://www.bissapbaobab.com/
 ---
 
 Vibes are whacky and fun™. It's more of an event space than a restaurant, so great if you're looking to hear a band and sit at an indoor table under an umbrella.

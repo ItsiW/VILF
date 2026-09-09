@@ -5,7 +5,7 @@ address: 3224 1/2 22nd St
 area: Mission District
 lat: 37.75550566573058
 lon: -122.41937868770104
-phone: 
+phone: "+14156587449"
 menu: http://housedimsum.com/
 drinks: False
 visited: "2022-11-12"
@@ -14,6 +14,7 @@ value: 1
 instagram_published: True
 city: San Francisco
 place_id: ChIJWf04XbZ_j4ARJ02eyYyaheE
+website: http://housedimsum.com/
 ---
 
 Little dim sum restaurant. They've actually got a few vegan items, we got spinach steamed dumplings, and spinach dumpling steamed buns, along with some red bean buns.

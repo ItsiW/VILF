@@ -5,7 +5,7 @@ address: 710 Commercial St
 area: Chinatown
 lat: 37.7940708
 lon: -122.4051035
-phone: 
+phone: "+14156881500"
 menu: https://www.itsfourkings.com/menu
 drinks: True
 visited: "2024-08-04"
@@ -14,6 +14,7 @@ value: 2
 instagram_published: False
 city: San Francisco
 place_id: ChIJD_erQf2BhYARF5m3aYOjjDk
+website: http://www.itsfourkings.com/
 ---
 
 Damn this place is good. It was bordering on a phenomenal rating but there were a couple misses.

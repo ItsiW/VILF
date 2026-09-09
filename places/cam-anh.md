@@ -14,6 +14,7 @@ value: 2
 instagram_published: True
 city: Oakland
 place_id: ChIJ90RglTmBj4ARgBZ31GFVeHE
+website: https://www.camanhdelirestaurant.com/
 ---
 
 Webster St has a lot of banh mi spots, this one's pretty good, I got the **lemongrass tofu banh mi**. The bread was very crispy and there was a good amount of pickled veg and chilli and herbs. Hits the spot, nothing incredible though.

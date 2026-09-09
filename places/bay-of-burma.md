@@ -14,6 +14,7 @@ value: 1
 instagram_published: False
 city: San Francisco
 place_id: ChIJ_TuyEAqBhYARpnYKS3siBe4
+website: https://bayofburma.com/
 ---
 
 Newish Burmese place with quite a few vegan options. I made a mistake and got the **tea leaf salad**. Like yeah it's a good benchmark, but shoulda gone for something that's more specific to them. Good flavor, way too much lettuce. I wanna go back and try the shwe taung noodles.

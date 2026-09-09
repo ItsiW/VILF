@@ -14,6 +14,7 @@ value: 2
 instagram_published: True
 city: San Francisco
 place_id: ChIJ9dfyI9uAhYARXMqLA9O8XbE
+website: http://giogelati.com/
 ---
 
 A nice ice cream place with a lot of sorbets and vegan ice creams. Especially good was the **plum** flavor.

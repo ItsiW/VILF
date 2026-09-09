@@ -14,6 +14,7 @@ value: 2
 instagram_published: True
 city: San Francisco
 place_id: ChIJVXouvjt_j4AR7RumVBRBoOc
+website: https://www.oldjerusalem.co/
 ---
 
 Finally some great Palestinian food. They got all the hits. Big mix plate of stuff, **fried eggplant and cauliflower**, good **baba ganoush**, and a mix of ful and hummus called **qudsiah** which was excellent. Chips, pickles, everything was good. Excited to go back.

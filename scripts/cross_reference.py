@@ -6,11 +6,13 @@ search on "<name> <address>" (first result, noted in the output). Exits 1 on
 any mismatch or error so it can gate a commit.
 """
 
+import re
 import sys
 from pathlib import Path
 
 import click
 import yaml
+from unidecode import unidecode
 
 from . import auditlog
 from .places import CONTACT_FIELDS, CORE_FIELDS, Place, PlacesError, get_place, search_text
@@ -22,6 +24,36 @@ LON_RES = 1e-4
 
 def _is_number(v) -> bool:
     return isinstance(v, (int, float)) and not isinstance(v, bool)
+
+
+_ABBREV = {
+    "street": "st", "avenue": "ave", "boulevard": "blvd", "road": "rd", "drive": "dr",
+    "plaza": "plz", "suite": "ste", "place": "pl", "court": "ct", "highway": "hwy",
+    "north": "n", "south": "s", "east": "e", "west": "w",
+}
+
+
+def _norm_address(s: str) -> str:
+    words = re.sub(r"[^a-z0-9 ]", " ", unidecode(s or "").lower()).split()
+    return " ".join(_ABBREV.get(w, w) for w in words)
+
+
+def has_street_number(place: Place) -> bool:
+    """Google's street_address is number + route; without a number it's not an upgrade."""
+    components = (place.raw or {}).get("addressComponents")
+    if components:
+        return any("street_number" in c.get("types", []) for c in components)
+    return bool(re.match(r"\d+(-\d+)?\s", place.street_address or ""))
+
+
+def same_street(file_address, google_address) -> bool:
+    """True when the file's address is Google's, possibly with extra detail (unit, suite, floor).
+
+    Google returns only number + street, so "800 Bancroft Way Suite #105" vs
+    "800 Bancroft Way" is not a mismatch, and neither is "Avenue" vs "Ave".
+    """
+    a, b = _norm_address(file_address), _norm_address(google_address)
+    return bool(b) and (b in a or a in b)
 
 
 def resolve(meta: dict, fields) -> tuple[Place, str | None]:
@@ -45,7 +77,7 @@ def compare(meta: dict, place: Place, contact: bool) -> tuple[list[str], list[st
 
     if meta["name"] != place.name:
         diff("name", meta["name"], place.name)
-    if meta["address"] != place.street_address:
+    if not same_street(meta["address"], place.street_address):
         diff("address", meta["address"], place.street_address)
     for label, current, determined, res in (
         ("latitude", meta.get("lat"), place.lat, LAT_RES),
@@ -71,7 +103,13 @@ def apply_fixes(meta: dict, place: Place, contact: bool) -> list[str]:
     Coordinates are rounded to 7 decimals (about 1 cm) so files don't pick up float noise.
     """
     changed = []
-    if place.street_address and meta.get("address") != place.street_address:
+    # Only a different street counts; Google drops unit/suite detail the file may carry,
+    # and an address without a street number (e.g. "Ferry Plz") is never an upgrade.
+    if (
+        place.street_address
+        and has_street_number(place)
+        and not same_street(meta.get("address"), place.street_address)
+    ):
         meta["address"] = place.street_address
         changed.append("address")
     if _is_number(place.lat) and _is_number(place.lon):

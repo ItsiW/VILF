@@ -5,7 +5,7 @@ address: 388 9th St
 area: Downtown Oakland
 lat: 37.8005596
 lon: -122.2714584
-phone: "+15108911781"
+phone: 
 menu: https://www.sakuraoakland.com/chuan-yu-menu
 drinks: True
 visited: "2022-09-13"

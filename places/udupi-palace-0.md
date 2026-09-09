@@ -14,6 +14,7 @@ value: 2
 instagram_published: True
 city: Berkeley
 place_id: ChIJ27pcoid_hYARcsmJSCSQWVo
+website: https://www.udupipalaceberkeley.com/
 ---
 
 Came here because we like the [Udupi Palace in the Mission](/places/udupi-palace). This is also good, but for some reason the rava dosa  wasn't great. **Thali** was the move. Yum. Ended up at around $17 a head with tax and tips.

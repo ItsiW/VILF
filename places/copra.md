@@ -5,7 +5,7 @@ address: 1700 Fillmore St
 area: Fillmore District
 lat: 37.7853703
 lon: -122.4327894
-phone: 
+phone: "+14158730795"
 menu: https://www.coprarestaurant.com/menus/
 drinks: True
 visited: "2024-06-30"
@@ -14,6 +14,7 @@ value: 2
 instagram_published: False
 city: San Francisco
 place_id: ChIJGx1jA6SBhYARLMB1ta069Bs
+website: https://www.coprarestaurant.com/
 ---
 
 Very good and very fancy new South Indian restaurant. We got a ton of food, and spent a lot of money. But you could get by for a lot cheaper. 

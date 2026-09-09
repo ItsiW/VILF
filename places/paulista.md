@@ -14,6 +14,7 @@ value: 1
 instagram_published: True
 city: Oakland
 place_id: ChIJx7D5mQmHj4ARR1llKeRu4F8
+website: https://www.paulista510.com/
 ---
 
 This is a Brazilian pub and restaurant that we went to for a trivia. They've got a few vegan items, including a feijoada (black bean stew) and bobó, a coconut milk stew. They were both ok, probably wouldn't go back for the food. 

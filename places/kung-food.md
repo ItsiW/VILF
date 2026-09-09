@@ -14,6 +14,7 @@ value: 1
 instagram_published: True
 city: San Francisco
 place_id: ChIJ62R-rrGAhYARLRHf0KSkOd8
+website: http://www.kungfoodsanfrancisco.com/?utm_source=gmb&utm_medium=website
 ---
 
 Chicken was square,

@@ -14,6 +14,7 @@ value: 1
 instagram_published: True
 city: Oakland
 place_id: ChIJ-7kg77KAj4ARDfbk0WOILGo
+website: http://www.falafelboyonline.com/
 ---
 
 This place doesn't seem like the kind of place that has good falafel, but it does. I got the **falafel cauliflower vegan plate** which came with a bunch of stuff and it was actually pretty good. Not a very cohesive meal but all the elements were tasty.

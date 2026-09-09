@@ -321,3 +321,29 @@ def test_auditlog_last(tmp_path):
     assert auditlog.last(places_dir, "check --fix") == date(2026, 2, 1)
     text = (repo / "AUDIT_LOG.md").read_text()
     assert text.startswith("# Audit log") and text.endswith("- 2026-03-09 audit: second\n")
+
+
+def test_same_street_tolerates_detail_and_abbreviations():
+    from scripts.cross_reference import same_street
+
+    assert same_street("800 Bancroft Way Suite #105", "800 Bancroft Way")
+    assert same_street("688 San Jose Avenue", "688 San Jose Ave")
+    assert same_street("1 Ferry Plaza", "1 Ferry Plz")
+    assert not same_street("945 Market St", "455 Market St")
+    assert not same_street("1004 Webster St", "2212 Broadway")
+
+
+def test_check_fix_keeps_unit_detail_and_numberless_addresses(tmp_path, monkeypatch):
+    repo, places_dir = repo_layout(tmp_path)
+    detailed = write(places_dir, "detailed", address="380 17th St Suite #4")
+    monkeypatch.setattr(cross_reference, "get_place", lion)
+    result = runner.invoke(cross_reference_md, ["--fix", detailed])
+    assert result.exit_code == 0, result.output
+    assert cross_reference.load_place(detailed)[0]["address"] == "380 17th St Suite #4"
+    numberless = copy.deepcopy(load("details_full.json"))
+    numberless["addressComponents"] = [c for c in numberless["addressComponents"] if "street_number" not in c["types"]]
+    monkeypatch.setattr(cross_reference, "get_place", lambda pid, fields=None: parse_place(numberless))
+    other = write(places_dir, "other", address="One Ferry Building")
+    result = runner.invoke(cross_reference_md, ["--fix", other])
+    assert cross_reference.load_place(other)[0]["address"] == "One Ferry Building"
+    assert "Current address" in result.output  # still reported, just not overwritten

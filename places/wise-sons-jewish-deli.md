@@ -5,7 +5,7 @@ address: 3150 24th St
 area: Mission District
 lat: 37.752634
 lon: -122.41536
-phone: "+14155907955"
+phone: "+14158317237"
 menu: https://www.wisesonsdeli.com/location/24thstreet/
 drinks: False
 visited: "2022-11-20"
@@ -14,6 +14,7 @@ value: 1
 instagram_published: True
 city: San Francisco
 place_id: ChIJvZgJ50B-j4ARppfRLFvDvc4
+website: http://www.wisesonsdeli.com/
 ---
 
 This is a bagel shop, but it ain't New York. They don't have a lot of vegan options, but what they do have is quite mediocre. They've got this sunflower cream cheese and it's not very good.

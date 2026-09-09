@@ -5,7 +5,7 @@ address: 499 Ellis St
 area: Tenderloin
 lat: 37.7845857
 lon: -122.4143076
-phone: 
+phone: "+15106198785"
 menu: https://www.azalinas.com/current-menu/
 drinks: True
 visited: "2025-02-14"
@@ -14,6 +14,7 @@ value: 0
 instagram_published: False
 city: San Francisco
 place_id: ChIJQWq7yBaBhYARAW1YO8VAzB4
+website: https://www.azalinas.com/
 ---
 
 We had a wonderful deep Tenderloin Valentine's Day dinner at Azalina's. The security guard was really friendly, and the closed blinds to the outside had a certain charm.

@@ -14,6 +14,7 @@ value: 1
 instagram_published: True
 city: San Francisco
 place_id: ChIJ3fyEjqeAj4ARtLKCgtCC7AY
+website: http://eatdinosaurs.com/
 ---
 
 Mediocre Banh Mi chain. I got the crispy tofu roll, it kinda just tasted like too much mayo. boooo.

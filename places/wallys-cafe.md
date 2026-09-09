@@ -5,7 +5,7 @@ address: 3900 San Pablo Ave
 area: Emeryville
 lat: 37.8301498
 lon: -122.2792786
-phone: "+15105971303"
+phone: "+18338525910"
 menu: https://www.wallys.cafe/
 drinks: False
 visited: "2023-11-03"
@@ -14,6 +14,7 @@ value: 1
 instagram_published: True
 city: Emeryville
 place_id: ChIJmVoJMxJ-hYARKgs2Gtarbic
+website: https://www.wallys.cafe/emeryville
 ---
 
 Very cool retro diner with Lebanese food, I highly recommend you visit this place. They got all the classics, I got **falafel** and **baba ghanoush**, both good. I will come hungrier next time and get a veggie sampler plate.

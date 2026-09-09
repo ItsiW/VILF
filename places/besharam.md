@@ -5,7 +5,7 @@ address: 1275 Minnesota St
 area: Dogpatch
 lat: 37.7542278
 lon: -122.3896472
-phone: "+14154633759"
+phone: "+14155807662"
 menu: https://besharamrestaurant.com/files/besharam_menu.pdf
 drinks: True
 visited: "2025-02-12"
@@ -14,6 +14,7 @@ value: 0
 instagram_published: False
 city: San Francisco
 place_id: ChIJpVAZ4wx_j4AR4j8Q0COpGHc
+website: http://besharamrestaurant.com/
 ---
 
 Very expensive South Indian place that I would only go to if someone else is paying. Lucky for me, they were.

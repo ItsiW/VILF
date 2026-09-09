@@ -14,6 +14,7 @@ value: 0
 instagram_published: True
 city: San Francisco
 place_id: ChIJ421bSGGAhYARogZJrPFCrOU
+website: http://oshathai.com/embarcadero
 ---
 
 This is the gaudiest restaurant I've been to in a while. They don't have many vegan options at all, we got the coconut curry dumpling and drunken noodles. They were good, but no better than a standard thai place. And at a $25 main that's gonna be a thumbs down for sure.

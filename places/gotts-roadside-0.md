@@ -1,7 +1,7 @@
 ---
 name: Gott's Roadside SFO
 cuisine: American
-address: San Franscisco International Airport
+address: San Francisco International Airport
 area: SFO
 lat: 37.6115593
 lon: -122.389886
@@ -14,6 +14,7 @@ value: 1
 instagram_published: True
 city: Millbrae
 place_id: ChIJd0wsfpd3j4ARmlmp9gVwSH8
+website: https://www.gotts.com/locations/
 ---
 
 As a wise friend once told me, time and calories don't exist in the airport. 

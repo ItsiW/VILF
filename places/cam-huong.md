@@ -14,6 +14,7 @@ value: 2
 instagram_published: True
 city: Oakland
 place_id: ChIJjQU_M7SAj4AROTRkajEcTiU
+website: https://camhuongbakery.com/
 ---
 
 This is a Vietnamese bakery that makes a nice **curry tofu banh mi**. It's pretty good, nothing too special but hits the spot. Make sure to get it without mayo. Has all the nice pickled veg and stuff.

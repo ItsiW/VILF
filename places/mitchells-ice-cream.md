@@ -14,6 +14,7 @@ value: 1
 instagram_published: False
 city: San Francisco
 place_id: ChIJQVAijUJ-j4ARfJZLVQMz1Dw
+website: http://mitchellsicecream.com/
 ---
 
 One of those ice cream places with lines out the block. High expectations. Low results. They have a couple rotating vegan flavors and sorbets. I got the black forest flavor... sounded promising. No good! Way better vegan ice cream is available kinda nearby at [Garden Creamery](/places/garden-creamery) for a similar line experience.

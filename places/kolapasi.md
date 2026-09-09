@@ -14,6 +14,7 @@ value: 1
 instagram_published: False
 city: San Francisco
 place_id: ChIJ74BhS7R_j4ARhLbEOCAkALw
+website: https://www.kolapasisf.com/
 ---
 
 New South Indian place in the Mission. They have **dosas** like I like em, crispy on the outside and a little spongey inside. Are they the best dosas in the mission, no (go to Diwali). Is the soy chaap a little weird and bad? Yes. But did we have a good time for not that much money? We sure did.

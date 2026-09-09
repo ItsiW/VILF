@@ -14,6 +14,7 @@ value: 1
 instagram_published: True
 city: San Francisco
 place_id: ChIJVVWVjGaAhYARH_4JjCTVBz8
+website: http://gotts.com/
 ---
 
 This place at the SF ferry has vanilla and chocolate Oatly soft serve. It really... tastes like oat. If breakfast soft serve is your vibe then sure. Costed a bit under $6.

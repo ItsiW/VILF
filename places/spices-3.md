@@ -1,7 +1,7 @@
 ---
 name: Spices 3
 cuisine: Chinese
-address: 370 12th St
+address: 370-372 12th St
 area: Downtown Oakland
 lat: 37.802305882468936
 lon: -122.27004915721817
@@ -14,6 +14,7 @@ value: 3
 instagram_published: False
 city: Oakland
 place_id: ChIJDaniPLSAj4ARKXzQfV6dQpU
+website: http://spices3-oakland.com/
 ---
 
 One would think looking at a place with a menu this large that it would be bad. But it is, in fact, pretty great. I can't believe I've been sitting on this place for so long.

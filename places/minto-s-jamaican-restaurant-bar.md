@@ -3,8 +3,8 @@ name: Minto's Jamaican Restaurant & Bar
 cuisine: Carribean
 address: 412 15th St
 area: Downtown Oakland
-lat: 37.8051569
-lon: -122.2696211
+lat: 37.8050726
+lon: -122.2697512
 phone: "+15108174694"
 menu: 
 drinks: True

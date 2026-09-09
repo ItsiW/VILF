@@ -5,7 +5,7 @@ address: 3120 16th St
 area: Mission District
 lat: 37.7650784
 lon: -122.4225222
-phone: "+14154314089"
+phone: "+14159094537"
 menu: https://picarocafe.com/store/
 drinks: True
 visited: "2023-02-12"
@@ -14,6 +14,7 @@ value: 3
 instagram_published: True
 city: San Francisco
 place_id: ChIJv117QSJ-j4ARFWASVwJqHzk
+website: http://www.picarocafe.com/
 ---
 
 This is one of the best value places in the city. There's tons of different **veggie tapas** dishes like **artichokes**, **pimientos de padron** (like shishitos), and **patatas bravas**. You get complimentary bread and bravas sauce. 
