@@ -11,3 +11,4 @@ scripts/.ipynb_checkpoints/
 .virtual_documents/
 scripts/tmp.jpg
 *.ipynb
+.env
