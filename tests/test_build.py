@@ -7,12 +7,22 @@ from pathlib import Path
 import pytest
 from click.testing import CliRunner
 
-from scripts.build import build_vilf
+from scripts.build import SITE_URL, build_vilf
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 # build.py reports a broken place with `print(place_md.name, e)` -> "<slug>.md <error>"
 PLACE_ERROR = re.compile(r"^.+\.md( |$)")
+
+PLACES_JSON_KEYS = {
+    "name", "slug", "url", "cuisine", "area", "city", "address", "lat", "lon",
+    "taste", "taste_label", "value", "value_label", "drinks", "visited",
+    "phone", "menu", "website", "image",
+}
+
+
+def place_slugs():
+    return sorted(p.stem for p in (REPO_ROOT / "places").glob("*.md"))
 
 
 @pytest.fixture(scope="module")
@@ -41,6 +51,49 @@ def test_geojson_feature_count_matches_places(build_result):
     n_built = len(list((REPO_ROOT / "build").glob("places/*/index.html")))
     features = json.loads((REPO_ROOT / "build" / "places.geojson").read_text())["features"]
     assert len(features) == n_built == n_md
+
+
+def test_llms_txt_lists_every_place(build_result):
+    text = (REPO_ROOT / "build" / "llms.txt").read_text(encoding="utf-8")
+    assert text.startswith("# Vegans In Love with Food")
+    for slug in place_slugs():
+        assert f"{SITE_URL}/places/{slug}/" in text, slug
+
+
+def test_llms_full_contains_review_dish(build_result):
+    # first review (alphabetically) with a **bolded dish**; avoids hardcoding a restaurant
+    for path in sorted((REPO_ROOT / "places").glob("*.md")):
+        match = re.search(r"\*\*.+?\*\*", path.read_text(encoding="utf-8"))
+        if match:
+            break
+    else:
+        pytest.skip("no review with a bolded dish")
+    full = (REPO_ROOT / "build" / "llms-full.txt").read_text(encoding="utf-8")
+    assert match.group(0) in full, (path.name, match.group(0))
+
+
+def test_places_json(build_result):
+    build = REPO_ROOT / "build"
+    data = json.loads((build / "places.json").read_text(encoding="utf-8"))
+    assert isinstance(data, list)
+    assert len(data) == len(list(build.glob("places/*/index.html")))
+    assert set(data[0]) == PLACES_JSON_KEYS
+
+
+def test_place_markdown_files(build_result):
+    for slug in place_slugs():
+        assert (REPO_ROOT / "build" / "places" / f"{slug}.md").is_file(), slug
+
+
+def test_place_page_has_verdict_and_markdown_alternate(build_result):
+    slug = place_slugs()[0]
+    page = (REPO_ROOT / "build" / "places" / slug / "index.html").read_text(encoding="utf-8")
+    assert "Verdict:" in page
+    assert f'<link rel="alternate" type="text/markdown" href="/places/{slug}.md">' in page
+
+
+def test_robots_welcomes_ai_crawlers(build_result):
+    assert "GPTBot" in (REPO_ROOT / "build" / "robots.txt").read_text()
 
 
 # Inline fixture (not a real places/*.md) so deleting or renaming a restaurant can't break this module.

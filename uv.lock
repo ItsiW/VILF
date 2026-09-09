@@ -1115,10 +1115,8 @@ dependencies = [
     { name = "python-dotenv" },
     { name = "pyyaml" },
     { name = "requests" },
-    { name = "selenium" },
     { name = "tqdm" },
     { name = "unidecode" },
-    { name = "webdriver-manager" },
 ]
 
 [package.dev-dependencies]
@@ -1127,8 +1125,10 @@ dev = [
 ]
 instagram = [
     { name = "matplotlib" },
+    { name = "selenium" },
     { name = "setuptools" },
     { name = "undetected-chromedriver" },
+    { name = "webdriver-manager" },
 ]
 
 [package.metadata]
@@ -1141,18 +1141,18 @@ requires-dist = [
     { name = "python-dotenv", specifier = ">=1.0" },
     { name = "pyyaml", specifier = ">=6" },
     { name = "requests", specifier = ">=2.32" },
-    { name = "selenium", specifier = ">=4.30" },
     { name = "tqdm", specifier = ">=4.66" },
     { name = "unidecode", specifier = ">=1.3" },
-    { name = "webdriver-manager", specifier = ">=4.0" },
 ]
 
 [package.metadata.requires-dev]
 dev = [{ name = "pytest", specifier = ">=8" }]
 instagram = [
     { name = "matplotlib", specifier = ">=3.9" },
+    { name = "selenium", specifier = ">=4.30" },
     { name = "setuptools", specifier = ">=70" },
     { name = "undetected-chromedriver", specifier = ">=3.5" },
+    { name = "webdriver-manager", specifier = ">=4.0" },
 ]
 
 [[package]]

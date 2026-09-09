@@ -1,150 +1,117 @@
-import glob
-import io
-import re
+"""
+The `check` command: re-resolve place files against Google Places and diff them.
+
+Files with a place_id are looked up directly; the rest fall back to a text
+search on "<name> <address>" (first result, noted in the output). Exits 1 on
+any mismatch or error so it can gate a commit.
+"""
+
 import sys
-from contextlib import contextmanager
-from typing import Generator, Optional
 
 import click
+import yaml
 
-from .spatula import GoogleMapsScraper
+from .places import CONTACT_FIELDS, CORE_FIELDS, Place, PlacesError, get_place, search_text
+from .schema import load_place
 
 LAT_RES = 1e-4
 LON_RES = 1e-4
 
 
-@contextmanager
-def redirect_std(
-    input_override: str = "1",
-    redirect_stdout: bool = True,
-    redirect_stderr: bool = True,
-) -> Generator[None, None, None]:
-    """
-    Redirects std input and output
-
-    Give a substitute response to input() (default '1') and optionally
-    override the stdout to silence the output in testing
-    """
-    old_stdin = sys.stdin
-    old_stdout = sys.stdout
-    old_stderr = sys.stderr
-    sys.stdin = io.StringIO(input_override)
-    if redirect_stdout:
-        sys.stdout = io.StringIO()
-    if redirect_stderr:
-        sys.stderr = io.StringIO()
-    yield
-    sys.stdin = old_stdin
-    sys.stdout = old_stdout
-    sys.stderr = old_stderr
+def _is_number(v) -> bool:
+    return isinstance(v, (int, float)) and not isinstance(v, bool)
 
 
-def get_all_markdown_files(directory) -> list[str]:
-    """Return all markdown files in a given directory"""
-    if not directory.endswith("/"):
-        directory += "/"
-    return sorted(glob.glob(rf"{directory}*.md"))
+def resolve(meta: dict, fields) -> tuple[Place, str | None]:
+    """Return (place, note); the note explains a search fallback for files without a place_id."""
+    if meta.get("place_id"):
+        return get_place(meta["place_id"], fields=fields), None
+    results = search_text(f"{meta['name']} {meta['address']}", fields=fields)
+    if not results:
+        raise PlacesError("no search results")
+    place = results[0]
+    return place, f"(no place_id: matched by search to {place.name}, {place.place_id})"
 
 
-def get_content(files: list[str]) -> dict[str, str]:
-    "Return all markdown content from a list of files"
-    all_markdown = {}
-    for file in files:
-        with open(file, "r") as f:
-            all_markdown[file] = f.read()
+def compare(meta: dict, place: Place, contact: bool) -> tuple[list[str], list[str]]:
+    """Return (mismatches, info) lines for one file."""
+    mismatches = []
+    info = []
 
-    return all_markdown
+    def diff(label, current, determined):
+        mismatches.append(f"Current {label}: {current} | Determined {label}: {determined}")
 
-
-def find_item(markdown: str, key: str) -> Optional[str]:
-    """
-    Return a field value from markdown content
-
-    :param markdown: markdown content
-    :param key: Field label to use
-    :return: the value associated with the field e.g. key: value
-             returns None if not found
-    """
-    search = re.findall(rf"{key}: (.*)", markdown)
-    if search:
-        return search[0]
+    if meta["name"] != place.name:
+        diff("name", meta["name"], place.name)
+    if meta["address"] != place.street_address:
+        diff("address", meta["address"], place.street_address)
+    for label, current, determined, res in (
+        ("latitude", meta.get("lat"), place.lat, LAT_RES),
+        ("longitude", meta.get("lon"), place.lon, LON_RES),
+    ):
+        if not _is_number(current):
+            # e.g. a quoted "37.8" in the frontmatter; report it rather than crash on the subtraction
+            diff(label, f"{current!r} (not a number)", determined)
+        elif not _is_number(determined) or abs(current - determined) > res:
+            diff(label, current, determined)
+    if contact:
+        if (meta.get("phone") or None) != (place.phone or None):
+            diff("phone number", meta.get("phone"), place.phone)
+        if meta.get("website") is None and place.website:
+            info.append(f"Website (not in file): {place.website}")
+    return mismatches, info
 
 
 @click.command()
-@click.argument("files", type=click.Path(exists=True), nargs=-1)
-def cross_reference_md(files: tuple[str]) -> None:
-    """
-    Cross-reference the files against scraped Google Maps
+@click.argument("files", type=click.Path(exists=True, dir_okay=False), nargs=-1)
+@click.option(
+    "--contact",
+    is_flag=True,
+    help="Also fetch phone and website (Enterprise billing tier, one call per file).",
+)
+def cross_reference_md(files, contact):
+    """Check place files against Google Places.
 
-    :param files: Tuple of file paths
-    :return: None
+    Files with a place_id are looked up directly; others are matched by a text
+    search on the name and address (noted in the output). Name and address must
+    match exactly, coordinates within 1e-4 degrees. Exits 1 if any file
+    mismatches or errors, so it can gate a commit.
     """
     if not files:
-        print("No files to check.")
+        click.echo("No files to check.")
         return
-    if any(not file.endswith(".md") for file in files):
-        raise ValueError("Files must all be markdown (.md).")
-    content = get_content(files)
-    gmd = GoogleMapsScraper(headless=True, timeout=20)
-    potentially_bad_files = []
-    errors = {}
-    print("\nTesting files:")
-    for file, md in content.items():
-        error_report = file + "\n"
+    fields = CONTACT_FIELDS if contact else CORE_FIELDS
+    reports = {}
+    click.echo("\nTesting files:")
+    for file in files:
+        note = None
+        info = []
         try:
-            name = find_item(md, key="name").strip()
-            address = find_item(md, key="address").strip()
-            phone_number = find_item(md, key="phone")
-            if phone_number is None:
-                phone_number = ""
-            phone_number.strip()
-            lat = find_item(md, key="lat").strip()
-            lon = find_item(md, key="lon").strip()
-            query = f"{name} restaurant at {address}"
-            with redirect_std(redirect_stdout=True):
-                gmd.search_for_restaurant(search_query=query)
-            gmd.scrape(close_browser=False)
-            perfect_match = True
-            if name != gmd.name:
-                perfect_match = False
-                error_report += f"Current name: {name} | Determined name: {gmd.name}\n"
-            if address != gmd.street_address:
-                perfect_match = False
-                error_report += f"Current address: {address} | Determined address: {gmd.street_address}\n"
-            if gmd.phone_number is None:
-                gmd_phone_number = ""
-            else:
-                gmd_phone_number = f'"+1{gmd.phone_number}"'
-            if phone_number != gmd_phone_number:
-                perfect_match = False
-                error_report += f"Current phone number: {phone_number} | Determined phone number: {gmd_phone_number}\n"
-            if abs(float(lat) - gmd.lat_lon[0]) > LAT_RES:
-                perfect_match = False
-                error_report += (
-                    f"Current latitude: {lat} | Determined latitude: {gmd.lat_lon[0]}\n"
-                )
-            if abs(float(lon) - gmd.lat_lon[1]) > LON_RES:
-                perfect_match = False
-                error_report += f"Current longitude: {lon} | Determined longitude: {gmd.lat_lon[1]}\n"
-        except Exception as e:
-            error_report += str(e)
-            errors[file] = error_report
-            potentially_bad_files.append(file)
-            print("\u2718 " + f"{file}")
-        else:
-            if not perfect_match:
-                errors[file] = error_report
-                potentially_bad_files.append(file)
-                print("\u2718 " + f"{file}")
-            else:
-                print("\u2714 " + f"{file}")
+            meta, _ = load_place(file)
+            # load_place only defaults the optional keys; resolve/compare need these two
+            missing = [key for key in ("name", "address") if meta.get(key) is None]
+            if missing:
+                raise ValueError(f"missing {', '.join(missing)}")
+            place, note = resolve(meta, fields)
+            mismatches, info = compare(meta, place, contact)
+        except (PlacesError, ValueError, yaml.YAMLError) as e:
+            mismatches = [str(e)]
+        mark = "✘ " if mismatches else "✔ "
+        click.echo(mark + file + (" " + note if note else ""))
+        for line in info:
+            click.echo("  " + line)
+        if mismatches:
+            reports[file] = mismatches
 
-    if potentially_bad_files:
-        print("\nThe following files may need inspection:\n")
-        for file in potentially_bad_files:
-            print(errors[file])
-    else:
-        print("\nAll files look good.")
+    if reports:
+        click.echo("\nThe following files may need inspection:\n")
+        for file, lines in reports.items():
+            click.echo(file)
+            for line in lines:
+                click.echo(line)
+            click.echo("")
+        sys.exit(1)
+    click.echo("\nAll files look good.")
 
 
 if __name__ == "__main__":

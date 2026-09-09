@@ -227,6 +227,16 @@ def build_vilf() -> None:
     def format_blurb(md):
         return " ".join(plain(re.sub(r"\s+", " ", md.strip())).split(" ")[:50]) + "..."
 
+    def format_verdict(meta):
+        taste = ["Do not recommend", "Something going for it", "Good taste", "Phenomenal taste"]
+        booze = "booze available" if meta["drinks"] else "no booze"
+        return f'Verdict: {taste[meta["taste"]]}, {meta["value_label"]} value, {booze}.'
+
+    assert (
+        format_verdict({"taste": 2, "value_label": "Fine", "drinks": True})
+        == "Verdict: Good taste, Fine value, booze available."
+    )
+
     def format_alt_text(meta, md):
         """Generate enhanced alt text with specific dishes mentioned"""
         base_alt = f"Vegan {meta['cuisine']} food at {meta['name']} in {meta['area']}, San Francisco Bay Area"
@@ -291,7 +301,9 @@ def build_vilf() -> None:
             meta["drinks_label"], meta["drinks_color"] = boolean_to_formatting(
                 meta["drinks"]
             )
+            meta["verdict"] = format_verdict(meta)
             html = markdown(md.strip())
+            meta["md"] = md.strip()
             meta["blurb"] = format_blurb(md)
             meta["alt_text"] = format_alt_text(meta, md)
             meta["food_image_path"] = get_fp_food_image(slug)
@@ -452,7 +464,7 @@ def build_vilf() -> None:
     def format_cuisine_title(cuisine):
         return f"Vegan {cuisine} food in the San Francisco Bay Area — Vegans In Love with Food"
 
-    def format_cuisine_description(meta):
+    def format_cuisine_description(cuisine):
         return f"Read our reviews on vegan {cuisine} food and others in the Bay Area from V.I.L.F!"
 
     cuisine_template = env.get_template("cuisine.html")
@@ -569,8 +581,109 @@ def build_vilf() -> None:
         }
     )
 
+    # AI-assistant outputs: llms.txt, llms-full.txt, places/<slug>.md, places.json
+    intro = (
+        "# Vegans In Love with Food\n"
+        "\n"
+        "> Vegan restaurant reviews for the San Francisco Bay Area, rated on taste and value.\n"
+        "\n"
+        "Every review rates a restaurant on two scales. Taste: DNR (Do Not Recommend), "
+        "SGFI (Something Going For It), Good or Phenomenal. Value: Bad, Fine, Good or "
+        "Phenomenal. 'Booze' says whether alcohol is available. Reviews are listed best first.\n"
+    )
+
+    def place_markdown(place, heading):
+        address = ", ".join(x for x in [place["address"], place["area"], place["city"]] if x)
+        return (
+            f"{heading} {place['name']}\n"
+            "\n"
+            f"- URL: {SITE_URL}{place['url']}\n"
+            f"- Cuisine: {place['cuisine']}\n"
+            f"- Address: {address}\n"
+            f"- Taste: {place['taste_label']}\n"
+            f"- Value: {place['value_label']}\n"
+            f"- Booze: {place['drinks_label']}\n"
+            f"- Last visited: {place['visited_display']}\n"
+            f"- {place['verdict']}\n"
+            "\n"
+            f"{place['md']}\n"
+        )
+
+    llms_lines = [intro, "## Pages", ""]
+    for label, path in [
+        ("Map", "/"),
+        ("Best", "/best/"),
+        ("Latest", "/latest/"),
+        ("Cuisines", "/cuisines/"),
+        ("Neighborhoods", "/neighborhoods/"),
+        ("About", "/about/"),
+    ]:
+        llms_lines.append(f"- [{label}]({SITE_URL}{path})")
+    llms_lines += [
+        "",
+        "## Data",
+        "",
+        f"- [places.json]({SITE_URL}/places.json): every place as JSON",
+        f"- [llms-full.txt]({SITE_URL}/llms-full.txt): every review in full",
+        "",
+        "## Reviews",
+        "",
+    ]
+    for place in sorted_places:
+        llms_lines.append(
+            f"- [{place['name']}]({SITE_URL}{place['url']}): {place['cuisine']} in {place['area']}. "
+            f"Taste: {place['taste_label']}. Value: {place['value_label']}."
+        )
+    (build_dir / "llms.txt").write_text("\n".join(llms_lines) + "\n", encoding="utf-8")
+
+    (build_dir / "llms-full.txt").write_text(
+        intro + "\n" + "\n".join(place_markdown(place, "##") for place in sorted_places),
+        encoding="utf-8",
+    )
+
+    for place in places:
+        (build_dir / "places" / f"{place['slug']}.md").write_text(
+            place_markdown(place, "#"), encoding="utf-8"
+        )
+
+    places_json = [
+        {
+            "name": place["name"],
+            "slug": place["slug"],
+            "url": f"{SITE_URL}{place['url']}",
+            "cuisine": place["cuisine"],
+            "area": place["area"],
+            "city": place["city"],
+            "address": place["address"],
+            "lat": place["lat"],
+            "lon": place["lon"],
+            "taste": place["taste"],
+            "taste_label": place["taste_label"],
+            "value": place["value"],
+            "value_label": place["value_label"],
+            "drinks": place["drinks"],
+            "visited": place["visited"],
+            "phone": place["phone"],
+            "menu": place["menu"],
+            "website": place["website"],
+            "image": (
+                f"{SITE_URL}{place['food_image_path'].replace('.webp', '.jpg')}"
+                if place["food_image_path"]
+                else None
+            ),
+        }
+        for place in sorted(places, key=lambda item: item["name"].lower())
+    ]
+    (build_dir / "places.json").write_text(
+        json.dumps(places_json, indent=1, ensure_ascii=False), encoding="utf-8"
+    )
+
     with open(build_dir / "robots.txt", "w") as o:
-        robots_content = f"""User-agent: *
+        robots_content = f"""# AI crawlers (GPTBot, ClaudeBot, Claude-Web, PerplexityBot, Google-Extended, CCBot)
+# are welcome. Machine-readable copies of this site are published at
+# /llms.txt, /llms-full.txt and /places.json. Do not add Disallow rules for these agents.
+
+User-agent: *
 Disallow: /raw/
 Disallow: /scripts/
 Disallow: /*.geojson$

@@ -71,167 +71,82 @@ We use a Nix development shell to currently to manage infrastructure and autofor
 
 ## Tools for contributors
 
-### `spatula`: Automating the restaurant data collection and markdown file generation
+### Setup
 
-#### Interactive mode (recommended)
-
-Think of a good search query that will locate your restaurant (e.g. "Lion Dance Cafe"). Run the following from the terminal to see an interactive prompt:
+`spatula`, `check` and `audit` call the Google Places API. Put your key in a `.env` at the repo root (gitignored) or export it; no browser is needed:
 
 ```bash
-./vilf spatula
-# Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
+echo 'GOOGLE_PLACES_API_KEY=...' > .env
 ```
 
-Enter the hint:
+### `spatula`: create a new review file
 
 ```bash
 ./vilf spatula
-# Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
-Lion Dance Cafe
+# Search Google Places (name and city, or a Google Maps URL): Lion Dance Cafe Oakland
 ```
 
-The scraper will be able to identify the restaurant automatically and generate a markdown file for you:
+Type a name and city, or paste a Google Maps URL. An unambiguous search goes straight through; otherwise up to five results are listed and you pick one (or `0` to search again):
 
 ```bash
-./vilf spatula
-# Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
-Lion Dance Cafe
+# 0: Search again
+# 1: Bongo Java at 2007 Belmont Blvd, Nashville
+# 2: Bongo Java East at 107 S 11th St, Nashville
+# Pick one [0-2]: 2
+```
 
-# Waiting for Google Maps page to redirect...
+- `./vilf spatula -s 'Lion Dance Cafe Oakland'` skips the search prompt.
+- `./vilf spatula --place-id ChIJ...` skips the search entirely.
+- Phone and website are fetched too by default (one Enterprise-tier call per new review); `--no-details` skips that.
 
-# Using the Google Maps page: https://www.google.com/maps/place/Lion+Dance...
-# Name = Lion Dance Café
+It then asks for `cuisine`, `area` (defaults to the city, but use a neighborhood), `drinks`, `taste`, `value` and `visited` (defaults to today), writes `places/<slug>.md` with a `<REVIEW>` placeholder and prints what is still to do. Normally that is just "write the review and bold a dish":
+
+```bash
+./vilf spatula -s 'Lion Dance Cafe Oakland'
+
+# Name = Lion Dance Cafe
 # Address = 380 17th St
 # City = Oakland
 # State = CA
 # Zip code = 94612
-# Phone: None
-# Lat, lon = 37.806069, -122.276674
+# Phone = +15105550199
+# Website = https://example.com/lion-dance
+# Status = OPERATIONAL
+# Lat, lon = 37.806100, -122.268300
+# Maps = https://maps.google.com/?cid=...
+# cuisine: Chinese
+# area (neighborhood, required) [Oakland]: Downtown Oakland
+# drinks (serves alcohol) [y/n]: n
+# taste: 0=DNR 1=SGFI 2=Good 3=Phenomenal
+# taste: 3
+# value: 0=Bad 1=Fine 2=Good 3=Phenomenal
+# value: 2
+# visited [2026-09-09]:
 
-# Successfully wrote markdown to file places/lion-dance-cafe.md
+# To do before this file builds:
+# - write the review (body is still the <REVIEW> placeholder) and bold at least one dish with **...**
+
+# Wrote places/lion-dance-cafe.md
 ```
 
-The markdown will contain the fields pre-populated and the relevant values already filled in. The rest is up to
-you to fill in.
+Extras:
 
-```bash
-cat lion-dance-cafe.md
-# ---
-# name: Lion Dance Café
-# cuisine:
-# address: 380 17th St
-# area:
-# lat: 37.8060489
-# lon: -122.267932
-# phone:
-# menu:
-# drinks:
-# visited:
-# taste:
-# value:
-# ---
+- `--no-prompt` writes the blank skeleton (empty `cuisine`, `area`, `drinks`, ...) for you to fill in by hand.
+- `--photo path-or-url` copies (or downloads) the food photo to `raw/food/<slug>.jpg`, converting to JPEG if needed, and warns if it is wider than 16:9 (the build rejects that).
+- A place already in the output directory (same `place_id`, or within 30 m) aborts with the existing filename; `--force` writes anyway and also overwrites an existing photo. Only the output directory is scanned.
+- Filenames are slugs of the name (`Lion Dance Café` -> `lion-dance-cafe`) with `-0`, `-1`, ... appended on collision. `--street-in-filename` adds the street (useful for chains), `--manual-filename path.md` sets it by hand, `--directory` changes the output directory (default `./places/`).
+- `--city-as-area` prefills `area` with the city; `--ask-first` confirms before writing.
+- `./vilf spatula --help` lists everything.
 
-# <REVIEW>
-```
+### `check`: verify files against Google
 
-File name formatting happens automatically. It will safely remove bad characters,
-use the restaurant name (and possibly street name, see below), and will append an integer
-to the end of the filename in cases of conflict with a preexisting file. You can also flag to use the
-city name for the field `area` (though you may want to be more specific like "Downtown Oakland").
-
-```bash
-./vilf spatula --city-as-area --street-in-filename
-# ...
-# Successfully wrote markdown to file lion-dance-cafe-380-17th-st.md
-cat lion-dance-cafe-380-17th-st.md
-# ...
-# address: 380 17th St
-# area: Oakland
-# lat: 37.8060489
-# ...
-```
-
-Sometimes searches are ambiguous. In this case, the scraper will allow you to select one of the top results from a search or try a different search:
-
-```bash
-./vilf spatula
-# Enter Google Maps search terms (ex: Lion Dance Cafe in Oakland):
-Bongo Java Nashville
-
-# Waiting for Google Maps page to redirect...
-
-# I found multiple potential locations, collecting top results...
-# Gathering search result data: 100%|█████| 5/5 [00:23<00:00,  4.63s/it]
-
-# 0: Try searching again
-# 1: Bongo Java at 2007 Belmont Blvd, Nashville, TN
-# 2: Bongo Java East at 107 S 11th St, Nashville, TN
-# 3: Bongo Java at 364 Rep. John Lewis Way S, Nashville, TN
-# 4: Bongo Java Roasting Co. at 372 Herron Dr, Nashville, TN
-
-# Select one of the above choices to proceed (0 - 4):
-3
-
-# Waiting for Google Maps page to redirect...
-
-# Using the Google Maps page: https://www.google.com/maps/place/Bongo+Java...
-
-# Name = Bongo Java
-# Address = 364 Rep. John Lewis Way S
-# City = Nashville
-# State = TN
-# Zip code = 37203
-# Phone: None
-# Lat, lon = 36.157151, -86.776074
-
-# Successfully wrote markdown to file places/bongo-java.md
-```
-
-#### Manual URL mode
-
-Alternatively, you can pass in a URL corresponding to a Google Maps restaurant manually. Be careful
-to escape characters correctly (most terminals will automatically escape upon pasting).
-
-Ex:
-
-```bash
-./vilf spatula --url https://www.google.com/maps/place/Lion+Dance+Caf%C3%A9/@37.8060737,
--122.270113,17z/data\=\!3m1\!4b1\!4m5\!3m4\!1s0x808f817f59aa5fa9:0xc6930eb94f2d3188\!8m2\!3d37.8060489\
-!4d-122.267932
-
-# Waiting for Google Maps page to redirect...
-
-# Name = Lion Dance Café
-# Address = 380 17th St
-# City = Oakland
-# State = CA
-# Zip code = 94612
-# Phone: None
-# Lat, lon = 37.806074, -122.270113
-
-# Successfully wrote markdown to file places/lion-dance-cafe-0.md
-```
-
-Notice the `-0` added to the filename to avoid a collision with the original file we produced.
-
-#### Shortcuts and extras
-
-1. `./vilf spatula --ask-first` prompts the user before writing metadata to markdown.
-2. `./vilf spatula --search-query 'lion dance cafe'` or `./vilf spatula -s 'lion dance cafe'` avoids the search prompt and jumps right to the action
-3. `./vilf spatula --directory '/path/to/folder'` allows you to specify the directory for the markdown file (directory doesn't have to exist yet)
-4. `./vilf spatula --manual-filename '/path/to/folder/filename.md'` allows you to manually specify the output file
-5. `./vilf spatula --timeout 30.0` let's you set the timeout for the browser (default is 10.0)
-6. `./vilf spatula --no-headless` let's you see the browser GUI as the searches are being made (kinda fun but not recommended unless debugging)
-7. For more details run `./vilf spatula --help`.
-
-### Checking new file additions against Google Maps
-
-Before committing new markdown files, `spatula` can be leveraged to check new files against
-Google Maps scraping. Simply run the following from the repo home directory:
+Before committing new markdown files, compare them with what Google Places has:
 
 ```bash
 ./vilf check $(git diff --staged --name-only places/)
 ```
+
+Files with a `place_id` are looked up directly; older files without one are matched by a text search on the name and address (the output says so). Name and address must match exactly, coordinates within 1e-4 degrees. Add `--contact` to also compare the phone number and show a website the file lacks. The command exits 1 on any mismatch or error, so it can gate a commit.
 
 If everything looks as expected, you will see
 
@@ -261,3 +176,11 @@ If anything is wrong, the metadata will be displayed:
 # Current latitude: 34.8060489 | Determined latitude: 37.8060489
 # Current longitude: -120.267932 | Determined longitude: -122.267932
 ```
+
+### `audit`: find closed restaurants
+
+```bash
+./vilf audit
+```
+
+Checks the Google business status of every place file that has a `place_id` (one Pro-tier call each; files without a `place_id` are only counted) and lists the ones that are permanently closed, temporarily closed, or have an unknown status. Informational: it always exits 0.

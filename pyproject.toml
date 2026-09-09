@@ -12,11 +12,9 @@ dependencies = [
     "pillow>=11",
     "pyyaml>=6",
     "tqdm>=4.66",
-    # scripts/spatula.py (imported by cli.py, so the build needs these importable too)
-    "selenium>=4.30",
+    # scripts/spatula.py
     "unidecode>=1.3",
-    "webdriver-manager>=4.0",
-    # scripts/places.py
+    # scripts/places.py (spatula, check, audit)
     "requests>=2.32",
     "python-dotenv>=1.0",
 ]
@@ -25,6 +23,9 @@ dependencies = [
 dev = ["pytest>=8"]
 # scripts/instagram_poster.py + scripts/image_generator.py (run directly, not via ./vilf)
 instagram = [
+    # scripts/instagram_poster.py still drives Chrome through Selenium
+    "selenium>=4.30",
+    "webdriver-manager>=4.0",
     "undetected-chromedriver>=3.5",
     "matplotlib>=3.9",
     # undetected-chromedriver imports distutils, gone in 3.12+; setuptools provides the shim
