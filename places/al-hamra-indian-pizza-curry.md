@@ -12,6 +12,8 @@ visited: "2022-10-27"
 taste: 0
 value: 1
 instagram_published: True
+city: San Francisco
+place_id: ChIJtwHxUiJ-j4ARRtf3rl2LuVE
 ---
 
 Pretty good if you like bad pizza.

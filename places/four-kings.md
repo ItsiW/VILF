@@ -12,6 +12,8 @@ visited: "2024-08-04"
 taste: 2
 value: 2
 instagram_published: False
+city: San Francisco
+place_id: ChIJD_erQf2BhYARF5m3aYOjjDk
 ---
 
 Damn this place is good. It was bordering on a phenomenal rating but there were a couple misses.

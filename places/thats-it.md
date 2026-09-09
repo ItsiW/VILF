@@ -12,6 +12,8 @@ visited: "2023-06-02"
 taste: 1
 value: 2
 instagram_published: True
+city: San Francisco
+place_id: ChIJ8SlnTT9-j4ARBoZ8C-DIBV4
 ---
 
 In this unassuming small booze shop you'll find a little taco counter. Excellent place to grab a bite after watching the Barbie movie at Alamo Drafthouse.

@@ -12,6 +12,8 @@ visited: "2024-06-30"
 taste: 2
 value: 2
 instagram_published: False
+city: San Francisco
+place_id: ChIJGx1jA6SBhYARLMB1ta069Bs
 ---
 
 Very good and very fancy new South Indian restaurant. We got a ton of food, and spent a lot of money. But you could get by for a lot cheaper. 

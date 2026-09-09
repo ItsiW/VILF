@@ -12,6 +12,8 @@ visited: "2022-11-05"
 taste: 1
 value: 1
 instagram_published: True
+city: San Francisco
+place_id: ChIJp58ZSBF_j4AR95usYg6iIyQ
 ---
 
 Ramen shop with a **Vegan Ramen** option. They also have vegan mac salad.

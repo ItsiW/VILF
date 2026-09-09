@@ -1,16 +1,16 @@
 ---
 name: Dela Curo Curry
 cuisine: Japanese
-drinks: True
-visited: "2022-09-03"
 address: 920 Heinz Ave
 area: Berkeley
-taste: 0
-value: 1
 lat: 37.801658077477455
 lon: -122.27456706795022
-menu: https://www.delacuro.com/?location=11eb9fa0be65c5b9bdb2ac1f6bbbd01e
 phone: "+15102511113"
+menu: https://www.delacuro.com/?location=11eb9fa0be65c5b9bdb2ac1f6bbbd01e
+drinks: True
+visited: "2022-09-03"
+taste: 0
+value: 1
 instagram_published: True
 ---
 

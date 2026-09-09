@@ -12,6 +12,8 @@ visited: "2025-02-14"
 taste: 0
 value: 0
 instagram_published: False
+city: San Francisco
+place_id: ChIJQWq7yBaBhYARAW1YO8VAzB4
 ---
 
 We had a wonderful deep Tenderloin Valentine's Day dinner at Azalina's. The security guard was really friendly, and the closed blinds to the outside had a certain charm.

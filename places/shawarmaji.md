@@ -12,6 +12,8 @@ visited: "2024-05-29"
 taste: 2
 value: 2
 instagram_published: False
+city: Oakland
+place_id: ChIJ06KARiyBj4ARJmSJSSDm0W4
 ---
 
 ALERT: GOOD FALAFEL PLACE. This a Jordanian place. I got the **falafel pita**, it was excellent. good amount of veggies and pickles. And god damn the **toum** they make is exceptional. 

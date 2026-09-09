@@ -12,6 +12,8 @@ visited: "2025-02-12"
 taste: 1
 value: 0
 instagram_published: False
+city: San Francisco
+place_id: ChIJpVAZ4wx_j4AR4j8Q0COpGHc
 ---
 
 Very expensive South Indian place that I would only go to if someone else is paying. Lucky for me, they were.

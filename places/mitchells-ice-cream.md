@@ -12,6 +12,8 @@ visited: "2025-06-12"
 taste: 0
 value: 1
 instagram_published: False
+city: San Francisco
+place_id: ChIJQVAijUJ-j4ARfJZLVQMz1Dw
 ---
 
 One of those ice cream places with lines out the block. High expectations. Low results. They have a couple rotating vegan flavors and sorbets. I got the black forest flavor... sounded promising. No good! Way better vegan ice cream is available kinda nearby at [Garden Creamery](/places/garden-creamery) for a similar line experience.

@@ -12,6 +12,8 @@ visited: "2023-03-29"
 taste: 0
 value: 1
 instagram_published: True
+city: San Francisco
+place_id: ChIJD2Q0whyBhYARv2vWyDJKEUs
 ---
 
 Got some pretty mediocre food here. 

@@ -12,6 +12,8 @@ visited: "2025-02-22"
 taste: 0
 value: 0
 instagram_published: False
+city: San Francisco
+place_id: ChIJhSoiaACBhYARQFb9Q5HyncU
 ---
 
 Nice wine bar but the only vegan thing they had was gado gado which was a basic salad covered with some peanut sauce on top. You can make it at home. Avoid this place for food. They seemed apologetic at least? I don't know, just get some vegan options.

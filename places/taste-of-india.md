@@ -7,11 +7,13 @@ lat: 37.0965425
 lon: -121.0163527
 phone: "+12098950213"
 menu: https://www.tasteofindiasantanella.com/
-drinks: false
+drinks: False
 visited: "2023-03-07"
 taste: 2
 value: 2
 instagram_published: True
+city: Santa Nella
+place_id: ChIJga7y87CFkYARH9ygU-xPefU
 ---
 
 Sometimes great restaurants have the worst names. This is a great Punjabi restaurant off the highway. We got **black chickpeas**, **saag**, **samosas** and some other stuff that they could do vegan, they've got plenty of options. Just make sure to ask for it without the ghee.

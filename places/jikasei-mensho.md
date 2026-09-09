@@ -12,6 +12,8 @@ visited: "2024-06-13"
 taste: 3
 value: 1
 instagram_published: False
+city: San Francisco
+place_id: ChIJvV-d-cqBhYARugQoYsDtdb0
 ---
 
 This place surprised me, it's in the back corner of this food court market place in a dingy part of Soma near Market. There is no vibe here.

@@ -12,6 +12,8 @@ visited: "2025-06-07"
 taste: 0
 value: 0
 instagram_published: False
+city: San Francisco
+place_id: ChIJ0foXMbCAhYARvD0aMWno3AI
 ---
 
 It is incredible that a city like SF has managed to hold onto a restaurant like this that is such a bad representation of Indian cuisine. 

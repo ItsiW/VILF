@@ -1,17 +1,19 @@
 ---
 name: New Gold Medal Restaurant
 cuisine: Chinese
-drinks: True
-visited: "2022-08-14"
 address: 389 8th St
 area: Downtown Oakland
-taste: 0
-value: 1
 lat: 37.7995298
 lon: -122.2722258
-menu:
 phone: "+15104651940"
+menu: 
+drinks: True
+visited: "2022-08-14"
+taste: 0
+value: 1
 instagram_published: True
+city: Oakland
+place_id: ChIJ7wxfaraAj4ARbkoDrGdQv00
 ---
 
 A cantonese place with everything on the menu. I was blessed with one of the worst mapo tofus I've had in my life. Clear and gluggy, and the only major flavor was salt. Just an enormous pile of goop.

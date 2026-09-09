@@ -5,13 +5,15 @@ address: 3566 20th St
 area: Mission District
 lat: 37.75869482327375
 lon: -122.42047458650713
-phone:
+phone: 
 menu: https://gardencreamery.com/products/
 drinks: False
 visited: "2025-02-08"
 taste: 2
 value: 2
 instagram_published: False
+city: San Francisco
+place_id: ChIJbZrTRzx-j4AR1AzhXfq8_4c
 ---
 
 Yummy yummy ice cream. They always have 2-4 vegan flavors on the go. They've got this **ube coconut** flavor that's awesome, the **thai tea** one is good too.

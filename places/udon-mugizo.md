@@ -1,17 +1,19 @@
 ---
 name: Udon Mugizo
 cuisine: Japanese
-address: 1581 Webster St #217
+address: "1581 Webster St #217"
 area: Japantown
 lat: 37.7849587
 lon: -122.4321287
 phone: "+14159313118"
 menu: https://order.toasttab.com/online/udon-mugizo-san-francisco-1581-webster-st-217
-drinks: true
+drinks: True
 visited: "2023-09-26"
 taste: 1
 value: 1
 instagram_published: True
+city: San Francisco
+place_id: ChIJNx4Y_LiAhYARFI7FDc60IAc
 ---
 
 Wow, yummy **udon** you must be thinking. Well they've got one vegan option and it's ok, a cold one. Looks pretty though.

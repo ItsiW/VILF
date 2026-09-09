@@ -12,6 +12,8 @@ visited: "2025-07-11"
 taste: 0
 value: 1
 instagram_published: False
+city: San Francisco
+place_id: ChIJyW46mXeHhYAR1Gn4lfm6ggk
 ---
 
 Something to know about me is that I am an appreciator of the fine art of Biang Biang noodles, the king of noodles.

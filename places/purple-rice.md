@@ -12,6 +12,8 @@ visited: "2025-04-23"
 taste: 1
 value: 2
 instagram_published: False
+city: San Francisco
+place_id: ChIJBQXY2L-BhYARamWuJe73iNI
 ---
 
 It has been mentioned to me that sometimes I just like warm comforting stewy food on cold days. But so what, maybe that's all you need. Maybe that's good. Have you thought of that?

@@ -12,6 +12,8 @@ visited: "2022-11-08"
 taste: 2
 value: 1
 instagram_published: True
+city: San Francisco
+place_id: ChIJVcYPIz1-j4AR4D03J06gFmk
 ---
 
 This is a souvlaki chain. They've got a vegan **Black Sheep Foods lamb souvlaki** option. It's very tasty and lamby.

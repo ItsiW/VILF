@@ -1,17 +1,19 @@
 ---
 name: Spices Noodle House
 cuisine: Chinese
-drinks: False
-visited: "2022-08-16"
 address: 369 12th St
 area: Downtown Oakland
-taste: 1
-value: 1
 lat: 37.802068998066886
 lon: -122.27045356075722
-menu: https://order.online/store/spices-noodle-house-(china-taste)-oakland-543209/?hideModal=true&pickup=true
 phone: "+15102509577"
+menu: https://order.online/store/spices-noodle-house-(china-taste)-oakland-543209/?hideModal=true&pickup=true
+drinks: False
+visited: "2022-08-16"
+taste: 1
+value: 1
 instagram_published: True
+city: Oakland
+place_id: ChIJqdQcWFCBj4ARlwsv8E0ZQpk
 ---
 
 This is the noodle satellite office of [Spices 3](/places/spices-3) across the road. There are a couple of vegan options, I got the **cold sesame noodles** which were just swimming in oil. But you know, sometimes you need that.

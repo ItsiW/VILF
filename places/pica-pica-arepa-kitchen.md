@@ -7,11 +7,13 @@ lat: 37.7664583
 lon: -122.4219056
 phone: "+14154005453"
 menu: https://picapica.com/
-drinks: true
+drinks: True
 visited: "2023-03-14"
 taste: 0
 value: 1
 instagram_published: True
+city: San Francisco
+place_id: ChIJAfUqJiJ-j4AR928eD7Vb8Cs
 ---
 
 Apologies for how terrible their website is to navigate.

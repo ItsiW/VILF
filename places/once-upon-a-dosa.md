@@ -12,6 +12,8 @@ visited: "2025-08-27"
 taste: 0
 value: 1
 instagram_published: False
+city: San Francisco
+place_id: ChIJ3eerzJDLj4ARo-E9hhPzdJM
 ---
 
 I mean with a name like this I had to go. Imagine my shock and dismay when I find out it's the worst dosa in the city. Extremely soggy, lacking flavor. The chutneys are only ok.

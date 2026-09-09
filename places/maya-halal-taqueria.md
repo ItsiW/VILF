@@ -12,6 +12,8 @@ visited: "2022-10-01"
 taste: 1
 value: 2
 instagram_published: True
+city: Oakland
+place_id: ChIJWZo1Y7SAj4ARbV9mJ59d8rM
 ---
 
 This is a halal Mexican place, which means for sure the refried beans don't have lard. Huzzah. 

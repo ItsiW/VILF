@@ -1,7 +1,7 @@
 ---
 name: Cultured Pickle Shop
 cuisine: American
-address: 800 Bancroft Way Suite #105
+address: "800 Bancroft Way Suite #105"
 area: Berkeley
 lat: 37.8629036
 lon: -122.2970935
@@ -12,6 +12,8 @@ visited: "2024-09-29"
 taste: 2
 value: 2
 instagram_published: False
+city: Berkeley
+place_id: ChIJ3YOe5-h-hYARn07WH6Af6J0
 ---
 
 Those who are any less than pickle admirers should avert their eyes. 

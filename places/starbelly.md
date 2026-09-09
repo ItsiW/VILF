@@ -1,17 +1,19 @@
 ---
 name: Starbelly
-cuisine: American 
+cuisine: American
 address: 3583 16th St
-area: Castro
+area: The Castro
 lat: 37.764084
 lon: -122.432587
 phone: "+14152527500"
 menu: https://www.starbellysf.com/menus/
-drinks: yes 
+drinks: True
 visited: "2024-07-20"
 taste: 2
 value: 1
 instagram_published: False
+city: San Francisco
+place_id: ChIJs6YBYhx-j4AR4LUJq9SFQt0
 ---
 
 Steep,\*   

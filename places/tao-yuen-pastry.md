@@ -1,17 +1,19 @@
 ---
 name: Tao Yuen Pastry
 cuisine: Chinese
-drinks: false
-visited: "2022-09-05"
 address: 816 Franklin St
 area: Downtown Oakland
-taste: 2
-value: 3
 lat: 37.80003399472605
 lon: -122.27216344828447
-menu:
 phone: "+15108349200"
+menu: 
+drinks: False
+visited: "2022-09-05"
+taste: 2
+value: 3
 instagram_published: True
+city: Oakland
+place_id: ChIJCytsZraAj4ARoS1KzZHThRQ
 ---
 
 This place has an enormous selection of baked chinese goods, dim sum, and take-away dishes for cheap. I came here at a suggestion of a coworker I asked if they had anything vegan and they said "everything has meat". It was true, even the seemingly vegetarian dishes in the window had pork bits or something. 

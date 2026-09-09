@@ -1,17 +1,19 @@
 ---
 name: Pintoh Thai
 cuisine: Thai
-drinks: True
-visited: "2022-08-13"
 address: 1442 Franklin St
 area: Downtown Oakland
-taste: 2
-value: 2
 lat: 37.80451272227467
 lon: -122.2692369887248
-menu: https://www.pintohthai.com/menus/
 phone: "+15108232370"
+menu: https://www.pintohthai.com/menus/
+drinks: True
+visited: "2022-08-13"
+taste: 2
+value: 2
 instagram_published: True
+city: Oakland
+place_id: ChIJqfaSkbOAj4ARolGB3RQRx5E
 ---
 
 This is a Thai place that does a lot of the standards and other stuff, but with excellent quality. I got the **pad makuer**, a eggplant tofu dish, and it was so good. The tofu is perfectly fried, there's a ton of flavor, and everything is coated in this delicious (I think shallot??) oil. 

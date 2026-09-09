@@ -12,6 +12,8 @@ visited: "2022-09-10"
 taste: 3
 value: 1
 instagram_published: True
+city: San Francisco
+place_id: ChIJgUKoC5qAhYARe5vbWr2KljM
 ---
 
 Very cute Burmese restaurant in Richmond. A very energetic man (I believe the owner) directed us to the patio out the back where we sat in some marquees with some heaters.

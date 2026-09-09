@@ -12,6 +12,8 @@ visited: "2024-08-05"
 taste: 1
 value: 2
 instagram_published: False
+city: San Francisco
+place_id: ChIJT1vMouV_j4ARiVE3T76PVY8
 ---
 
 Good Middle Eastern place with all the stuff you want. I went too long ago before writing this review so **I don't remember** exactly what was good. But it was alright, I'd go back and eat again!

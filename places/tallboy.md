@@ -12,6 +12,8 @@ visited: "2025-03-02"
 taste: 2
 value: 1
 instagram_published: False
+city: Oakland
+place_id: ChIJL9oYg7N9hYARzZD4O4TfeDs
 ---
 
 Look, this place is just a good time if you want ot get a diner vibe while getting drunk. Almost everything is vegan. I would go as far as to say this is the best vegan establishment in the bay if it wasn't for the jello shots that contain gelatin for some god unknown reason. 

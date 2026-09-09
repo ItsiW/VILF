@@ -12,6 +12,8 @@ visited: "2024-10-24"
 taste: 1
 value: 1
 instagram_published: False
+city: San Francisco
+place_id: ChIJoejhta-AhYAREoYW3hkMUL4
 ---
 
 I know what you're thinking, Ethiopian food dive bar? What could go wrong? 

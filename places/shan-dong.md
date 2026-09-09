@@ -1,17 +1,19 @@
 ---
 name: Shan Dong
 cuisine: Chinese
-drinks: False
-visited: "2024-05-10"
 address: 328 10th St
 area: Downtown Oakland
-taste: 1
-value: 1
 lat: 37.80060394046323
 lon: -122.26999164686495
-menu: http://shandongoakland.com/p20/menu
 phone: "+15108392299"
+menu: http://shandongoakland.com/p20/menu
+drinks: False
+visited: "2024-05-10"
+taste: 1
+value: 1
 instagram_published: True
+city: Oakland
+place_id: ChIJDWHUxrWAj4ARP4aX5a3hCkE
 ---
 
 This is a Chinese place famous for its **hand pulled noodles**. I made a mistake by coming here alone, I get that there's a lot more to this place than what I ordered. I got the veggie chow mein (with hand pulled noodles). I just needed veggies, I was hung over. It was kinda just salty, but the noodle texture was great. It cost $19 after tips and tax.

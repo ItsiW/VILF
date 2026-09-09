@@ -12,6 +12,8 @@ visited: "2024-05-27"
 taste: 2
 value: 2
 instagram_published: False
+city: San Francisco
+place_id: ChIJ7021cTx-j4ARMsCzWEGEWDE
 ---
 
 From the name and outside, you might assume this is a generic and bad Middle Eastern place, but actually it's good AND quirky. You want to make your way to the back patio and eat out there with all the people going full hog on the shisha.

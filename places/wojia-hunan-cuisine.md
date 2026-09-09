@@ -7,11 +7,13 @@ lat: 37.8895871
 lon: -122.2983939
 phone: "+15105269088"
 menu: https://qmenu.us/#/vpot-restaurant-albany/menu/0/details
-drinks: false
+drinks: False
 visited: "2023-03-11"
 taste: 3
 value: 2
 instagram_published: True
+city: Albany
+place_id: ChIJ0eUdhi95hYARzm1xixjQzdM
 ---
 
 This is extremely tasty Chinese food. A lot of things are standards that are executed really well. My favourites are the **jelly noodles**, **stir-fried sour shredded potato**, **fungus with vinegar salad**, and the **chinese onion pancake** which is actually a loaf of bread.

@@ -12,6 +12,8 @@ visited: "2024-12-29"
 taste: 1
 value: 1
 instagram_published: False
+city: San Francisco
+place_id: ChIJn-6SQUl-j4AR0JTnYSvBTS0
 ---
 
 Are you hung over? Do you need an old-timey diner with unlimited coffee refills? St. Francis, among many other thing,  is the patron saint of stowaways. So check out what you can stow away in that big gob of yours.

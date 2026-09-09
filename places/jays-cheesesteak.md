@@ -12,6 +12,8 @@ visited: "2025-02-07"
 taste: 0
 value: 1
 instagram_published: False
+city: San Francisco
+place_id: ChIJc0h8hT5-j4ARagQN3BBxxIA
 ---
 
 If you want a mediocre impossible meat roll with some veggies in it, have I got the place for you. I imagine this is way better the drunker you get. That being said, I've had way better versions of this even when sober.

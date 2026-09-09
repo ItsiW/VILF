@@ -12,6 +12,8 @@ visited: "2025-06-14"
 taste: 0
 value: 1
 instagram_published: False
+city: San Francisco
+place_id: ChIJ9Td7gKKAhYARUdHJBJLRz3w
 ---
 
 We came to this wine bar before the symphony, in a very pre-symphony wine-drinking mood.

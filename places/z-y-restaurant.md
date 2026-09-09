@@ -12,6 +12,8 @@ visited: "2025-05-02"
 taste: 1
 value: 1
 instagram_published: False
+city: San Francisco
+place_id: ChIJmevPu_SAhYARMmQlHRt_Rj4
 ---
 
 First decent place in chinatown. Delicious oily **Sichuan food**. I've been lagging behind on writing reviews so I forgot what we specifically ordered and what was best, but everything was pretty flavorful. The mung been noodles were a little thick, so not my favorite.

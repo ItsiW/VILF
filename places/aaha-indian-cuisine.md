@@ -7,11 +7,13 @@ lat: 37.7635729
 lon: -122.42004
 phone: "+14158142049"
 menu: https://www.aahasfo.com/home/menus
-drinks: false
+drinks: False
 visited: "2023-08-08"
 taste: 0
 value: 1
 instagram_published: True
+city: San Francisco
+place_id: ChIJ6fStMq9_j4ARZRYtMVfHPK4
 ---
 
 Honestly, pretty lackluster South Indian food. You're better off at [Udupi](/places/udupi-palace.md).

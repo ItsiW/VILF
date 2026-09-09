@@ -12,6 +12,8 @@ visited: "2022-11-17"
 taste: 0
 value: 3
 instagram_published: True
+city: San Francisco
+place_id: ChIJb-2b7yJ-j4AR8WSRWTxojEw
 ---
 
 This is truly the place to go if you want a lot of food for not much money. I got a vegetable and a tofu taco. And they just pile on the toppings. It wasn't particularly amazing but it was definitely $8.30 and I over-tipped to get to that price.

@@ -12,6 +12,8 @@ visited: "2025-03-08"
 taste: 0
 value: 1
 instagram_published: False
+city: San Francisco
+place_id: ChIJ73guiQ73MhURXUofBQbpcAo
 ---
 
 Look, this is so many people's favorite vegan spot. While I personally thought there wasn't much to write home about, maybe I'm wrong on this one. I dunno. I think if you're vegan you'll end up going here anyway.

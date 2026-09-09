@@ -1,17 +1,19 @@
 ---
 name: UC Dessert
 cuisine: Chinese
-drinks: False
-visited: "2022-08-14"
 address: 388 9th St STE 159
 area: Downtown Oakland
-taste: 1
-value: 2
 lat: 37.8004609460194
 lon: -122.2717596864737
-menu: http://www.ucdessert.com/col.jsp?id=112
 phone: "+15109228857"
+menu: http://www.ucdessert.com/col.jsp?id=112
+drinks: False
+visited: "2022-08-14"
+taste: 1
+value: 2
 instagram_published: True
+city: Oakland
+place_id: ChIJabNpe7aAj4ARSeju0Lh3zVU
 ---
 
 UC is an adorable Chinese dessert shop. From their menu:

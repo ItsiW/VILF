@@ -12,6 +12,8 @@ visited: "2022-11-25"
 taste: 2
 value: 1
 instagram_published: True
+city: San Francisco
+place_id: ChIJYaQAhMR_j4ARhpWF0VZFsF0
 ---
 
 Ok someone please go verify this is actually vegan. I'm especially suspicious about the sauce. 

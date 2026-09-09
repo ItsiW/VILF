@@ -12,6 +12,8 @@ visited: "2024-05-30"
 taste: 2
 value: 2
 instagram_published: False
+city: San Francisco
+place_id: ChIJpeMuPjl_j4ARvvrDR0jRVb4
 ---
 
 If you've been living in the bay for any amount of time, you probably know Indian people who complain constantly that there's no good Indian food in the bay. Out of my own hubris, I'm going to say that this place is actually good. And before you come at me, please know that I racially profiled so many of the google reviews before deciding to go here and make this claim.

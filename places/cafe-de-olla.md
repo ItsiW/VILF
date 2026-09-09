@@ -7,11 +7,13 @@ lat: 37.7603749
 lon: -122.4188767
 phone: "+14156785150"
 menu: https://www.cafedeollasf.com/s/order?location=11eac77b3742234a85260cc47a2b63ac
-drinks: false
+drinks: False
 visited: "2023-07-26"
 taste: 2
 value: 2
 instagram_published: True
+city: San Francisco
+place_id: ChIJWdBIDbN_j4AREc9136UG6DA
 ---
 
 This is a fantastic place. They have vegan **tamales**, a few kinds including sometime some vegan specials. I think a few of the other options like the Memelas can be made vegan too. The salsas are top notch.

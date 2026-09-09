@@ -12,6 +12,8 @@ visited: "2022-10-04"
 taste: 2
 value: 1
 instagram_published: True
+city: Oakland
+place_id: ChIJC2nEFrKAj4ARn4YIvNx2qP4
 ---
 
 Nice ramen spot. I got the **veggie miso ramen** which they can make vegan. Toppings worked well. Lotus root can keep its status as most interesting vegetable shape, well done.

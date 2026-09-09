@@ -12,6 +12,8 @@ visited: "2023-10-15"
 taste: 1
 value: 1
 instagram_published: True
+city: Davis
+place_id: ChIJQdea5KkphYARr5CVfMQOdbg
 ---
 
 Decent Burmese place, not the most special though. We got a **mango and ginger salad** though which was pretty good.

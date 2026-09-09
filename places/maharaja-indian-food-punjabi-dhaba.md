@@ -12,6 +12,8 @@ visited: "2024-03-22"
 taste: 0
 value: 1
 instagram_published: True
+city: Lost Hills
+place_id: ChIJn-p77ZUR64ARQrik4-tLlVI
 ---
 
 Pretty bad roadside dhaba, cooked and served out of a truck and you pay at the gas station. But they accused my Indian friend of being Pakistani and that was pretty funny.

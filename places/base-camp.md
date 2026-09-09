@@ -12,6 +12,8 @@ visited: "2023-03-27"
 taste: 2
 value: 1
 instagram_published: True
+city: San Francisco
+place_id: ChIJOTpnUp1_j4ARrPGC7SLGFA4
 ---
 
 Pretty strong Nepalese restaurant. We got the **momos**, **cauliflower**, chow mein, **eggplant curry**, pumpkin curry, and some other stuff. Plenty of vegan things to go around. 

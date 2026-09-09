@@ -12,6 +12,8 @@ visited: "2025-07-04"
 taste: 0
 value: 1
 instagram_published: False
+city: San Francisco
+place_id: ChIJl2XEtSF-j4AR7gkhr14PD94
 ---
 
 Unfortunately quite middle of the road and a little pricy as the servings are small! Go to nearby [Himalayan Hub](/places/himalayan-hub) instead!

@@ -12,6 +12,8 @@ visited: "2023-04-27"
 taste: 0
 value: 0
 instagram_published: True
+city: San Francisco
+place_id: ChIJJUNWp-KBhYARWJ_lfQGK3CE
 ---
 
 Fancy schmancy all vegan restaurant. I think everything was fine but really didn't cut it, and it's kinda pretty pricey.

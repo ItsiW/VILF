@@ -12,6 +12,8 @@ visited: "2022-09-20"
 taste: 0
 value: 2
 instagram_published: True
+city: Oakland
+place_id: ChIJ7VWa_8mAj4ARR5FCF7y73S4
 ---
 
 This is a Hong Kong style cafe with Chinese lunches and Chinese-Western items like spaghetti and "Italian chicken". Given the name, I also wouldn't be surprised if it was a gambling den. It was exclusively populated by old Chinese men staring at the tv.

@@ -12,6 +12,8 @@ visited: "2024-10-27"
 taste: 1
 value: 2
 instagram_published: False
+city: San Francisco
+place_id: ChIJp4nrB6KAhYARhS8cKd1vZ5Q
 ---
 
 This place has a bunch of German beers and exactly two vegan options: mediocre fries and very good $10 **pickle jar**.

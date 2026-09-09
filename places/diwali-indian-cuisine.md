@@ -12,6 +12,8 @@ visited: "2025-06-15"
 taste: 2
 value: 2
 instagram_published: False
+city: San Francisco
+place_id: ChIJvfU3rUt_j4ARsfgMLoRcZ6s
 ---
 
 You can imagine my SHOCK when an Indian friend of mine stopped complaining and genuinely recommended a place to get Indian friend in San Francisco.

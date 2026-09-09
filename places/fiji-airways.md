@@ -7,7 +7,7 @@ lat: 37.72548842203713
 lon: -122.55555319127785
 phone: 
 menu: 
-drinks: true
+drinks: True
 visited: "2023-01-15"
 taste: 0
 value: 0

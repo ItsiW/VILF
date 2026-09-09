@@ -7,11 +7,13 @@ lat: 37.7495007
 lon: -122.4184218
 phone: "+14156425958"
 menu: https://www.oldjerusalem.co/menu/
-drinks: false
+drinks: False
 visited: "2023-01-21"
 taste: 2
 value: 2
 instagram_published: True
+city: San Francisco
+place_id: ChIJVXouvjt_j4AR7RumVBRBoOc
 ---
 
 Finally some great Palestinian food. They got all the hits. Big mix plate of stuff, **fried eggplant and cauliflower**, good **baba ganoush**, and a mix of ful and hummus called **qudsiah** which was excellent. Chips, pickles, everything was good. Excited to go back.

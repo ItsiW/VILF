@@ -12,6 +12,8 @@ visited: "2025-06-06"
 taste: 2
 value: 1
 instagram_published: True
+city: San Francisco
+place_id: ChIJmZN_ljx-j4ARF16HqVQ2vnI
 ---
 
 This Chinese restaurant has a bewildering and comforting vibe. The food is top notch. We got the **mapo tofu** (very good, but the tofu to sauce ratio was off), the **bacon and rice cakes** (without bacon), and the **taiwanese eggplant**. All of it was very tasty. Doesn't feel Americanized.

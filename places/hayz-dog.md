@@ -12,6 +12,8 @@ visited: "2025-06-17"
 taste: 0
 value: 1
 instagram_published: False
+city: San Francisco
+place_id: ChIJX13ssvGBhYARgmDcFfD7htM
 ---
 
 Mediocre hot dog place alert! You can get a field roast sausage cooked and put on a bun with some toppings for way too much money!

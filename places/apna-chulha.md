@@ -12,6 +12,8 @@ visited: "2025-08-23"
 taste: 0
 value: 1
 instagram_published: False
+city: San Francisco
+place_id: ChIJT4C7VAB_j4AR5Gyq7CfE9Ds
 ---
 
 Oh dear, no good. They somehow managed to bring us 3 wrong dishes (2 of which were not vegan). The chef had to come out and eye off our table to see what was going on.

@@ -12,6 +12,8 @@ visited: "2024-03-09"
 taste: 2
 value: 2
 instagram_published: True
+city: Millbrae
+place_id: ChIJP63mLeF3j4AR6NU9tCK9Rn8
 ---
 
 Excellent **biang biang noodles**. Got the plain garlic one with added tofu and spicy pickled veg. Also the **black fungus** was really good.

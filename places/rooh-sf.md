@@ -12,6 +12,8 @@ visited: "2025-03-05"
 taste: 0
 value: 0
 instagram_published: False
+city: San Francisco
+place_id: ChIJf16Ze3iAhYAR3Yx8zTAr8Ug
 ---
 
 Fancy Indian place made for the office crowd. They didn't have many vegan options, and of those they weren't that interesting. I'd give this a miss. Go to [Copra](/places/copra) instead. Lucky my work paid for this one.

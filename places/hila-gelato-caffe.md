@@ -12,6 +12,8 @@ visited: "2025-02-18"
 taste: 2
 value: 3
 instagram_published: False
+city: San Francisco
+place_id: ChIJ9xRXoM9_j4ARHJjH26TArjI
 ---
 
 Awesome **ice cream** place. The owner is this very funny Italian woman who clearly loves her job. She puts in a ton of effort to the vegan flavors, and does pretty experimental things. One time she made this cucumber sorbet.

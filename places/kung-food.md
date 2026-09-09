@@ -1,7 +1,7 @@
 ---
 name: Kung Food
 cuisine: Chinese
-address: 1615 McAllister St #4413
+address: "1615 McAllister St #4413"
 area: Lower Haight
 lat: 37.7776287
 lon: -122.4387394
@@ -12,6 +12,8 @@ visited: "2024-03-19"
 taste: 0
 value: 1
 instagram_published: True
+city: San Francisco
+place_id: ChIJ62R-rrGAhYARLRHf0KSkOd8
 ---
 
 Chicken was square,

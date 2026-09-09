@@ -1,17 +1,19 @@
 ---
 name: Gyu-Kaku
 cuisine: Japanese
-drinks: True
-visited: "2022-08-06"
 address: 459 8th St
 area: Downtown Oakland
-taste: 2
-value: 1
 lat: 37.80018093869602
 lon: -122.27415367417397
-menu: https://www.gyu-kaku.com/wp-content/uploads/2022/04/hh_hm_vegetarian2203.pdf
 phone: "+15103610117"
+menu: https://www.gyu-kaku.com/wp-content/uploads/2022/04/hh_hm_vegetarian2203.pdf
+drinks: True
+visited: "2022-08-06"
+taste: 2
+value: 1
 instagram_published: True
+city: Oakland
+place_id: ChIJBfY3DouBj4ARwz2aRZZ6IDw
 ---
 
 Edit: my friends went here and said it wasn't very good. So I should say that the following review was written when I was extremely hung over.

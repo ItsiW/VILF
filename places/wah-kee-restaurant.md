@@ -12,6 +12,8 @@ visited: "2022-11-26"
 taste: 0
 value: 2
 instagram_published: True
+city: San Francisco
+place_id: ChIJK3w6SyN-j4ARkG1MB72mSXA
 ---
 
 Do you ever wake up feeling you want a Mexicanized version of Americanized Chinese food? Well boy do I have the place for you.

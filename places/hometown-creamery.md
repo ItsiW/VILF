@@ -12,6 +12,8 @@ visited: "2023-09-15"
 taste: 2
 value: 2
 instagram_published: True
+city: San Francisco
+place_id: ChIJ8ZtakEqBhYARgfk3PwAlJ7s
 ---
 
 Yummy **chocolate sorbet**. They need more fruit flavors though. Pro move is chocolate+fruit. $6 with tax&tip for this scoop. But you can do two small scoops for about the same amount which is cute.

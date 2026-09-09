@@ -12,6 +12,8 @@ visited: "2025-05-09"
 taste: 0
 value: 0
 instagram_published: False
+city: San Francisco
+place_id: ChIJBZ2nB7GAhYAR1BUmlCHczaw
 ---
 
 This was one of the funniest foods I've ever had. Just plain tofu smothered in the most ridiculous amount of generic bbq sauce on a soft roll for $20. So sweet and bad.

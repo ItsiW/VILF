@@ -12,6 +12,8 @@ visited: "2024-03-09"
 taste: 1
 value: 2
 instagram_published: True
+city: Millbrae
+place_id: ChIJDdqQZ7B3j4AR62oV92RfUQQ
 ---
 
 Nice Malaysian place with a bunch of vegan options. We got the **char koay teow** and **salt and pepper eggplant** which were really good. Other stuff was ok.

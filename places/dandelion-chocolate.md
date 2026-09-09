@@ -12,6 +12,8 @@ visited: "2025-02-17"
 taste: 1
 value: 2
 instagram_published: False
+city: San Francisco
+place_id: ChIJ3d31Iz1-j4ARkwerSZRVQjM
 ---
 
 This is a chocolate place that makes expensive fancy chocolate and hot drinks. The best thing about it is that you get to **infinitely sample all the chocolates** while you wait in the line! And all the chocolate is vegan, just cacao and sugar. It's an adventure in the beans themselves, and they're very tasty.

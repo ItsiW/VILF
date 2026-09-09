@@ -12,6 +12,8 @@ visited: "2025-07-26"
 taste: 1
 value: 1
 instagram_published: False
+city: San Francisco
+place_id: ChIJm2mFbSp_j4ARSP5-tHpHLAU
 ---
 
 A new bar for the vegans. It is extremely cute and well executed.

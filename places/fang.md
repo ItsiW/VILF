@@ -12,6 +12,8 @@ visited: "2024-12-25"
 taste: 0
 value: 1
 instagram_published: False
+city: San Francisco
+place_id: ChIJsfbADX2AhYARso30kEbG2yc
 ---
 
 This Chinese SF institution is truly an institution. Not one with amazing vegan options, but nonetheless interesting for a big group.

@@ -1,17 +1,19 @@
 ---
 name: Golden Lotus
 cuisine: Vietnamese
-drinks: False
-visited: "2022-08-28"
 address: 1301 Franklin St
 area: Downtown Oakland
-taste: 1
-value: 1
 lat: 37.803377635118764
 lon: -122.27054229015248
-menu: https://www.goldenlotusvegan.co/menu
 phone: "+15108930383"
+menu: https://www.goldenlotusvegan.co/menu
+drinks: False
+visited: "2022-08-28"
+taste: 1
+value: 1
 instagram_published: True
+city: Oakland
+place_id: ChIJAa-cCLSAj4ARsqGqNdj8ZpE
 ---
 
 One of those Vegan Asian restaurants with everything on the menu. I got their **house clay pot rice**. It was a ton of carbs with some nice seasoning and veggies, a lot of ginger flavor. I paid $19 all up including tips and tax, so pricey for what it was.

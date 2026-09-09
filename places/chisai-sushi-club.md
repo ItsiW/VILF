@@ -12,6 +12,8 @@ visited: "2024-11-22"
 taste: 3
 value: 1
 instagram_published: False
+city: San Francisco
+place_id: ChIJ_97AsqZ_j4ARuSh83--j8B8
 ---
 
 This place is fucking awesome. If anyone recommends [Shizen](/places/shizen) for vegan sushi in SF, you should spit on them and send them here. They've got a **vegan yasai omakase** (like a bunch of tiny things one by one that they decide) which is so good. 

@@ -12,6 +12,8 @@ visited: "2022-11-15"
 taste: 1
 value: 1
 instagram_published: True
+city: San Francisco
+place_id: ChIJ8Xu9Nst_j4ARpyAx9_RoH5I
 ---
 
 Theoretically seemed like a great **falafel** place. They've got the big frier out the front and you can see them make them all fresh. They're crispy and green, but unfortunately a bit watery and bland inside. Also the salads must have been sitting out for quite a while. But still, it gets the job done.

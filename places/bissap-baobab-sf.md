@@ -12,6 +12,8 @@ visited: "2022-12-09"
 taste: 2
 value: 1
 instagram_published: True
+city: San Francisco
+place_id: ChIJfUASMXh_j4AR6qoReFQ7mP0
 ---
 
 Vibes are whacky and fun™. It's more of an event space than a restaurant, so great if you're looking to hear a band and sit at an indoor table under an umbrella.

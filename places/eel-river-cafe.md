@@ -12,6 +12,8 @@ visited: "2025-08-04"
 taste: 0
 value: 1
 instagram_published: False
+city: Garberville
+place_id: ChIJA_LC4qjs1FQRAJdDUKiyikM
 ---
 
 This review is to mark the occasion of a depressing breakfast had at a lovely cow-themed diner, an occasion shared with friends near Humboldt National Park.

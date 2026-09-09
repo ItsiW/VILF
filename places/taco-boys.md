@@ -12,6 +12,8 @@ visited: "2025-08-10"
 taste: 0
 value: 1
 instagram_published: False
+city: San Francisco
+place_id: ChIJPcL80Ed_j4AR_Ge4HY_p5UA
 ---
 
 Truly one of those places where you leave feeling far iller than when you entered. A heavyness and greasiness that's hard to beat.

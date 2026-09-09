@@ -12,6 +12,8 @@ visited: "2024-11-07"
 taste: 2
 value: 1
 instagram_published: False
+city: San Francisco
+place_id: ChIJjZ9co12HhYARj1fN3tL6WDo
 ---
 
 You know Ethiopian food. I don't exactly know the difference with this but it's very similar and very tasty and this is good even by Ethiopian food standards which is very high. $27 a head including tips and tax for the **vegetarian combo plate**.

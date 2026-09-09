@@ -12,6 +12,8 @@ visited: "2025-06-12"
 taste: 0
 value: 1
 instagram_published: False
+city: San Francisco
+place_id: ChIJVVXlLPh2hYAR20ALCmb9rC8
 ---
 
 Very fancy expensive Iranian wine bar. Very fortunately, my work was paying. 

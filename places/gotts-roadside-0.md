@@ -7,11 +7,13 @@ lat: 37.6115593
 lon: -122.389886
 phone: 
 menu: 
-drinks: true
+drinks: True
 visited: "2022-12-23"
 taste: 1
 value: 1
 instagram_published: True
+city: Millbrae
+place_id: ChIJd0wsfpd3j4ARmlmp9gVwSH8
 ---
 
 As a wise friend once told me, time and calories don't exist in the airport. 

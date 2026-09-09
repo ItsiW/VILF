@@ -12,6 +12,8 @@ visited: "2025-06-13"
 taste: 0
 value: 2
 instagram_published: False
+city: San Francisco
+place_id: ChIJtTnbEjyHhYAROnHF5Th1tls
 ---
 
 My friends love this place, and so I am almost compelled to write a good review. But dear readers, I will not cave so easily, I will stay true to my judgement. I will bear the wrath and indignation of my friends.

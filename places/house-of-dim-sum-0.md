@@ -12,6 +12,8 @@ visited: "2022-11-12"
 taste: 0
 value: 1
 instagram_published: True
+city: San Francisco
+place_id: ChIJWf04XbZ_j4ARJ02eyYyaheE
 ---
 
 Little dim sum restaurant. They've actually got a few vegan items, we got spinach steamed dumplings, and spinach dumpling steamed buns, along with some red bean buns.

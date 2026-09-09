@@ -7,11 +7,13 @@ lat: 37.897628
 lon: -122.639645
 phone: "+14158681272"
 menu: https://www.parksidecafe.com/menu-snackbar
-drinks: false
+drinks: False
 visited: "2023-02-18"
 taste: 1
 value: 1
 instagram_published: True
+city: Stinson Beach
+place_id: ChIJLcqjjc2ThYARlNMJcJ0c82s
 ---
 
 Did you end up on Stinson Beach? You ccan get some **firecracker fries** with too much bbq sauce. huzzah.

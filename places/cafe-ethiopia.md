@@ -12,6 +12,8 @@ visited: "2024-02-23"
 taste: 1
 value: 2
 instagram_published: True
+city: San Francisco
+place_id: ChIJYRFpsj1-j4ARPjbLAGal4a0
 ---
 
 Good objectively because all Ethiopian food is. But not as good as other Ethiopian places.

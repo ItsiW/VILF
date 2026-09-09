@@ -12,6 +12,8 @@ visited: "2022-11-19"
 taste: 0
 value: 1
 instagram_published: True
+city: San Francisco
+place_id: ChIJ9z0VIj1-j4ARX0AIXi5qEQE
 ---
 
 I always feel bad saying this about vegan restaurants but this place really isn't it. We tried a wide variety of dishes and they were all a bit flavorless. Some of the sushi rolls were ok.

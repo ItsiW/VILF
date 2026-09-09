@@ -7,11 +7,13 @@ lat: 37.7652621
 lon: -122.4184359
 phone: "+14156216108"
 menu: https://chilelindo.com/empanadas/
-drinks: false
+drinks: False
 visited: "2023-03-04"
 taste: 0
 value: 1
 instagram_published: True
+city: San Francisco
+place_id: ChIJ0yEpgCR-j4AR8-ZeInClevc
 ---
 
 Very cute empanada store. They have one vegan option for $7.50. It's ok! The salsa is nice.
