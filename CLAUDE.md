@@ -22,7 +22,7 @@ python3 -m http.server 8080 --directory build   # serve locally; use localhost, 
 ./vilf spatula --place-id ChIJ... --photo ~/photo.jpg   # skip the search; drop the photo into raw/food/<slug>.jpg
 ./vilf check --contact --fix places/*.md # compare (and correct) address/coords/phone/website against Google
 ./vilf enrich                            # link reviews without a place_id (nearest match within 150 m), fill city
-./vilf audit --delete                    # delete permanently closed reviews + photos; report temporary closures
+./vilf audit --mark-closed               # flag permanently closed reviews (closed: True); report temporary closures
 uv run python -m scripts.places 'query' --details   # raw API lookup for debugging
 ```
 
@@ -33,7 +33,7 @@ Nix users get a dev shell via `nix develop` (direnv through `.envrc`); its pre-c
 `schema.py` is the single source of truth: the ordered field list, rating labels and colours, `load_place`, `validate_place`, `validate_unique`, `dump_frontmatter`, `write_place`. Every command reads and writes place files through it, so files stay in canonical key order with `True`/`False` booleans and quoted `visited`/`phone`.
 
 ```yaml
-name, cuisine, address, area, lat, lon, phone, menu, drinks, visited, taste, value, instagram_published, city, place_id, website
+name, cuisine, address, area, lat, lon, phone, menu, drinks, visited, taste, value, instagram_published, city, place_id, website, closed
 ```
 
 - Required: name, cuisine, address, area, lat, lon, drinks, visited, taste, value. The rest are optional; `city`, `place_id` and `website` are only written when set. `website` is Google's homepage URL and is only a fallback: the page's single "Menu" link points at `menu`, or at `website` when there is no menu link. Never render a separate website link.
@@ -59,7 +59,7 @@ Templates in `html/` extend `base.html` (nav, CSS, deferred Google Analytics, an
 ## Google Places integration
 
 - `scripts/places.py`: thin client for Places API (New). `search_text` (Bay Area location bias) and `get_place`, `parse_place` into a `Place` dataclass, E.164 phones, `distance_m`. Field masks are explicit because billing follows the priciest field: `CORE_FIELDS` is Pro tier (id, name, address components, location, business status, Maps URL); `CONTACT_FIELDS` adds phone, website, hours and is Enterprise tier. Only request CONTACT when the caller asked for it. Free monthly quotas dwarf this site's volume.
-- `scripts/spatula.py` (new reviews), `scripts/cross_reference.py` (`check`), `scripts/enrich.py`, `scripts/audit.py`, `scripts/auditlog.py` build on it. `check --fix` never changes names, keeps unit/suite details in addresses (`same_street`), and rounds coordinates to 7 decimals. `audit --delete` removes only `CLOSED_PERMANENTLY` places.
+- `scripts/spatula.py` (new reviews), `scripts/cross_reference.py` (`check`), `scripts/enrich.py`, `scripts/audit.py`, `scripts/auditlog.py` build on it. `check --fix` never changes names, keeps unit/suite details in addresses (`same_street`), and rounds coordinates to 7 decimals. `audit --mark-closed` sets `closed: True` on `CLOSED_PERMANENTLY` places; the build keeps their page with a banner and drops them from the map, lists and llms.txt. Never delete reviews.
 - Tests never hit the network: fixtures in `tests/fixtures/places/` and an autouse guard on `places._request`.
 
 ## Other scripts

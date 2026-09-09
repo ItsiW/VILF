@@ -67,7 +67,7 @@ def test_constants():
     assert KNOWN_KEYS == [
         "name", "cuisine", "address", "area", "lat", "lon", "phone", "menu",
         "drinks", "visited", "taste", "value", "instagram_published",
-        "city", "place_id", "website",
+        "city", "place_id", "website", "closed",
     ]
     required = {f.name for f in FIELDS if f.required}
     assert required == {

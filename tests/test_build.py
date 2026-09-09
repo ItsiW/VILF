@@ -19,7 +19,7 @@ PLACE_ERROR = re.compile(r"^.+\.md( |$)")
 PLACES_JSON_KEYS = {
     "name", "slug", "url", "cuisine", "area", "city", "address", "lat", "lon",
     "taste", "taste_label", "value", "value_label", "drinks", "visited", "modified",
-    "phone", "menu", "website", "image",
+    "phone", "menu", "website", "image", "closed",
 }
 
 
@@ -48,17 +48,25 @@ def test_build_outputs_exist(build_result):
     assert list(build.glob("places/*/index.html"))
 
 
+def open_slugs():
+    from scripts.schema import load_place
+
+    return [p.stem for p in sorted((REPO_ROOT / "places").glob("*.md")) if not load_place(p)[0].get("closed")]
+
+
 def test_geojson_feature_count_matches_places(build_result):
+    # every review gets a page; only open ones are on the map
     n_md = len(list((REPO_ROOT / "places").glob("*.md")))
     n_built = len(list((REPO_ROOT / "build").glob("places/*/index.html")))
     features = json.loads((REPO_ROOT / "build" / "places.geojson").read_text())["features"]
-    assert len(features) == n_built == n_md
+    assert n_built == n_md
+    assert len(features) == len(open_slugs())
 
 
 def test_llms_txt_lists_every_place(build_result):
     text = (REPO_ROOT / "build" / "llms.txt").read_text(encoding="utf-8")
     assert text.startswith("# Vegans In Love with Food")
-    for slug in place_slugs():
+    for slug in open_slugs():
         assert f"{SITE_URL}/places/{slug}/" in text, slug
 
 
@@ -285,3 +293,28 @@ def test_menu_link_fallback_and_git_dates(tmp_path):
     links = re.search(r'<p class="restaurant-links">(.*?)</p>', web_only).group(1)
     assert '<a href="https://example.org" target="_blank">Menu</a>' in links
     assert "|" not in links and "Website" not in links and "tel:" not in links
+
+
+def test_closed_place_keeps_page_but_leaves_lists(tmp_path):
+    closed = (
+        PLACE.replace("name: Test Place", "name: Gone Place")
+        .replace("lat: 37.76\n", "lat: 37.70\n")
+        .replace("instagram_published: False\n", "instagram_published: False\nclosed: True\n")
+        .replace("Get the **pad thai**.", "It had a great **larb** once.")
+    )
+    result = build_in_tmp_repo(tmp_path, {"test-place.md": PLACE, "gone-place.md": closed})
+    assert result.exit_code == 0, result.output
+    assert "1 open, 1 closed" in result.output
+    build = tmp_path / "build"
+    page = (build / "places" / "gone-place" / "index.html").read_text()
+    assert "Permanently closed." in page
+    assert "Permanently closed." not in (build / "places" / "test-place" / "index.html").read_text()
+    features = json.loads((build / "places.geojson").read_text())["features"]
+    assert [f["properties"]["name"] for f in features] == ["Test Place"]
+    best = (build / "best" / "index.html").read_text()
+    assert "Test Place" in best and "Gone Place" not in best
+    assert "Gone Place" not in (build / "llms.txt").read_text()
+    data = {p["slug"]: p for p in json.loads((build / "places.json").read_text())}
+    assert data["gone-place"]["closed"] is True and data["test-place"]["closed"] is False
+    assert "- Status: permanently closed" in (build / "places" / "gone-place.md").read_text()
+    assert "/places/gone-place/" in (build / "sitemap.xml").read_text()

@@ -192,8 +192,8 @@ All of these need `GOOGLE_PLACES_API_KEY` in `.env` (see Setup). Every run of `a
 ```bash
 ./vilf enrich                          # link reviews that lack a place_id (nearest Google match within 150 m); fills city
 ./vilf check --contact --fix places/*.md   # pull Google's phone, website, coordinates and street into files with a place_id
-./vilf audit --delete                  # remove reviews Google marks permanently closed (and their raw/food photo)
+./vilf audit --mark-closed             # set closed: True on reviews Google marks permanently closed
 ```
 
-`check --fix` never changes a restaurant's name and keeps unit or suite details you recorded; `audit --delete` only deletes permanently closed places and reports temporary closures. Two reviews are deliberately unlinked and will always show up as "without a place_id": `fiji-airways` (a joke entry) and `boba-binge` (the branch reviewed no longer exists on Maps).
+`check --fix` never changes a restaurant's name and keeps unit or suite details you recorded; `audit --mark-closed` only flags permanently closed places (their page stays online with a banner, out of the map and lists) and reports temporary closures. Two reviews are deliberately unlinked and will always show up as "without a place_id": `fiji-airways` (a joke entry) and `boba-binge` (the branch reviewed no longer exists on Maps).
 

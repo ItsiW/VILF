@@ -226,7 +226,7 @@ def test_audit_bad_files_do_not_abort(tmp_path, monkeypatch):
     i = lines.index("Could not check (1):")
     # the multi-line YAML error is collapsed onto the one line for that place
     assert lines[i + 1].startswith("  bad-yaml: ") and "flow sequence" in lines[i + 1]
-    assert lines[i + 2] == "2 places audited, 0 without a place_id (cannot be audited)."
+    assert lines[i + 2] == "2 places audited, 0 without a place_id (cannot be audited), 0 already marked closed (skipped)."
 
 
 def test_audit_all_operational(tmp_path, monkeypatch):
@@ -237,7 +237,7 @@ def test_audit_all_operational(tmp_path, monkeypatch):
     assert "All 1 audited places are OPERATIONAL." in result.output
 
 
-# --- check --fix, audit --delete, audit log ---
+# --- check --fix, audit --mark-closed, audit log ---
 
 
 def repo_layout(tmp_path):
@@ -279,32 +279,43 @@ def test_check_fix_keeps_name_and_skips_unlinked(tmp_path, monkeypatch):
     assert "1 fixed" in result.output and "1 still flagged" in result.output
 
 
-def test_audit_delete_removes_closed_review_and_photo(tmp_path, monkeypatch):
+def test_audit_mark_closed_sets_flag_and_skips_next_time(tmp_path, monkeypatch):
     repo, places_dir = repo_layout(tmp_path)
     write(places_dir, "open", place_id="A")
     write(places_dir, "closed", name="Shuttered Vegan Diner", place_id="B")
     write(places_dir, "temp", name="Temp Cafe", place_id="C")
     (repo / "raw" / "food" / "closed.jpg").write_bytes(b"jpg")
-    (repo / "raw" / "food" / "open.jpg").write_bytes(b"jpg")
     responses = {
         "A": place_with_status("OPERATIONAL"),
         "B": parse_place(load("details_closed.json")),
         "C": place_with_status("CLOSED_TEMPORARILY"),
     }
-    monkeypatch.setattr(audit, "get_place", lambda place_id, fields=None: responses[place_id])
-    result = runner.invoke(audit_places, ["--directory", str(places_dir), "--delete"])
+    calls = []
+
+    def fake_get(place_id, fields=None):
+        calls.append(place_id)
+        return responses[place_id]
+
+    monkeypatch.setattr(audit, "get_place", fake_get)
+    result = runner.invoke(audit_places, ["--directory", str(places_dir), "--mark-closed"])
     assert result.exit_code == 0, result.output
     assert "No previous audit logged." in result.output
-    assert "Deleted 1 permanently closed place(s): closed" in result.output
-    assert not (places_dir / "closed.md").exists() and not (repo / "raw" / "food" / "closed.jpg").exists()
-    assert (places_dir / "temp.md").exists() and (places_dir / "open.md").exists()
-    assert (repo / "raw" / "food" / "open.jpg").exists()
+    assert "Marked 1 place(s) closed: closed" in result.output
+    meta, body = cross_reference.load_place(places_dir / "closed.md")
+    assert meta["closed"] is True and body == "\n**Dish**\n"
+    assert (places_dir / "closed.md").read_text().count("closed: True") == 1
+    assert cross_reference.load_place(places_dir / "temp.md")[0]["closed"] is False
+    assert "closed: " not in (places_dir / "open.md").read_text()  # False is not written
+    assert (repo / "raw" / "food" / "closed.jpg").exists()  # nothing deleted
     log = (repo / "AUDIT_LOG.md").read_text()
-    assert "audit: 3 audited, 0 without place_id; permanently closed: closed (deleted); temporarily closed: temp" in log
-    # a second run reports the previous audit
+    assert "audit: 3 audited, 0 without place_id; permanently closed: closed (marked closed); temporarily closed: temp" in log
+    # a second run skips the closed one without an API call and reports the previous audit
+    calls.clear()
     result = runner.invoke(audit_places, ["--directory", str(places_dir), "--no-log"])
     assert "Last audit: " in result.output and "(0 days ago)" in result.output
-    assert log == (repo / "AUDIT_LOG.md").read_text()  # --no-log appended nothing
+    assert "2 places audited, 0 without a place_id (cannot be audited), 1 already marked closed" in result.output
+    assert "B" not in calls
+    assert log == (repo / "AUDIT_LOG.md").read_text()
 
 
 def test_auditlog_last(tmp_path):

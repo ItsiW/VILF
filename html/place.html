@@ -176,6 +176,9 @@
 {% block content %}
 <section class="content">
   <h1 class="name">{{ name }}</h1>
+  {% if closed %}
+  <p class="closed-banner"><b class="dnr">Permanently closed.</b> This review is kept for the record; the restaurant is no longer open.</p>
+  {% endif %}
   <p class="address"><a href="geo://?q={{ geodata }}">{{ address }}, <b>{{ area }}</b></a></p>
   <p class="cuisine"><a href="/cuisines/{{ cuisine.lower().replace(' ','-') }}/">{{ cuisine }} food</a></p>
   <p class="restaurant-links">

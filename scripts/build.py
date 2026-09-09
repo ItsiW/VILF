@@ -373,6 +373,12 @@ def build_vilf() -> None:
         print(f"Build failed: {len(problems)} uniqueness problem(s)")
         raise SystemExit(1)
 
+    # Closed places keep their page (with a banner) but stay out of the map, the
+    # best/latest/cuisine/neighborhood lists and llms.txt.
+    all_places = places
+    places = [place for place in all_places if not place.get("closed")]
+    print(f"{len(places)} open, {len(all_places) - len(places)} closed")
+
     geojson_keys = [
         "name",
         "cuisine",
@@ -634,7 +640,8 @@ def build_vilf() -> None:
             f"- Value: {place['value_label']}\n"
             f"- Booze: {place['drinks_label']}\n"
             f"- Last visited: {place['visited_display']}\n"
-            f"- {place['verdict']}\n"
+            + ("- Status: permanently closed\n" if place.get("closed") else "")
+            + f"- {place['verdict']}\n"
             "\n"
             f"{place['md']}\n"
         )
@@ -671,7 +678,7 @@ def build_vilf() -> None:
         encoding="utf-8",
     )
 
-    for place in places:
+    for place in all_places:
         (build_dir / "places" / f"{place['slug']}.md").write_text(
             place_markdown(place, "#"), encoding="utf-8"
         )
@@ -680,6 +687,7 @@ def build_vilf() -> None:
         {
             "name": place["name"],
             "slug": place["slug"],
+            "closed": bool(place.get("closed")),
             "url": f"{SITE_URL}{place['url']}",
             "cuisine": place["cuisine"],
             "area": place["area"],
@@ -703,7 +711,7 @@ def build_vilf() -> None:
                 else None
             ),
         }
-        for place in sorted(places, key=lambda item: item["name"].lower())
+        for place in sorted(all_places, key=lambda item: item["name"].lower())
     ]
     (build_dir / "places.json").write_text(
         json.dumps(places_json, indent=1, ensure_ascii=False), encoding="utf-8"

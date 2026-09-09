@@ -2,7 +2,6 @@
 The `audit` command: which reviewed places does Google no longer list as OPERATIONAL?
 """
 
-import subprocess
 from datetime import date
 from pathlib import Path
 
@@ -12,7 +11,7 @@ from tqdm.auto import tqdm
 
 from . import auditlog
 from .places import PlacesError, get_place
-from .schema import load_place
+from .schema import load_place, write_place
 
 BUCKET = {
     "CLOSED_PERMANENTLY": "Permanently closed",
@@ -20,25 +19,11 @@ BUCKET = {
 }
 
 
-def remove_tracked(path: Path) -> None:
-    """Delete a file, through git when it is tracked so the deletion is staged."""
-    try:
-        subprocess.run(
-            ["git", "rm", "-q", "--", str(path.resolve())], check=True, capture_output=True, cwd=path.resolve().parent
-        )
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        path.unlink(missing_ok=True)
-
-
-def delete_place(path: Path) -> list[Path]:
-    """Remove a review and its raw photo (raw/food/<slug>.jpg next to places/)."""
-    removed = [path]
-    photo = path.resolve().parent.parent / "raw" / "food" / f"{path.stem}.jpg"
-    if photo.exists():
-        removed.append(photo)
-    for item in removed:
-        remove_tracked(item)
-    return removed
+def set_closed(path: Path) -> None:
+    """Set closed: True on a review; the build keeps its page but drops it from the map and lists."""
+    meta, body = load_place(path)
+    meta["closed"] = True
+    write_place(path, meta, body)
 
 
 @click.command()
@@ -50,13 +35,13 @@ def delete_place(path: Path) -> list[Path]:
     help="Directory of place files to audit.",
 )
 @click.option(
-    "--delete",
+    "--mark-closed",
     is_flag=True,
-    help="Delete reviews (and their raw/food photo) that Google marks CLOSED_PERMANENTLY. "
-    "Temporarily closed places are only reported.",
+    help="Set closed: True on reviews Google marks CLOSED_PERMANENTLY (page stays online with a "
+    "banner, out of the map and lists). Temporarily closed places are only reported.",
 )
 @click.option("--log/--no-log", default=True, show_default=True, help="Append a line to AUDIT_LOG.md.")
-def audit_places(directory, delete, log):
+def audit_places(directory, mark_closed, log):
     """Report reviewed places Google no longer lists as OPERATIONAL.
 
     One Pro-tier Place Details call per file that has a place_id (a few hundred
@@ -78,6 +63,7 @@ def audit_places(directory, delete, log):
         "Could not check": [],
     }
     no_id = 0
+    already_closed = 0
     audited = 0
     # disable=None: the bar only shows on a TTY, so tests and CI logs stay clean
     for path in tqdm(files, desc="auditing places", disable=None):
@@ -86,6 +72,9 @@ def audit_places(directory, delete, log):
         except (ValueError, yaml.YAMLError) as e:
             # YAML errors span several lines; keep one line per place
             groups["Could not check"].append(f"{path.stem}: {' '.join(str(e).split())}")
+            continue
+        if meta.get("closed"):
+            already_closed += 1
             continue
         if not meta.get("place_id"):
             no_id += 1
@@ -111,21 +100,22 @@ def audit_places(directory, delete, log):
                 click.echo("  " + line)
     if audited and not any(groups.values()):
         click.echo(f"All {audited} audited places are OPERATIONAL.")
-    click.echo(f"{audited} places audited, {no_id} without a place_id (cannot be audited).")
+    click.echo(
+        f"{audited} places audited, {no_id} without a place_id (cannot be audited), "
+        f"{already_closed} already marked closed (skipped)."
+    )
 
-    deleted = []
-    if delete and closed_paths:
+    if mark_closed and closed_paths:
         for path in closed_paths:
-            deleted.extend(delete_place(path))
-        click.echo(f"Deleted {len(closed_paths)} permanently closed place(s): "
-                   + ", ".join(p.stem for p in closed_paths))
+            set_closed(path)
+        click.echo(f"Marked {len(closed_paths)} place(s) closed: " + ", ".join(p.stem for p in closed_paths))
 
     if log:
         slugs = lambda key: ", ".join(line.split(":")[0] for line in groups[key]) or "none"
         summary = (
             f"{audited} audited, {no_id} without place_id; "
             f"permanently closed: {slugs('Permanently closed')}"
-            + (" (deleted)" if delete and closed_paths else "")
+            + (" (marked closed)" if mark_closed and closed_paths else "")
             + f"; temporarily closed: {slugs('Temporarily closed')}"
         )
         if groups["Could not check"]:

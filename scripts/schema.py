@@ -41,17 +41,14 @@ FIELDS: list[Field] = [
     Field("city", "str", False, "new; city name, not yet used by the build"),
     Field("place_id", "str", False, "new; Google Places ID"),
     Field("website", "url", False, "new; restaurant website, http(s)"),
+    Field("closed", "bool", False, "default False; True keeps the page online with a Closed banner, out of the map and lists"),
 ]
 
 KNOWN_KEYS = [f.name for f in FIELDS]
 REQUIRED_KEYS = [f.name for f in FIELDS if f.required]
-DEFAULTS = {
-    f.name: (False if f.name == "instagram_published" else None)
-    for f in FIELDS
-    if not f.required
-}
+DEFAULTS = {f.name: (False if f.type == "bool" else None) for f in FIELDS if not f.required}
 # The three keys added in 2026 are only written when set, so old files keep their shape.
-_ALWAYS_WRITTEN = frozenset(KNOWN_KEYS) - {"city", "place_id", "website"}
+_ALWAYS_WRITTEN = frozenset(KNOWN_KEYS) - {"city", "place_id", "website", "closed"}
 _ALWAYS_QUOTED = frozenset({"visited", "phone"})
 
 TASTE_LABELS = ["DNR", "SGFI", "Good", "Phenomenal"]
@@ -210,7 +207,7 @@ def dump_frontmatter(meta: dict) -> str:
     lines = []
     for name in KNOWN_KEYS:
         v = meta.get(name)
-        if name not in _ALWAYS_WRITTEN and v is None:
+        if name not in _ALWAYS_WRITTEN and (v is None or v is False):
             continue
         lines.append(f"{name}: {_scalar(name, v)}")
     return "\n".join(lines) + "\n"
