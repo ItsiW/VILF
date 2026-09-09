@@ -97,7 +97,7 @@ Type a name and city, or paste a Google Maps URL. An unambiguous search goes str
 
 - `./vilf spatula -s 'Lion Dance Cafe Oakland'` skips the search prompt.
 - `./vilf spatula --place-id ChIJ...` skips the search entirely.
-- Phone and website are fetched too by default (one Enterprise-tier call per new review); `--no-details` skips that.
+- Phone and website are fetched too by default (one Enterprise-tier call per new review); `--no-details` skips that. The website is only used as the Menu link's fallback when the review has no menu link.
 
 It then asks for `cuisine`, `area` (defaults to the city, but use a neighborhood), `drinks`, `taste`, `value` and `visited` (defaults to today), writes `places/<slug>.md` with a `<REVIEW>` placeholder and prints what is still to do. Normally that is just "write the review and bold a dish":
 

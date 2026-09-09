@@ -14,7 +14,7 @@ value: 0
 instagram_published: True
 city: San Francisco
 place_id: ChIJ0yhhzriAhYAR-2lnzuizNZM
-website: https://hinodeyaramen.com/hinodeyaramenjapantown?utm_source=google
+website: https://hinodeyaramen.com/hinodeyaramenjapantown
 ---
 
 This ramen tasted like breakfast. It was a soy milk base... and it kinda just tasted like soymilk. All the elements didn't really jive together even though they all seemed nice on their own. I have never in my life just left half a meal there. Two of us couldn't finish the bowl... it was just not good.

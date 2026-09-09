@@ -36,7 +36,7 @@ Nix users get a dev shell via `nix develop` (direnv through `.envrc`); its pre-c
 name, cuisine, address, area, lat, lon, phone, menu, drinks, visited, taste, value, instagram_published, city, place_id, website
 ```
 
-- Required: name, cuisine, address, area, lat, lon, drinks, visited, taste, value. The rest are optional; `city`, `place_id` and `website` are only written when set.
+- Required: name, cuisine, address, area, lat, lon, drinks, visited, taste, value. The rest are optional; `city`, `place_id` and `website` are only written when set. `website` is Google's homepage URL and is only a fallback: the page's single "Menu" link points at `menu`, or at `website` when there is no menu link. Never render a separate website link.
 - `taste` and `value` are integers 0–3. Taste labels: DNR / SGFI / Good / Phenomenal. Value labels: Bad / Fine / Good / Phenomenal.
 - `phone` is `+1` plus 10 digits or empty. `menu` and `website` must start with http(s). `visited` is a quoted ISO date.
 - If `taste >= 1` the body must bold at least one dish with `**...**`; the bolded dishes feed meta descriptions and alt text.

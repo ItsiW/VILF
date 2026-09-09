@@ -260,14 +260,15 @@ WEB_ONLY = (
 )
 
 
-def test_website_link_and_git_fallback(tmp_path):
+def test_menu_link_fallback_and_git_dates(tmp_path):
     result = build_in_tmp_repo(tmp_path, {"test-place.md": PLACE_WITH_LINKS, "web-only.md": WEB_ONLY})
     assert result.exit_code == 0, result.output
     page = (tmp_path / "build" / "places" / "test-place" / "index.html").read_text(encoding="utf-8")
+    # menu present: the Menu link goes to the menu page; there is never a separate Website link
     assert (
-        'Menu</a> | <a href="https://example.com" target="_blank" rel="noopener">Website</a>'
-        ' | <a href="tel:+14155551234">'
+        '<a href="https://example.com/menu" target="_blank">Menu</a> | <a href="tel:+14155551234">'
     ) in re.sub(r"\s+", " ", page)
+    assert "Website</a>" not in page
     blocks = ld_blocks(page)
     assert blocks["Restaurant"]["sameAs"] == "https://example.com"
     # tmp_path is not a git repo, so `modified` falls back to the visited date everywhere
@@ -279,8 +280,8 @@ def test_website_link_and_git_fallback(tmp_path):
     data = {entry["slug"]: entry for entry in json.loads((tmp_path / "build" / "places.json").read_text())}
     assert data["test-place"]["modified"] == "2024-03-31"
     assert data["web-only"]["modified"] == "2024-04-01"
-    # a website with no menu and no phone gets a bare link, no separators
+    # no menu: the Menu link falls back to the website; no phone, so no separators
     web_only = re.sub(r"\s+", " ", (tmp_path / "build" / "places" / "web-only" / "index.html").read_text())
     links = re.search(r'<p class="restaurant-links">(.*?)</p>', web_only).group(1)
-    assert '<a href="https://example.org" target="_blank" rel="noopener">Website</a>' in links
-    assert "|" not in links and "Menu" not in links and "tel:" not in links
+    assert '<a href="https://example.org" target="_blank">Menu</a>' in links
+    assert "|" not in links and "Website" not in links and "tel:" not in links

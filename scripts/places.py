@@ -18,6 +18,7 @@ import re
 import sys
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
+from urllib.parse import urlsplit, urlunsplit
 
 import requests
 from dotenv import load_dotenv
@@ -105,6 +106,15 @@ def _e164(international: str | None, national: str | None) -> str | None:
     return None
 
 
+def clean_url(url: str | None) -> str | None:
+    """Drop utm_* tracking parameters Google appends to websiteUri (e.g. ?utm_source=google)."""
+    if not url:
+        return None
+    parts = urlsplit(url)
+    query = "&".join(kv for kv in parts.query.split("&") if kv and not kv.lower().startswith("utm_"))
+    return urlunsplit((parts.scheme, parts.netloc, parts.path, query, parts.fragment))
+
+
 def parse_place(data: dict) -> Place:
     """Map one Places API place object onto a Place. Pure; never touches the network."""
     comps = data.get("addressComponents", [])
@@ -131,7 +141,7 @@ def parse_place(data: dict) -> Place:
         lat=loc.get("latitude"),
         lon=loc.get("longitude"),
         phone=_e164(data.get("internationalPhoneNumber"), data.get("nationalPhoneNumber")),
-        website=data.get("websiteUri"),
+        website=clean_url(data.get("websiteUri")),
         business_status=data.get("businessStatus"),
         maps_url=data.get("googleMapsUri"),
         hours=(data.get("regularOpeningHours") or {}).get("weekdayDescriptions") or None,

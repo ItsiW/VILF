@@ -14,7 +14,7 @@ value: 1
 instagram_published: False
 city: San Francisco
 place_id: ChIJVVXlLPh2hYAR20ALCmb9rC8
-website: https://komaaj.com/?utm_source=google
+website: https://komaaj.com/
 ---
 
 Very fancy expensive Iranian wine bar. Very fortunately, my work was paying. 

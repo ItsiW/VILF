@@ -14,7 +14,7 @@ value: 2
 instagram_published: True
 city: Millbrae
 place_id: ChIJDdqQZ7B3j4AR62oV92RfUQQ
-website: https://smorefood.com/order-online/ipoh-garden-malaysian-cuisine-millbrae-94030-kv9ifbyu?utm_source=gmb&utm_medium=website
+website: https://smorefood.com/order-online/ipoh-garden-malaysian-cuisine-millbrae-94030-kv9ifbyu
 ---
 
 Nice Malaysian place with a bunch of vegan options. We got the **char koay teow** and **salt and pepper eggplant** which were really good. Other stuff was ok.

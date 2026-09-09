@@ -194,3 +194,12 @@ def test_non_2xx_raises_with_api_message(monkeypatch, tmp_path):
     monkeypatch.setattr(places.requests, "request", fake_502)
     with pytest.raises(PlacesError, match="502.*Bad Gateway"):
         get_place("abc")
+
+
+def test_clean_url_strips_tracking_parameters():
+    from scripts.places import clean_url
+
+    assert clean_url("https://x.com/oakland?utm_source=google") == "https://x.com/oakland"
+    assert clean_url("https://x.com/menu?page=2&utm_medium=cpc#top") == "https://x.com/menu?page=2#top"
+    assert clean_url("https://x.com/") == "https://x.com/"
+    assert clean_url(None) is None

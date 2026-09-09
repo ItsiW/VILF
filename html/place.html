@@ -179,16 +179,11 @@
   <p class="address"><a href="geo://?q={{ geodata }}">{{ address }}, <b>{{ area }}</b></a></p>
   <p class="cuisine"><a href="/cuisines/{{ cuisine.lower().replace(' ','-') }}/">{{ cuisine }} food</a></p>
   <p class="restaurant-links">
-    {% if menu %}
-    <a href="{{ menu }}" target="_blank">Menu</a>
+    {% set menu_link = menu or website %}
+    {% if menu_link %}
+    <a href="{{ menu_link }}" target="_blank">Menu</a>
     {% endif %}
-    {% if menu and (website or phone_display) %}
-     | 
-    {% endif %}
-    {% if website %}
-    <a href="{{ website }}" target="_blank" rel="noopener">Website</a>
-    {% endif %}
-    {% if website and phone_display %}
+    {% if menu_link and phone_display %}
      | 
     {% endif %}
     {% if phone_display %}
