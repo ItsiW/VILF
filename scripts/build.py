@@ -4,6 +4,7 @@ import json
 import os
 import re
 import shutil
+import subprocess
 from datetime import date
 from pathlib import Path
 
@@ -28,6 +29,35 @@ from .schema import (
 )
 
 SITE_URL = "https://vilf.org"
+
+
+def parse_git_dates(log: str) -> dict[str, str]:
+    """Map each path in `git log --format=%cs --name-only` output to its newest commit date."""
+    dates: dict[str, str] = {}
+    current = None
+    for line in log.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        if re.fullmatch(r"\d{4}-\d{2}-\d{2}", line):
+            current = line
+        elif current:
+            dates.setdefault(line, current)  # the log is newest-first, so the first sighting wins
+    return dates
+
+
+def git_modified_dates(path="places") -> dict[str, str]:
+    """Last commit date per file under path (repo-relative keys), or {} when git is unavailable."""
+    try:
+        log = subprocess.run(
+            ["git", "log", "--format=%cs", "--name-only", "--", path],
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout
+    except (OSError, subprocess.CalledProcessError):
+        return {}
+    return parse_git_dates(log)
 
 
 @click.command()
@@ -273,6 +303,8 @@ def build_vilf() -> None:
             return None
 
     place_problems = 0
+    # one git call for every place; uncommitted or out-of-repo files fall back to visited
+    modified_dates = git_modified_dates()
 
     for place_md in Path("places").glob("*.md"):
         try:
@@ -292,6 +324,7 @@ def build_vilf() -> None:
             visited = date.fromisoformat(meta["visited"])
             meta["visited_display"] = format_visited(visited)
             meta["review_age"] = (date.today() - visited).days
+            meta["modified"] = modified_dates.get(str(place_md), meta["visited"])
             meta["taste_label"], meta["taste_color"] = rating_to_formatting(
                 meta["taste"], TASTE_LABELS
             )
@@ -325,7 +358,7 @@ def build_vilf() -> None:
             sitemap.append(
                 {
                     "url": f"{SITE_URL}{relative_url}",
-                    "lastmod": max(visited, date(2025, 2, 15)),
+                    "lastmod": meta["modified"],
                 }
             )
         except Exception as e:
@@ -663,6 +696,7 @@ def build_vilf() -> None:
             "value_label": place["value_label"],
             "drinks": place["drinks"],
             "visited": place["visited"],
+            "modified": place["modified"],
             "phone": place["phone"],
             "menu": place["menu"],
             "website": place["website"],

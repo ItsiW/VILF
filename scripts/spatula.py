@@ -8,7 +8,6 @@ scripts.places; GOOGLE_PLACES_API_KEY must be set (a .env at the repo root works
 """
 
 import io
-import math
 import re
 from datetime import date
 from pathlib import Path
@@ -19,7 +18,15 @@ import requests
 from PIL import Image
 from unidecode import unidecode
 
-from .places import CONTACT_FIELDS, CORE_FIELDS, Place, PlacesError, get_place, search_text
+from .places import (
+    CONTACT_FIELDS,
+    CORE_FIELDS,
+    Place,
+    PlacesError,
+    distance_m,
+    get_place,
+    search_text,
+)
 from .schema import TASTE_LABELS, VALUE_LABELS, load_place, validate_place, write_place
 
 BODY = "\n<REVIEW>\n"
@@ -99,13 +106,6 @@ def place_to_meta(place: Place, *, city_as_area: bool = False) -> dict:
     }
 
 
-def _distance_m(lat1, lon1, lat2, lon2) -> float:
-    """Equirectangular approximation; plenty for a 30 m duplicate radius."""
-    x = math.radians(lon2 - lon1) * math.cos(math.radians((lat1 + lat2) / 2))
-    y = math.radians(lat2 - lat1)
-    return 6371000 * math.hypot(x, y)
-
-
 def _is_number(v) -> bool:
     return isinstance(v, (int, float)) and not isinstance(v, bool)
 
@@ -120,7 +120,7 @@ def find_duplicate(meta: dict, places_dir) -> Path | None:
         if meta.get("place_id") and other.get("place_id") == meta["place_id"]:
             return path
         coords = (meta.get("lat"), meta.get("lon"), other.get("lat"), other.get("lon"))
-        if all(_is_number(c) for c in coords) and _distance_m(*coords) <= DUPLICATE_RADIUS_M:
+        if all(_is_number(c) for c in coords) and distance_m(*coords) <= DUPLICATE_RADIUS_M:
             return path
     return None
 

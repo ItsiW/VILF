@@ -12,6 +12,7 @@ The API key is read from GOOGLE_PLACES_API_KEY (a .env at the repo root works).
 
 import argparse
 import json
+import math
 import os
 import re
 import sys
@@ -138,6 +139,13 @@ def parse_place(data: dict) -> Place:
         types=list(data.get("types", [])),
         raw=data,
     )
+
+
+def distance_m(lat1, lon1, lat2, lon2) -> float:
+    """Equirectangular approximation in metres; fine for the sub-kilometre radii used here."""
+    x = math.radians(lon2 - lon1) * math.cos(math.radians((lat1 + lat2) / 2))
+    y = math.radians(lat2 - lat1)
+    return 6371000 * math.hypot(x, y)
 
 
 def _api_key() -> str:

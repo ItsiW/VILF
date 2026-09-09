@@ -46,13 +46,14 @@
 {
   "@context": "https://schema.org",
   "@type": "Restaurant",
-  "name": "{{ name }}",
-  "description": "{{ description }}",
-  "url": "{{ SITE_URL }}{{ url }}",
+  "name": {{ name | tojson }},
+  "description": {{ description | tojson }},
+  "url": "{{ SITE_URL }}{{ url }}",{% if website %}
+  "sameAs": "{{ website }}",{% endif %}
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "{{ address }}",
-    "addressLocality": "{{ area }}",
+    "streetAddress": {{ address | tojson }},
+    "addressLocality": {{ (city or area) | tojson }},
     "addressRegion": "CA",
     "addressCountry": "US"
   },
@@ -61,19 +62,10 @@
     "latitude": {{ lat }},
     "longitude": {{ lon }}
   },
-  "servesCuisine": "{{ cuisine }}",
-  "priceRange": "$",
-  "acceptsReservations": "False",{% if phone %}
+  "servesCuisine": {{ cuisine | tojson }},{% if phone %}
   "telephone": "{{ phone }}",{% endif %}{% if menu %}
   "hasMenu": "{{ menu }}",{% endif %}{% if food_image_path %}
   "image": "{{ SITE_URL }}{{ food_image_path }}",{% endif %}
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "{{ (taste + 1) }}",
-    "bestRating": "4",
-    "worstRating": "1",
-    "ratingCount": "1"
-  },
   "review": {
     "@type": "Review",
     "reviewRating": {
@@ -87,16 +79,13 @@
       "name": "Vegans In Love with Food"
     },
     "datePublished": "{{ visited }}",
-    "reviewBody": "{{ blurb | replace('"', '\\"') }}",
+    "reviewBody": {{ blurb | tojson }},
     "publisher": {
       "@type": "Organization",
       "name": "Vegans In Love with Food",
       "url": "{{ SITE_URL }}"
     }
-  },
-  "openingHours": [],
-  "paymentAccepted": "Cash, Credit Card",
-  "currenciesAccepted": "USD"
+  }
 }
 </script>
 
@@ -105,8 +94,8 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "{{ name }}: {{ cuisine }} Restaurant Review in {{ area }}",
-  "description": "{{ description }}",
+  "headline": {{ (name ~ ": " ~ cuisine ~ " Restaurant Review in " ~ area) | tojson }},
+  "description": {{ description | tojson }},
   "url": "{{ SITE_URL }}{{ url }}",
   {% if food_image_path %}
   "image": [
@@ -115,12 +104,12 @@
       "url": "{{ SITE_URL }}{{ food_image_path }}",
       "width": 1200,
       "height": 675,
-      "caption": "{{ alt_text if alt_text else 'Vegan food at ' + name }}"
+      "caption": {{ alt_text | tojson }}
     }
   ],
   {% endif %}
   "datePublished": "{{ visited }}",
-  "dateModified": "{{ visited }}",
+  "dateModified": "{{ modified }}",
   "author": {
     "@type": "Organization",
     "name": "Vegans In Love with Food",
@@ -143,15 +132,15 @@
   },
   "about": {
     "@type": "Restaurant",
-    "name": "{{ name }}",
+    "name": {{ name | tojson }},
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "{{ address }}",
-      "addressLocality": "{{ area }}",
+      "streetAddress": {{ address | tojson }},
+      "addressLocality": {{ (city or area) | tojson }},
       "addressRegion": "CA",
       "addressCountry": "US"
     },
-    "servesCuisine": "{{ cuisine }}"
+    "servesCuisine": {{ cuisine | tojson }}
   }
 }
 </script>
@@ -170,13 +159,13 @@
     {
       "@type": "ListItem",
       "position": 2,
-      "name": "{{ cuisine }} Restaurants",
+      "name": {{ (cuisine ~ " Restaurants") | tojson }},
       "item": "{{ SITE_URL }}/cuisines/{{ cuisine.lower().replace(' ','-') }}/"
     },
     {
       "@type": "ListItem",
       "position": 3,
-      "name": "{{ name }}",
+      "name": {{ name | tojson }},
       "item": "{{ SITE_URL }}{{ url }}"
     }
   ]
@@ -193,7 +182,13 @@
     {% if menu %}
     <a href="{{ menu }}" target="_blank">Menu</a>
     {% endif %}
-    {% if menu and phone_display %}
+    {% if menu and (website or phone_display) %}
+     | 
+    {% endif %}
+    {% if website %}
+    <a href="{{ website }}" target="_blank" rel="noopener">Website</a>
+    {% endif %}
+    {% if website and phone_display %}
      | 
     {% endif %}
     {% if phone_display %}

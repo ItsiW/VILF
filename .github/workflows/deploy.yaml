@@ -10,6 +10,8 @@ jobs:
       UV_NO_DEV: "1"
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # full history so build.py can derive sitemap lastmod from git
 
       - uses: astral-sh/setup-uv@v10.0.1
         with:
@@ -28,3 +30,5 @@ jobs:
       - uses: google-github-actions/setup-gcloud@v0
 
       - run: gsutil -m rsync -R build gs://vilf-org
+
+      - run: uv run python -m scripts.indexnow
