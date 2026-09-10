@@ -15,11 +15,13 @@ from scripts.schema import load_place, validate_place, write_place
 from scripts.spatula import (
     BOLD_PROBLEM,
     find_duplicate,
+    find_duplicate_in_dir,
     place_to_meta,
     query_from_maps_url,
     save_photo,
     scrape_and_gen_md,
     slugify,
+    unique_name,
     unique_path,
 )
 
@@ -135,9 +137,51 @@ def test_find_duplicate(tmp_path):
     write_place(tmp_path / "a.md", {**base, "lat": 37.9, "lon": -122.5}, "\n**x**\n")
     write_place(tmp_path / "b.md", {**base, "place_id": None, "lat": 37.8062}, "\n**x**\n")  # ~11 m away
     (tmp_path / "junk.md").write_text("no frontmatter here")
-    assert find_duplicate({**base, "lat": 0.0, "lon": 0.0}, tmp_path) == tmp_path / "a.md"
-    assert find_duplicate({**base, "place_id": "new"}, tmp_path) == tmp_path / "b.md"
-    assert find_duplicate({**base, "place_id": "new", "lat": 37.7, "lon": -122.4}, tmp_path) is None
+    assert find_duplicate_in_dir({**base, "lat": 0.0, "lon": 0.0}, tmp_path) == tmp_path / "a.md"
+    assert find_duplicate_in_dir({**base, "place_id": "new"}, tmp_path) == tmp_path / "b.md"
+    assert find_duplicate_in_dir({**base, "place_id": "new", "lat": 37.7, "lon": -122.4}, tmp_path) is None
+
+
+def test_find_duplicate_rows():
+    meta = place_to_meta(LION)  # ChIJfixtureLionDance at 37.8061, -122.2683
+    far_same_id = {"slug": "a", "place_id": "ChIJfixtureLionDance", "lat": 37.9, "lon": -122.5}
+    near_no_id = {"slug": "b", "place_id": None, "lat": 37.8062, "lon": -122.2683}  # ~11 m away
+    unrelated = {"slug": "c", "place_id": "other", "lat": 37.7, "lon": -122.4}
+    assert find_duplicate({**meta, "lat": 0.0, "lon": 0.0}, [unrelated, far_same_id]) == "a"
+    assert find_duplicate({**meta, "place_id": "new"}, [far_same_id, near_no_id]) == "b"
+    assert find_duplicate({**meta, "place_id": "new"}, [unrelated, far_same_id]) is None
+    assert find_duplicate(meta, []) is None
+    # the first hit wins, in row order
+    assert find_duplicate(meta, [near_no_id, far_same_id]) == "b"
+    # rows without numeric coordinates only ever match on place_id
+    for bad in (None, "37.8062", True):
+        assert find_duplicate({**meta, "place_id": "new"}, [{**near_no_id, "lat": bad}]) is None
+    # a meta without place_id never matches on id, even against a row with place_id None
+    assert find_duplicate({**meta, "place_id": None, "lat": 0.0, "lon": 0.0}, [near_no_id]) is None
+    # rows may be any iterable
+    assert find_duplicate(meta, iter([near_no_id])) == "b"
+
+
+def test_unique_name():
+    seen = []
+
+    def exists(name):
+        seen.append(name)
+        return name in taken
+
+    taken = set()
+    assert unique_name("foo", exists) == "foo"
+    assert seen == ["foo"]
+    taken = {"foo"}
+    assert unique_name("foo", exists) == "foo-0"
+    taken = {"foo", "foo-0"}
+    assert unique_name("foo", exists) == "foo-1"
+    # a trailing -N on the base is stripped before appending; the base itself is tried first
+    taken = {"foo-3"}
+    seen.clear()
+    assert unique_name("foo-3", exists) == "foo-0"
+    assert seen == ["foo-3", "foo-0"]
+    assert unique_name("bar-7", exists) == "bar-7"
 
 
 def test_spatula_end_to_end(tmp_path, monkeypatch):

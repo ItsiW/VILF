@@ -8,6 +8,7 @@ any mismatch or error so it can gate a commit.
 
 import re
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 
 import click
@@ -56,11 +57,23 @@ def same_street(file_address, google_address) -> bool:
     return bool(b) and (b in a or a in b)
 
 
-def resolve(meta: dict, fields) -> tuple[Place, str | None]:
+@dataclass
+class CheckResult:
+    """One place checked against Google: what was found, what differs, what was fixed."""
+
+    place: Place
+    note: str | None  # explains a search fallback for places without a place_id
+    mismatches: list[str]
+    info: list[str]
+    changed: list[str]  # field names apply_fixes changed (empty unless fix)
+    meta: dict  # the (possibly fixed) copy of the input meta
+
+
+def resolve(meta: dict, fields, *, get=get_place, search=search_text) -> tuple[Place, str | None]:
     """Return (place, note); the note explains a search fallback for files without a place_id."""
     if meta.get("place_id"):
-        return get_place(meta["place_id"], fields=fields), None
-    results = search_text(f"{meta['name']} {meta['address']}", max_results=1, fields=fields)
+        return get(meta["place_id"], fields=fields), None
+    results = search(f"{meta['name']} {meta['address']}", max_results=1, fields=fields)
     if not results:
         raise PlacesError("no search results")
     place = results[0]
@@ -135,6 +148,35 @@ def apply_fixes(meta: dict, place: Place, contact: bool) -> list[str]:
     return changed
 
 
+def check_place(
+    meta: dict, *, contact: bool, fix: bool, get=get_place, search=search_text
+) -> CheckResult:
+    """Resolve, compare and (with fix, for places with a place_id) correct one place's meta.
+
+    Pure: no file IO, no output. The input dict is copied, never mutated; the fixed
+    values are in the returned CheckResult.meta. Raises ValueError when name or
+    address is missing and PlacesError when Google cannot resolve the place.
+    """
+    meta = dict(meta)
+    missing = [key for key in ("name", "address") if meta.get(key) is None]
+    if missing:
+        raise ValueError(f"missing {', '.join(missing)}")
+    fields = CONTACT_FIELDS if contact else CORE_FIELDS
+    place, note = resolve(meta, fields, get=get, search=search)
+    mismatches, info = compare(meta, place, contact)
+    changed = []
+    if fix and mismatches and meta.get("place_id"):
+        changed = apply_fixes(meta, place, contact)
+        if changed:
+            info.append("fixed: " + ", ".join(changed))
+        mismatches, _ = compare(meta, place, contact)
+        if meta["name"] != place.name:
+            # editorial; report but don't fail the run
+            mismatches = [m for m in mismatches if not m.startswith("Current name")]
+            info.append(f"name kept: {meta['name']} | Google: {place.name}")
+    return CheckResult(place, note, mismatches, info, changed, meta)
+
+
 @click.command()
 @click.argument("files", type=click.Path(exists=True, dir_okay=False), nargs=-1)
 @click.option(
@@ -163,7 +205,6 @@ def cross_reference_md(files, contact, fix):
         if not files:
             click.echo("No files to check.")
             return
-    fields = CONTACT_FIELDS if contact else CORE_FIELDS
     reports = {}
     fixed = {}
     click.echo("\nTesting files:")
@@ -172,23 +213,12 @@ def cross_reference_md(files, contact, fix):
         info = []
         try:
             meta, body = load_place(file)
-            # load_place only defaults the optional keys; resolve/compare need these two
-            missing = [key for key in ("name", "address") if meta.get(key) is None]
-            if missing:
-                raise ValueError(f"missing {', '.join(missing)}")
-            place, note = resolve(meta, fields)
-            mismatches, info = compare(meta, place, contact)
-            if fix and mismatches and meta.get("place_id"):
-                changed = apply_fixes(meta, place, contact)
-                if changed:
-                    write_place(file, meta, body)
-                    fixed[file] = changed
-                    info.append("fixed: " + ", ".join(changed))
-                mismatches, _ = compare(meta, place, contact)
-                if meta["name"] != place.name:
-                    # editorial; report but don't fail the run
-                    mismatches = [m for m in mismatches if not m.startswith("Current name")]
-                    info.append(f"name kept: {meta['name']} | Google: {place.name}")
+            # get/search are looked up here so a monkeypatched module attribute is honoured
+            result = check_place(meta, contact=contact, fix=fix, get=get_place, search=search_text)
+            note, info, mismatches = result.note, result.info, result.mismatches
+            if result.changed:
+                write_place(file, result.meta, body)
+                fixed[file] = result.changed
         except (PlacesError, ValueError, yaml.YAMLError) as e:
             mismatches = [str(e)]
         mark = "✘ " if mismatches else "✔ "
