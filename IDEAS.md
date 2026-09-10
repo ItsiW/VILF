@@ -69,8 +69,9 @@ principles:
   (Node16-era): likeliest next CI breakage. Bump when you can watch a deploy. Add a
   Dependabot config for github-actions and uv (setup-uv has no floating major tag).
 - **CDN invalidation is still manual** after each deploy (`gcloud compute url-maps
-  invalidate-cdn-cache vilf-lb --path /`). Give the deploy service account permission and add
-  it as the last workflow step so deleted pages vanish immediately instead of after an hour.
+  invalidate-cdn-cache vilf-lb --path '/*'`; gcloud is installed and logged in on the Mac).
+  Give the deploy service account the permission and add it as the last workflow step so
+  changes show immediately instead of after an hour.
 - **Vercel's GitHub app** emails about the repo on every push; disconnect it in Vercel if unwanted.
 - `infra/deploy.sh` still pip-installs the deleted `requirements.txt`; delete it or port to
   uv once the database design settles. Add uv to the Nix dev shell.
