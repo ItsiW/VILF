@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Publish - VILF admin{% endblock %}
+{% block content %}
+<h1>Publish</h1>
+<p class="note"><a href="/publishes">History</a></p>
+{# htmx 2 does not swap 4xx bodies by default; the 409 'already running' partial must still show #}
+<div id="result" hx-on::before-swap="if (event.detail.xhr && event.detail.xhr.status === 409) event.detail.shouldSwap = true"></div>
+{% include "publish/_pending.html" %}
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}New place - VILF admin{% endblock %}
+{% block content %}
+<h1>New place</h1>
+<form class="search" hx-post="/places/new/search" hx-target="#candidates">
+  <input type="search" name="q" placeholder="Name and city, or a Google Maps URL" required>
+  <button type="submit">Search Google</button>
+</form>
+<div id="candidates"></div>
+<button type="button" class="secondary" onclick="document.getElementById('form').hidden = false">Fill in by hand</button>
+{% include "places/_form.html" %}
+{% endblock %}

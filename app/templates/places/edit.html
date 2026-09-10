@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ row.name }} - VILF admin{% endblock %}
+{% block content %}
+<h1>{{ row.name }}</h1>
+<div class="chips">
+  {% if is_dirty(row) %}<span class="chip dirty">dirty</span>{% endif %}
+  {% if row.published_at %}<span class="chip published">published {{ row.published_at[:10] }}</span>{% endif %}
+  {% if row.closed %}<span class="chip closed">closed</span>{% endif %}
+  <a href="/places/{{ slug }}/preview" target="_blank" rel="noopener">Preview</a>
+</div>
+{% include "places/_form.html" %}
+
+<h2>Photo</h2>
+<div id="photo" hx-get="/places/{{ slug }}/photo" hx-trigger="load"><p class="note">Loading...</p></div>
+
+<h2>Google</h2>
+<div id="sync" hx-get="/places/{{ slug }}/sync" hx-trigger="load"><p class="note">Loading...</p></div>
+
+<h2>Relink to Google</h2>
+<form class="search" hx-post="/places/{{ slug }}/relink" hx-target="#relink-candidates">
+  <input type="search" name="q" placeholder="Name and city, or a Google Maps URL" required>
+  <button type="submit">Search</button>
+</form>
+<div id="relink-candidates"></div>
+
+{% if row.published_at is none %}
+<div class="actions">
+  <button type="button" class="danger" hx-post="/places/{{ slug }}/delete" hx-confirm="Delete {{ row.name }}? This cannot be undone.">Delete</button>
+</div>
+{% endif %}
+{% endblock %}

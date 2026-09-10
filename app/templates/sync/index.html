@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Sync - VILF admin{% endblock %}
+{% block content %}
+<h1>Sync</h1>
+{% if last_audit %}
+<p>Last audit: {{ last_audit.day }} ({{ last_audit.ago }} days ago)</p>
+{% else %}
+<p>No previous audit</p>
+{% endif %}
+<form hx-post="/sync/audit" hx-target="#audit-result" hx-swap="innerHTML"
+      hx-indicator="#audit-busy" hx-disabled-elt="find button">
+  <label class="inline"><input type="checkbox" name="mark_closed" value="1"> Mark permanently closed places closed</label>
+  <button type="submit">Run audit</button>
+  <span id="audit-busy" class="htmx-indicator note">Checking every place against Google...</span>
+</form>
+<div id="audit-result"></div>
+
+<h2>Recent runs</h2>
+<table>
+  <thead><tr><th>Started</th><th>Kind</th><th>Scope</th><th>Status</th><th>Summary</th></tr></thead>
+  <tbody>
+  {% for run in recent %}
+  <tr>
+    <td class="name" data-label="Started">{{ run.started_at[:16] | replace('T', ' ') }}</td>
+    <td data-label="Kind">{{ run.kind }}</td>
+    <td data-label="Scope">{{ run.scope or '' }}</td>
+    <td data-label="Status">{{ run.status }}</td>
+    <td data-label="Summary">{{ run.summary or '' }}</td>
+  </tr>
+  {% else %}
+  <tr><td colspan="5" class="note">No runs yet</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

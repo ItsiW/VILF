@@ -1,14 +1,15 @@
 """
-The `spatula` command: turn a Google Places search into a new places/<slug>.md.
+The `spatula` command: turn a Google Places search into a new review row.
 
-Search (or --place-id) -> duplicate check -> review-field prompts -> write the
-frontmatter via scripts.schema -> print what is still to do. Optionally copies
-the food photo into raw/food/<slug>.jpg. All Google access goes through
-scripts.places; GOOGLE_PLACES_API_KEY must be set (a .env at the repo root works).
+Search (or --place-id) -> duplicate check -> review-field prompts -> insert the
+row through scripts.repo -> print what is still to do. Optionally stores the
+food photo in media storage. All Google access goes through scripts.places;
+GOOGLE_PLACES_API_KEY must be set (a .env at the repo root works).
 """
 
 import io
 import re
+from collections.abc import Callable, Iterable
 from datetime import date
 from pathlib import Path
 from urllib.parse import unquote, urlparse
@@ -18,6 +19,8 @@ import requests
 from PIL import Image
 from unidecode import unidecode
 
+from . import repo
+from .config import settings
 from .places import (
     CONTACT_FIELDS,
     CORE_FIELDS,
@@ -27,10 +30,10 @@ from .places import (
     get_place,
     search_text,
 )
-from .schema import TASTE_LABELS, VALUE_LABELS, load_place, validate_place, write_place
+from .schema import TASTE_LABELS, VALUE_LABELS, validate_place
+from .storage import storage_from_url
 
 BODY = "\n<REVIEW>\n"
-PHOTO_DIR = Path("raw/food")
 DUPLICATE_RADIUS_M = 30
 MAX_RESULTS = 5
 BOLD_PROBLEM = "taste: highlight a dish in bold (**...**) when taste >= 1"
@@ -46,17 +49,14 @@ def slugify(name: str, street: str | None = None) -> str:
     return base.lower()
 
 
-def unique_path(directory, base: str) -> Path:
-    """<directory>/<base>.md, or <base>-N.md for the first N that does not exist yet."""
-    directory = Path(directory)
-    directory.mkdir(parents=True, exist_ok=True)
-    path = directory / f"{base}.md"
+def unique_name(base: str, exists: Callable[[str], bool]) -> str:
+    """base, or base-N for the first N whose name `exists` rejects (a trailing -N is stripped first)."""
+    name = base
     appendage = 0
-    while path.exists():
-        stem = re.split(r"-\d+$", path.stem)[0] + f"-{appendage}"
-        path = directory / f"{stem}.md"
+    while exists(name):
+        name = re.split(r"-\d+$", name)[0] + f"-{appendage}"
         appendage += 1
-    return path
+    return name
 
 
 def query_from_maps_url(text: str) -> str | None:
@@ -110,18 +110,14 @@ def _is_number(v) -> bool:
     return isinstance(v, (int, float)) and not isinstance(v, bool)
 
 
-def find_duplicate(meta: dict, places_dir) -> Path | None:
-    """First existing file with the same place_id or within DUPLICATE_RADIUS_M metres."""
-    for path in sorted(Path(places_dir).glob("*.md")):
-        try:
-            other, _ = load_place(path)
-        except Exception:
-            continue
+def find_duplicate(meta: dict, rows: Iterable[dict]) -> str | None:
+    """Slug of the first row (slug, place_id, lat, lon) with the same place_id or within DUPLICATE_RADIUS_M metres."""
+    for other in rows:
         if meta.get("place_id") and other.get("place_id") == meta["place_id"]:
-            return path
+            return other["slug"]
         coords = (meta.get("lat"), meta.get("lon"), other.get("lat"), other.get("lon"))
         if all(_is_number(c) for c in coords) and distance_m(*coords) <= DUPLICATE_RADIUS_M:
-            return path
+            return other["slug"]
     return None
 
 
@@ -156,13 +152,6 @@ def prompt_review_fields(meta: dict) -> dict:
     }
 
 
-def photo_dest(slug: str, *, force: bool = False) -> Path:
-    dest = PHOTO_DIR / f"{slug}.jpg"
-    if dest.exists() and not force:
-        raise click.ClickException(f"{dest} already exists; use --force to overwrite")
-    return dest
-
-
 def read_photo(src: str) -> tuple[Image.Image, bytes, str]:
     """Fetch and decode a local path or http(s) URL; returns (image, raw bytes, suffix).
 
@@ -189,25 +178,17 @@ def read_photo(src: str) -> tuple[Image.Image, bytes, str]:
     return im, data, suffix
 
 
-def write_photo(im: Image.Image, data: bytes, suffix: str, dest: Path) -> Path:
-    """Write a JPEG to dest (copying .jpg/.jpeg verbatim) and warn if wider than 16:9."""
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    w, h = im.size
-    if suffix.lower() in (".jpg", ".jpeg"):
-        dest.write_bytes(data)
-    else:
-        im.convert("RGB").save(dest, "JPEG", quality=95)
-    if w / h > 16 / 9:
-        click.echo(
-            f"Warning: {dest} is {w}x{h}, wider than 16:9; the build asserts that ratio, so crop it"
-        )
-    return dest
+# --no-prompt: the database requires these, so they get placeholders to replace later
+PLACEHOLDERS = {"cuisine": "TBD", "drinks": False, "taste": 0, "value": 0}
 
 
-def save_photo(src: str, slug: str, *, force: bool = False) -> Path:
-    """Copy or download src to raw/food/<slug>.jpg."""
-    dest = photo_dest(slug, force=force)
-    return write_photo(*read_photo(src), dest)
+def placeholder_fields(meta: dict) -> dict:
+    """DB-safe stand-ins for the review fields (area falls back to the city, visited to today)."""
+    return {
+        **PLACEHOLDERS,
+        "area": meta.get("area") or meta.get("city") or "TBD",
+        "visited": date.today().isoformat(),
+    }
 
 
 def _coords(place: Place) -> str:
@@ -251,51 +232,34 @@ def print_place(place: Place) -> None:
 @click.option(
     "--street-in-filename/--no-street-in-filename",
     default=False,
-    help="Append the street address to the filename slug (useful for chains).",
-)
-@click.option(
-    "--manual-filename",
-    default=None,
-    help="Write to this path instead of an autogenerated <directory>/<slug>.md.",
-)
-@click.option(
-    "--directory",
-    default="./places/",
-    show_default=True,
-    help="Output directory. Duplicate detection only looks at the .md files in this directory.",
+    help="Append the street address to the slug (useful for chains).",
 )
 @click.option(
     "--photo",
     default=None,
     metavar="PATH_OR_URL",
-    help="Food photo (local file or http(s) URL) to save as raw/food/<slug>.jpg.",
+    help="Food photo (local file or http(s) URL) stored in media storage.",
 )
 @click.option(
     "--prompt/--no-prompt",
     default=True,
     show_default=True,
-    help="Ask for cuisine, area, drinks, taste, value and visited; --no-prompt leaves them blank.",
+    help="Ask for cuisine, area, drinks, taste, value and visited; --no-prompt writes placeholders.",
 )
-@click.option("--ask-first/--no-ask-first", default=False, help="Confirm before writing the file.")
-@click.option(
-    "--force",
-    is_flag=True,
-    help="Ignore duplicate detection and overwrite an existing raw/food photo.",
-)
+@click.option("--ask-first/--no-ask-first", default=False, help="Confirm before creating the row.")
+@click.option("--force", is_flag=True, help="Ignore duplicate detection.")
 def scrape_and_gen_md(
     search_query,
     place_id,
     details,
     city_as_area,
     street_in_filename,
-    manual_filename,
-    directory,
     photo,
     prompt,
     ask_first,
     force,
 ):
-    """Look a restaurant up in Google Places and write a new review file.
+    """Look a restaurant up in Google Places and create a new review in the database.
 
     Needs GOOGLE_PLACES_API_KEY in the environment or in .env at the repo root.
     The review body is left as a <REVIEW> placeholder for you to write.
@@ -320,50 +284,74 @@ def scrape_and_gen_md(
         raise click.ClickException("Google returned no name for this place")
     if place.lat is None or place.lon is None:
         raise click.ClickException(
-            f"Google returned no coordinates for {place.name}; cannot write a valid file"
+            f"Google returned no coordinates for {place.name}; cannot write a valid review"
         )
     print_place(place)
-
     meta = place_to_meta(place, city_as_area=city_as_area)
-    if manual_filename:
-        path = Path(manual_filename).with_suffix(".md")
-        path.parent.mkdir(parents=True, exist_ok=True)
-    else:
+    # Fetch and decode the photo before prompting, so an unreadable image never
+    # follows six answered questions or an inserted row.
+    photo_data = read_photo(photo)[1] if photo else None
+
+    from .cli import open_db
+
+    with open_db() as conn:
+        rows = repo.all_rows(conn)
+        if not force:
+            dup = find_duplicate(meta, rows)
+            if dup:
+                raise click.ClickException(
+                    f"{dup} already covers this place (same place_id or within "
+                    f"{DUPLICATE_RADIUS_M} m); use --force to write anyway"
+                )
+        # place_id is UNIQUE in the database, so even --force cannot insert a second row for it
+        owner = next((r["slug"] for r in rows if r["place_id"] == meta["place_id"]), None)
+        if owner:
+            raise click.ClickException(f"place_id {meta['place_id']} already used by {owner}")
         street = place.street_address if street_in_filename else None
-        path = unique_path(directory, slugify(place.name, street))
+        slug = repo.unique_slug(conn, slugify(place.name, street))
 
-    if not force:
-        dup = find_duplicate(meta, directory)
-        if dup:
-            raise click.ClickException(
-                f"{dup} already covers this place (same place_id or within "
-                f"{DUPLICATE_RADIUS_M} m); use --force to write anyway"
-            )
-    # Fetch and decode the photo before prompting, so a collision or an unreadable
-    # image never follows six answered questions or a written .md file.
-    if photo:
-        dest = photo_dest(path.stem, force=force)
-        photo_data = read_photo(photo)
+        placeholders = {}
+        if prompt:
+            meta = prompt_review_fields(meta)
+        else:
+            placeholders = placeholder_fields(meta)
+            meta = {**meta, **placeholders}
+        if ask_first and not click.confirm(f"Create {slug}?", default=True):
+            click.echo("Not writing markdown.")
+            return
 
-    if prompt:
-        meta = prompt_review_fields(meta)
-    if ask_first and not click.confirm(f"Write {path}?", default=True):
-        click.echo("Not writing markdown.")
-        return
+        row = repo.meta_to_row(meta, BODY, slug=slug)
+        # a UNIQUE/NOT NULL violation would surface as a traceback; report it instead
+        # (the blurb rule is left to publish: every unwritten review shares the <REVIEW> body)
+        clashes = [
+            p for p in repo.validate_for_save(conn, row)
+            if (" reused by " in p and not p.startswith("blurb ")) or p.endswith(": required")
+        ]
+        if clashes:
+            raise click.ClickException("; ".join(clashes))
+        stored = repo.insert(conn, row)
 
-    write_place(path, meta, BODY)
-    if photo:
-        write_photo(*photo_data, dest)
+        if photo_data is not None:
+            try:
+                from . import photos
+            except ImportError:
+                click.echo("Photo skipped: scripts.photos is not available yet")
+            else:
+                media = storage_from_url(settings().media_storage)
+                stored = repo.update(conn, slug, photos.set_photo(media, slug, photo_data, 0.5))
 
-    written_meta, written_body = load_place(path)
-    problems = validate_place(written_meta, written_body, path.stem)
-    if problems:
-        click.echo("\nTo do before this file builds:")
-        for problem in problems:
-            if problem == BOLD_PROBLEM:
-                problem = "write the review (body is still the <REVIEW> placeholder) and bold at least one dish with **...**"
-            click.echo(f"- {problem}")
-    click.echo(f"\nWrote {path}")
+        todo = []
+        if placeholders:
+            todo.append("replace the placeholder " + ", ".join(sorted(placeholders)) + " values")
+        review_todo = "write the review (body is still the <REVIEW> placeholder) and bold at least one dish with **...**"
+        for problem in validate_place(*repo.row_to_meta(stored), slug):
+            todo.append(review_todo if problem == BOLD_PROBLEM else problem)
+        if review_todo not in todo:
+            todo.append(review_todo)
+        click.echo("\nTo do before this review publishes:")
+        for line in todo:
+            click.echo(f"- {line}")
+        click.echo(f"\nCreated {slug}")
 
 
 if __name__ == "__main__":

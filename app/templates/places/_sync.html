@@ -1,0 +1,31 @@
+<div id="sync-panel" class="panel">
+  {% if error %}<div class="error">{{ error }}</div>{% endif %}
+  {% if outcome %}<div class="{{ 'warning' if outcome.startswith('not fixed') else 'flash' }}">{{ outcome }}</div>{% endif %}
+  {% if note %}<p class="note">{{ note }}</p>{% endif %}
+  {% if mismatches %}
+  <div class="warning">Differences:
+    <ul>{% for line in mismatches %}<li>{{ line }}</li>{% endfor %}</ul>
+  </div>
+  {% elif checked %}
+  <p class="note">Matches Google.</p>
+  {% endif %}
+  {% if info %}
+  <ul>{% for line in info %}<li>{{ line }}</li>{% endfor %}</ul>
+  {% endif %}
+  <form hx-post="/places/{{ row.slug }}/sync" hx-target="#sync-panel" hx-swap="outerHTML"
+        hx-indicator="#sync-busy" hx-disabled-elt="find button">
+    <label class="inline"><input type="checkbox" name="contact" value="1" {% if contact %}checked{% endif %}> contact details too (phone, website)</label>
+    <button type="submit" class="secondary">Check against Google</button>
+    <span id="sync-busy" class="htmx-indicator note">Checking...</span>
+  </form>
+  {% if can_apply %}
+  <form hx-post="/places/{{ row.slug }}/sync/apply" hx-target="#sync-panel" hx-swap="outerHTML"
+        hx-indicator="#sync-busy" hx-disabled-elt="find button">
+    <input type="hidden" name="contact" value="{{ '1' if contact else '0' }}">
+    <button type="submit">Apply fixes</button>
+  </form>
+  {% elif mismatches and not row.place_id %}
+  <p class="note">No place_id: relink to Google below to enable fixes.</p>
+  {% endif %}
+  <p class="note">{% if last %}Last check: {{ last.started_at[:16] | replace('T', ' ') }} &mdash; {{ last.summary }}{% else %}Never checked{% endif %}</p>
+</div>

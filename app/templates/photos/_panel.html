@@ -1,0 +1,24 @@
+<div id="photo-panel" class="panel">
+  {% if error %}<div class="error">{{ error }}</div>{% endif %}
+  {% if row.photo_key %}
+  <img src="/media/img/thumb/{{ row.slug }}.jpg?v={{ row.updated_at | urlencode }}" alt="Current thumbnail" width="426" height="240">
+  <p class="note">{{ row.photo_width }}x{{ row.photo_height }} original</p>
+  <form hx-post="/places/{{ row.slug }}/photo/crop" hx-target="#photo-panel" hx-swap="outerHTML">
+    <img id="crop-preview" src="/places/{{ row.slug }}/photo/preview?crop_y={{ crop_y }}" alt="Crop preview">
+    {% if show_slider %}
+    <label>Crop position (top to bottom)</label>
+    <input type="range" name="crop_y" min="0" max="1" step="0.02" value="{{ crop_y }}"
+      oninput="document.getElementById('crop-preview').src = '/places/{{ row.slug }}/photo/preview?crop_y=' + this.value">
+    <button type="submit">Save crop</button>
+    {% else %}
+    <p class="note">This photo is 16:9 or wider, so there is nothing to crop vertically.</p>
+    {% endif %}
+  </form>
+  <button type="button" class="danger" hx-post="/places/{{ row.slug }}/photo/delete" hx-target="#photo-panel" hx-swap="outerHTML"
+    hx-confirm="Delete the photo?">Delete photo</button>
+  {% endif %}
+  <form hx-post="/places/{{ row.slug }}/photo" hx-encoding="multipart/form-data" hx-target="#photo-panel" hx-swap="outerHTML">
+    <label>{{ 'Replace photo' if row.photo_key else 'Upload a photo' }}<input type="file" name="photo" accept="image/*,.heic" required></label>
+    <button type="submit">Upload</button>
+  </form>
+</div>

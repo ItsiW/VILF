@@ -53,6 +53,17 @@ def fresh_urls(sitemap=SITEMAP, days=FRESH_DAYS, today=None) -> list[str]:
     return urls
 
 
+def submit(urls: list[str], *, key: str, host: str = HOST, endpoint: str = ENDPOINT):
+    """POST `urls` to IndexNow for `host`; returns the response. requests errors propagate."""
+    payload = {
+        "host": host,
+        "key": key,
+        "keyLocation": f"https://{host}/{key}.txt",
+        "urlList": list(urls),
+    }
+    return requests.post(endpoint, json=payload, timeout=30)
+
+
 @click.command()
 @click.option("--dry-run", is_flag=True, help="Print the URLs that would be submitted; do not POST.")
 def main(dry_run: bool) -> None:
@@ -72,14 +83,8 @@ def main(dry_run: bool) -> None:
         print(f"indexnow: would submit {len(urls)} URL(s):")
         print("\n".join(urls))
         return
-    payload = {
-        "host": HOST,
-        "key": key,
-        "keyLocation": f"https://{HOST}/{key}.txt",
-        "urlList": urls,
-    }
     try:
-        response = requests.post(ENDPOINT, json=payload, timeout=30)
+        response = submit(urls, key=key, host=HOST)
     except requests.RequestException as e:
         print(f"indexnow: submission of {len(urls)} URL(s) failed: {e}")
         return

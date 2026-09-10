@@ -17,10 +17,21 @@ dependencies = [
     # scripts/places.py (spatula, check, audit)
     "requests>=2.32",
     "python-dotenv>=1.0",
+    "fastapi>=0.141.1",
+    "uvicorn[standard]>=0.52.4",
+    "python-multipart>=0.0.32",
+    "sqlalchemy>=2",
+    "psycopg[binary]>=3.3.5",
+    "google-cloud-storage>=3.14.1",
+    "google-cloud-compute>=1.52.0",
+    "pillow-heif>=1.7.0",
 ]
 
 [dependency-groups]
-dev = ["pytest>=8"]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=8",
+]
 # scripts/instagram_poster.py + scripts/image_generator.py (run directly, not via ./vilf)
 instagram = [
     # scripts/instagram_poster.py still drives Chrome through Selenium

@@ -1,0 +1,20 @@
+<table id="table">
+  <thead><tr><th>Name</th><th>Area</th><th>Cuisine</th><th>Taste</th><th>Value</th><th>Status</th></tr></thead>
+  <tbody>
+  {% for row in rows %}
+  <tr>
+    <td class="name" data-label="Name"><a href="/places/{{ row.slug }}">{{ row.name }}</a></td>
+    <td data-label="Area">{{ row.area or '' }}</td>
+    <td data-label="Cuisine">{{ row.cuisine or '' }}</td>
+    <td data-label="Taste">{{ TASTE_LABELS[row.taste] if row.taste is not none else '' }}</td>
+    <td data-label="Value">{{ VALUE_LABELS[row.value] if row.value is not none else '' }}</td>
+    <td data-label="Status">
+      {% if is_dirty(row) %}<span class="chip dirty">dirty</span>{% endif %}
+      {% if row.closed %}<span class="chip closed">closed</span>{% endif %}
+    </td>
+  </tr>
+  {% else %}
+  <tr><td colspan="6" class="note">No places match.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>

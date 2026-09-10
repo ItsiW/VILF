@@ -1,0 +1,12 @@
+{% if running_error %}
+<div class="error">A publish is already running: {{ running_error }}</div>
+{% else %}
+<div class="{{ 'flash' if result.status == 'ok' else 'error' }}">
+  <p>Publish {{ result.status }}: {{ result.uploaded }} uploaded, {{ result.deleted }} deleted, {{ result.unchanged }} unchanged in {{ '%.1f' % result.seconds }}s</p>
+  {% if result.snapshot_key %}<p class="note">snapshot: {{ result.snapshot_key }}</p>{% endif %}
+  {% if counts %}<p class="note">changes: +{{ counts[0] }} -{{ counts[1] }} ~{{ counts[2] }}</p>{% endif %}
+  <p class="note">CDN: {% if result.cdn_invalidated %}invalidated{% elif cdn_configured %}failed{% else %}skipped (not configured){% endif %}</p>
+  {% if result.error %}<pre>{{ result.error }}</pre>{% endif %}
+</div>
+{% endif %}
+<div hx-get="/publish" hx-trigger="load" hx-target="#pending" hx-swap="outerHTML"></div>
