@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Publish history - VILF admin{% endblock %}
+{% block content %}
+<h1>Publish history</h1>
+<p class="note"><a href="/publish">Back to Publish</a></p>
+<table>
+  <thead><tr><th>Started</th><th>Kind</th><th>By</th><th>Status</th><th>Summary</th><th>Snapshot</th></tr></thead>
+  <tbody>
+  {% for run in runs %}
+  <tr>
+    <td class="name" data-label="Started">{{ run.started_at[:16] | replace('T', ' ') }}</td>
+    <td data-label="Kind">{{ run.kind }}</td>
+    <td data-label="By">{{ run.by_email or '' }}</td>
+    <td data-label="Status">{{ run.status }}</td>
+    <td data-label="Summary">{{ run.summary or '' }}</td>
+    <td data-label="Snapshot">{{ run.snapshot_key or '' }}</td>
+  </tr>
+  {% else %}
+  <tr><td colspan="6" class="note">No publishes yet</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

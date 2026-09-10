@@ -1,0 +1,66 @@
+<div id="pending">
+  {% if running %}
+  <div class="warning">A publish started {{ running.started_at[:16] | replace('T', ' ') }} is still running.</div>
+  {% endif %}
+  {% if problems %}
+  <div class="error">Cannot publish until these are fixed:
+    <ul>
+    {% for problem in problems %}
+      {% set parts = problem.split(': ', 1) %}
+      {% if parts | length == 2 and parts[0] in names %}
+      <li><a href="/places/{{ parts[0] }}">{{ parts[0] }}</a>: {{ parts[1] }}</li>
+      {% else %}
+      <li>{{ problem }}</li>
+      {% endif %}
+    {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <h2>Last publish</h2>
+  {% if last %}
+  <p>{{ last.started_at[:16] | replace('T', ' ') }} by {{ last.by_email or 'unknown' }}
+    <span class="chip {{ 'published' if last.status == 'ok' else 'closed' }}">{{ last.status }}</span>
+    {{ last.summary or '' }}
+    {% if last.snapshot_key %}<br><span class="note">snapshot: {{ last.snapshot_key }}</span>{% endif %}
+  </p>
+  {% else %}
+  <p class="note">None yet</p>
+  {% endif %}
+
+  <h2>Pending changes</h2>
+  {% if not diff %}
+  <p class="note">Nothing to publish.</p>
+  {% else %}
+    {% if diff.added %}
+    <h3>Added ({{ diff.added | length }})</h3>
+    <ul>{% for slug in diff.added %}<li><a href="/places/{{ slug }}">{{ names.get(slug, slug) }}</a> <span class="note">{{ slug }}</span></li>{% endfor %}</ul>
+    {% endif %}
+    {% if diff.removed %}
+    <h3>Removed ({{ diff.removed | length }})</h3>
+    <ul>{% for slug in diff.removed %}<li>{{ slug }}</li>{% endfor %}</ul>
+    {% endif %}
+    {% if diff.changed %}
+    <h3>Changed ({{ diff.changed | length }})</h3>
+    {% for slug, fields in diff.changed.items() %}
+    <p><a href="/places/{{ slug }}">{{ names.get(slug, slug) }}</a> <span class="note">{{ slug }}</span></p>
+    <ul>
+      {% for field, change in fields.items() %}
+      {% if field == 'body' %}
+      <li>review text changed ({{ (change[0] or '').split() | length }} words -> {{ (change[1] or '').split() | length }} words)</li>
+      {% else %}
+      <li>{{ field }}: {{ change[0] }} -> {{ change[1] }}</li>
+      {% endif %}
+      {% endfor %}
+    </ul>
+    {% endfor %}
+    {% endif %}
+  {% endif %}
+
+  <form hx-post="/publish" hx-target="#result" hx-swap="innerHTML" hx-confirm="Publish the site now?"
+        hx-indicator="#publish-busy" hx-disabled-elt="find button">
+    <label class="inline"><input type="checkbox" name="force" value="1"> force (allow mass delete)</label>
+    <button type="submit" {% if problems or running %}disabled{% endif %}>Publish</button>
+    <span id="publish-busy" class="htmx-indicator note">Publishing...</span>
+  </form>
+</div>

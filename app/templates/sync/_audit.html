@@ -1,0 +1,20 @@
+<div class="panel">
+  {% set any_lines = namespace(v=false) %}
+  {% for title in groups %}
+    {% if report.groups[title] %}
+    {% set any_lines.v = true %}
+    <h3>{{ title }} ({{ report.groups[title] | length }})</h3>
+    <ul>{% for line in report.groups[title] %}<li>{{ line }}</li>{% endfor %}</ul>
+    {% endif %}
+  {% endfor %}
+  {% if report.audited and not any_lines.v %}
+  <p>All {{ report.audited }} audited places are OPERATIONAL.</p>
+  {% endif %}
+  <p>{{ report.audited }} places audited, {{ report.no_id }} without a place_id (cannot be audited), {{ report.already_closed }} already marked closed (skipped).</p>
+  {% if marked %}
+  <p class="flash">Marked {{ marked | length }} place(s) closed:
+    {% for slug in marked %}<a href="/places/{{ slug }}">{{ slug }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
+  </p>
+  {% endif %}
+  <p class="note">Logged.</p>
+</div>

@@ -13,6 +13,9 @@
 <h2>Photo</h2>
 <div id="photo" hx-get="/places/{{ slug }}/photo" hx-trigger="load"><p class="note">Loading...</p></div>
 
+<h2>Google</h2>
+<div id="sync" hx-get="/places/{{ slug }}/sync" hx-trigger="load"><p class="note">Loading...</p></div>
+
 <h2>Relink to Google</h2>
 <form class="search" hx-post="/places/{{ slug }}/relink" hx-target="#relink-candidates">
   <input type="search" name="q" placeholder="Name and city, or a Google Maps URL" required>
