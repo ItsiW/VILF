@@ -1,0 +1,20 @@
+<ul class="candidates">
+  {% for place, dup in candidates %}
+  <li>
+    {% if action == 'relink' %}
+    <form method="post" action="/places/{{ slug }}/relink">
+      <input type="hidden" name="place_id" value="{{ place.place_id }}">
+    {% endif %}
+    <button type="{{ 'submit' if action == 'relink' else 'button' }}"
+      {% if action == 'pick' %}hx-post="/places/new/pick" hx-vals='{"place_id": {{ place.place_id | tojson }}}' hx-target="#form" hx-swap="outerHTML"{% endif %}>
+      <b>{{ place.name }}</b><br>
+      {{ place.street_address or '' }}{% if place.city %}, {{ place.city }}{% endif %}
+      <span class="status">{{ place.business_status or '' }}</span>
+      {% if dup %}<br><span class="dup">already reviewed as {{ dup }}</span>{% endif %}
+    </button>
+    {% if action == 'relink' %}</form>{% endif %}
+  </li>
+  {% else %}
+  <li class="note">No results.</li>
+  {% endfor %}
+</ul>

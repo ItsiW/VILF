@@ -1,0 +1,65 @@
+{# mode: 'create' | 'edit'; meta/body hold the current values; problems/warnings are lists #}
+{% macro val(x) %}{{ '' if x is none else x }}{% endmacro %}
+<div id="form" {% if mode == 'create' and not form_open %}hidden{% endif %}>
+  {% if problems %}
+  <div class="error"><b>Not saved:</b><ul>{% for p in problems %}<li>{{ p }}</li>{% endfor %}</ul></div>
+  {% endif %}
+  {% if warnings %}
+  <div class="warning"><b>Still to do:</b><ul>{% for p in warnings %}<li>{{ p }}</li>{% endfor %}</ul></div>
+  {% endif %}
+  {% if meta.place_id %}
+    {% if settings.google_maps_embed_api_key %}
+    <iframe class="map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+      src="https://www.google.com/maps/embed/v1/place?key={{ settings.google_maps_embed_api_key }}&q=place_id:{{ meta.place_id }}"></iframe>
+    {% else %}
+    <p class="note">Set GOOGLE_MAPS_EMBED_API_KEY to see the map here.</p>
+    {% endif %}
+    <p><a href="{{ maps_url or 'https://www.google.com/maps/place/?q=place_id:' ~ meta.place_id }}" target="_blank" rel="noopener">Open in Google Maps</a></p>
+  {% endif %}
+  <form method="post" action="{{ '/places' if mode == 'create' else '/places/' ~ slug }}">
+    {% if mode == 'edit' %}
+    <label>Slug<input type="text" name="slug" value="{{ slug }}" readonly></label>
+    {% endif %}
+    <label>Name<input type="text" name="name" value="{{ val(meta.name) }}" required></label>
+    <div class="row">
+      <label>Cuisine<input type="text" name="cuisine" value="{{ val(meta.cuisine) }}" list="cuisines"></label>
+      <label>Area (neighborhood)<input type="text" name="area" value="{{ val(meta.area) }}" list="areas"></label>
+    </div>
+    <datalist id="cuisines">{% for c in cuisines %}<option value="{{ c }}">{% endfor %}</datalist>
+    <datalist id="areas">{% for a in areas %}<option value="{{ a }}">{% endfor %}</datalist>
+    <label>Address<input type="text" name="address" value="{{ val(meta.address) }}"></label>
+    <label>City<input type="text" name="city" value="{{ val(meta.city) }}"></label>
+    <div class="row">
+      <label>Latitude<input type="text" inputmode="decimal" name="lat" value="{{ val(meta.lat) }}"></label>
+      <label>Longitude<input type="text" inputmode="decimal" name="lon" value="{{ val(meta.lon) }}"></label>
+    </div>
+    <label>Phone (+1 and 10 digits)<input type="tel" name="phone" value="{{ val(meta.phone) }}"></label>
+    <label>Menu URL<input type="url" name="menu" value="{{ val(meta.menu) }}"></label>
+    <label>Website (fallback for the Menu link)<input type="url" name="website" value="{{ val(meta.website) }}"></label>
+    <label>Google place id<input type="text" name="place_id" value="{{ val(meta.place_id) }}"></label>
+    <label>Visited<input type="date" name="visited" value="{{ val(meta.visited) }}"></label>
+    <div class="row">
+      <label>Taste
+        <select name="taste">
+          <option value="">-</option>
+          {% for label in TASTE_LABELS %}<option value="{{ loop.index0 }}" {% if meta.taste == loop.index0 %}selected{% endif %}>{{ loop.index0 }} {{ label }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>Value
+        <select name="value">
+          <option value="">-</option>
+          {% for label in VALUE_LABELS %}<option value="{{ loop.index0 }}" {% if meta.value == loop.index0 %}selected{% endif %}>{{ loop.index0 }} {{ label }}</option>{% endfor %}
+        </select>
+      </label>
+    </div>
+    <label class="inline"><input type="checkbox" name="drinks" value="1" {% if meta.drinks %}checked{% endif %}> Serves alcohol</label>
+    {% if mode == 'create' %}
+    <label class="inline"><input type="checkbox" name="street_in_slug" value="1" {% if street_in_slug %}checked{% endif %}> Put the street in the slug (chains)</label>
+    {% else %}
+    <label class="inline"><input type="checkbox" name="closed" value="1" {% if meta.closed %}checked{% endif %}> Permanently closed</label>
+    <label class="inline"><input type="checkbox" name="instagram_published" value="1" {% if meta.instagram_published %}checked{% endif %}> Posted to Instagram</label>
+    {% endif %}
+    <label>Review (markdown; bold at least one dish with **...**)<textarea name="body">{{ body or '' }}</textarea></label>
+    <button type="submit">{{ 'Create' if mode == 'create' else 'Save' }}</button>
+  </form>
+</div>

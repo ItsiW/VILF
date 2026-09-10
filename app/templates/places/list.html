@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Places - VILF admin{% endblock %}
+{% block content %}
+<h1>Places</h1>
+<input type="search" name="q" value="{{ q }}" placeholder="Search name, area, cuisine, address"
+       hx-get="/places" hx-trigger="keyup changed delay:300ms, search" hx-target="#table" hx-include="[name=filter]">
+<input type="hidden" name="filter" value="{{ filter or 'all' }}">
+<div class="chips">
+  {% for f in ('all',) + FILTERS %}
+  <a href="/places?filter={{ f }}&q={{ q | urlencode }}" class="{% if (filter or 'all') == f %}active{% endif %}">{{ f }}</a>
+  {% endfor %}
+</div>
+{% include "places/_table.html" %}
+{% endblock %}
