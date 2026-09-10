@@ -1,26 +1,53 @@
 # Ideas
 
 Things to pursue, in priority order. The 2026-09-09 overhaul (branch cleanup, uv, Places
-API, schema, SEO, AI discoverability, data reconciliation) is done; what remains is below.
-`AUDIT_LOG.md` says when the data was last checked against Google.
+API, schema, SEO, AI discoverability, data reconciliation) is done, and the database
+migration is built. The `runs` table (visible on the admin's Sync page, or
+`runs.last(conn, "audit")`) says when the data was last checked against Google.
 
-## Priority 1: Move reviews into a database
+## Database migration: built, pending cutover
 
-Starting from scratch (the old `database` branch was a SQLite + SQLAlchemy prototype that
-rewired `build.py` to read from a `restaurants` table; it also had a markdown-to-DB
-migration script, a backup script, and `pending/approved/rejected` status). Design
-principles:
+What exists (runbook and status in `infra/README.md`): a `places` + `runs` schema derived
+from `scripts/schema.py` (`scripts/db.py`, `repo.py`), the importer from the markdown
+archive, the FastAPI + htmx admin app (`app/`: Google lookup, edit, photo upload and crop,
+relink, preview, sync, publish), `scripts/publish.py` (validate, snapshot, render, md5
+mirror, mass-delete guard, CDN, IndexNow), JSON snapshots per publish with
+`db restore-snapshot`, Cloud Run behind IAP deployed by CI, the media bucket on the CDN,
+nightly pg_dump. 557 offline tests including an end-to-end one.
 
-- `build.py` should keep consuming a plain list of dicts (or a JSON export) so templates
-  and derived pages don't change and CI doesn't need DB credentials.
-- `scripts/schema.py` is the schema: fields, validation, labels. Derive the table from it.
-- Decide photo storage early: git, the GCS bucket, or blobs. `infra/deploy.sh` (never
-  enabled) dumped images out of Postgres, which is the worst option.
-- `place_id` is the natural primary key; `city`, `website`, `modified` already exist.
-- Normalise cuisine and area so a rename doesn't silently change URLs. Rating labels are
-  defined once in schema.py; render `map.html`'s legend from them too.
-- Open questions: storage (SQLite in repo vs hosted Postgres like Neon/Supabase, both free
-  at this size), how reviews get in (form? admin? CLI?), backups.
+Deliberately not in v1:
+
+- A custom domain for the admin (the `*.run.app` URL behind IAP is enough for one user).
+- Row versioning or an edit history beyond the per-publish snapshots.
+- Staged or draft photos: a photo change is live on the CDN as soon as it is saved, only
+  the page that references it waits for Publish.
+- Multi-user roles: `VILF_ADMIN_EMAIL` is one address.
+- Per-visitor site features (accounts, comments, favourites). The public site stays static.
+
+### Surfaced by the migration
+
+- `raw/food/rheas-deli-market.jpg` has no review (`rhea-s-deli-market.md` is a different
+  slug and has its own photo). Write the review in the admin or delete the file before
+  the cleanup PR removes `raw/food`.
+- An `unlinked` boolean column so `fiji-airways` and `boba-binge` stop appearing in the
+  audit and enrich "without a place_id" counts.
+- The git packfile stays large after `git rm -r places raw/food`: history keeps every
+  JPEG. Either accept it or rewrite history with `git filter-repo` once nobody has an
+  old clone.
+- `publish` uploads and invalidates the CDN before `mark_published` and the runs row; a
+  crash in between leaves the site updated and the rows dirty, which the next publish
+  reconciles. Fine, but a "publish partially applied" note on the Publish page would
+  save a puzzled minute.
+- The mass-delete guard (`max(25, 20%)` stale objects) is tuned for a site of ~550
+  objects; revisit if the site grows or shrinks a lot.
+- `--source files` and `scripts/importer.py` can go a release after the cleanup PR; the
+  fixtures they use are small so there is no rush.
+- The admin's Preview renders `/img/...` URLs, which resolve against the admin host and
+  404 locally; pass `media_base_url` (the `/media/` route) to `enrich_place` there.
+- Neon branches are a free staging database: `./vilf build --source db` against a branch
+  URL previews a data change without a second bucket.
+- `setup-admin.sh buckets` still carries the commented rsync seed block; replace it with
+  a pointer to `./vilf db import-markdown`.
 
 ## Priority 2: New content surfaces
 
@@ -34,44 +61,35 @@ principles:
 ## Priority 3: Tooling follow-ups (cheap, from the overhaul's review notes)
 
 - `check` could run `validate_place` first and list schema problems next to Google
-  mismatches (a full pre-commit gate).
-- `audit`: print problems as found so an interrupted run still yields output. Consider an
-  `unlinked: true` frontmatter flag so `fiji-airways` and `boba-binge` stop appearing in
-  the "without a place_id" count.
-- `spatula`: `maps.app.goo.gl` short links aren't recognised (resolve the redirect or hint);
-  iPhone HEIC photos need `pillow-heif` or a hint; compute the output path after the
-  duplicate check so an aborted run leaves no empty directory.
-- `schema`: warn on a raw ` #` outside quotes (the truncation bug class); fixed-point floats.
-- `build.py`: build into a temp dir and rename so two concurrent builds can't race
-  (only matters when several agents build in one tree).
-- tests: a `tests/conftest.py` for the shared fixture loader and no-network guard
-  (duplicated in three files); the tmp-repo helper symlinks `static/` so builds write into
-  the real image cache.
-- `ruff` in the dev group; nothing lints today. `scripts/__init__.py` so it's a regular
-  package. Fonts and PNGs in `scripts/` belong in `scripts/assets/`.
+  mismatches (a full pre-publish gate).
+- `audit`: print problems as found so an interrupted run still yields output.
+- `spatula`: `maps.app.goo.gl` short links aren't recognised (resolve the redirect or hint).
+- `schema`: fixed-point floats for coordinates.
+- `ruff` in the dev group; nothing lints today. Fonts and PNGs in `scripts/` belong in
+  `scripts/assets/`.
+- A shared `site_root` fixture in `tests/conftest.py`: `make_site_root` is copied in
+  `test_build.py`, `test_publish.py` and `test_e2e.py`.
+- `Dockerfile`/`deploy.yaml`: build with `--platform linux/amd64` explicitly so a local
+  `docker build` on Apple Silicon matches CI.
+- `pg-backup.sh` could also `gcloud storage cp` the dump to `gs://vilf-media/backups/`
+  so a laptop loss does not lose the only backups.
 
 ## Housekeeping (do opportunistically)
 
-- **No staging environment.** Merging to `develop` is a production deploy. PRs now get a
-  downloadable build artifact; a real preview URL would need a second bucket.
+- **No staging environment for the site.** Publish goes straight to vilf.org. The admin's
+  Preview covers single pages; a full preview would need a second bucket (or a Neon
+  branch plus a local build, see above).
 - **Mapbox access token is hardcoded in `html/map.html`** on a collaborator's account, and
   pins MapLibre to a 2021 version. Move to your own token or a free tile source
   (OpenFreeMap / Protomaps). Also `maplibre-gl.js` loads synchronously from unpkg; `defer`
   would help first paint more than anything else on the page.
-- **deploy.yaml** still uses `google-github-actions/auth@v0` and `setup-gcloud@v0`
-  (Node16-era): likeliest next CI breakage. Bump when you can watch a deploy. Add a
-  Dependabot config for github-actions and uv (setup-uv has no floating major tag).
-- **CDN invalidation is still manual** after each deploy (`gcloud compute url-maps
-  invalidate-cdn-cache vilf-lb --path '/*'`; gcloud is installed and logged in on the Mac).
-  Give the deploy service account the permission and add it as the last workflow step so
-  changes show immediately instead of after an hour.
+- Add a Dependabot config for github-actions and uv (setup-uv has no floating major tag).
 - Add uv to the Nix dev shell.
-- **Instagram poster.** Untouched, still Selenium (`uv sync --group instagram`). Either move
-  to the official Graph API or drop it.
+- **Instagram poster.** Untouched, still Selenium (`uv sync --group instagram`) and still
+  reads markdown files. Either move to the official Graph API and the database, or drop it.
 - **Infra refactor from `origin/nix-infra`** (Tristan): cleaner auth scripts,
-  shellcheck/shfmt hooks. Never merged; no Nix on this machine to test it.
+  shellcheck/shfmt hooks. Never merged; no Nix on this machine to test it. The tofu config
+  is frozen anyway.
 - **Multi-agent workflow speed.** The overhaul ran packages in four sequential phases
-  because several edit `build.py`. Next time: give each package a git worktree and merge,
-  use one critic + two reviewers + one fix round, medium effort for reviewers, and split
-  `build.py` into modules first so packages don't collide. Save the runner as a named
-  workflow in `.claude/workflows/`.
+  because several edit `build.py`. The migration used one worktree per package and
+  merged; keep that. Save the runner as a named workflow in `.claude/workflows/`.
