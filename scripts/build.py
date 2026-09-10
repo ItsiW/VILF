@@ -9,7 +9,6 @@ from datetime import date
 from pathlib import Path
 
 import click
-import yaml
 from jinja2 import Environment, FileSystemLoader
 from markdown2 import markdown
 from mdplain import plain
@@ -26,6 +25,7 @@ from .schema import (
     load_place,
     validate_place,
     validate_unique,
+    split_frontmatter,
 )
 
 SITE_URL = "https://vilf.org"
@@ -171,9 +171,7 @@ def build_vilf() -> None:
     # about page
     about_dir = build_dir / "about"
     about_dir.mkdir(exist_ok=True, parents=True)
-    with open(Path("about.md")) as f:
-        _, frontmatter, md = f.read().split("---", 2)
-    meta = yaml.load(frontmatter, Loader=yaml.Loader)
+    meta, md = split_frontmatter(Path("about.md").read_text(encoding="utf-8"), "about.md")
     html = markdown(md.strip())
     with open(about_dir / "index.html", "w") as o:
         o.write(
@@ -230,14 +228,11 @@ def build_vilf() -> None:
             return f'Read our review on {meta["name"]} at {meta["address"]} in {meta["area"]}, and more tasty vegan {meta["cuisine"]} food in the San Francisco Bay Area from V.I.L.F!'
 
     def format_phone_number(meta):
+        # validate_place already guarantees +1 plus 10 digits
         if meta["phone"] is None:
             return
         number = meta["phone"]
-        assert len(number) == 12, meta["slug"]
-        assert number[:2] == "+1", meta["slug"]
         return f"({number[2:5]}) {number[5:8]}-{number[8:12]}"
-
-    assert format_phone_number({"phone": "+12345678987"}) == "(234) 567-8987"
 
     def format_geodata(meta):
         return f'{meta["lat"]},{meta["lon"]}'
@@ -507,9 +502,6 @@ def build_vilf() -> None:
 
     for cuisine in cuisine_names:
         slug = cuisine.lower().replace(" ", "-")
-        cuisine_places = [
-            place["name"] for place in places if place["cuisine"] == cuisine
-        ]
         rendered = cuisine_template.render(
             title=format_cuisine_title(cuisine),
             description=format_cuisine_description(cuisine),
@@ -666,10 +658,14 @@ def build_vilf() -> None:
         "## Reviews",
         "",
     ]
+    def md_link_text(name):
+        return name.replace("[", "\\[").replace("]", "\\]")
+
     for place in sorted_places:
         llms_lines.append(
-            f"- [{place['name']}]({SITE_URL}{place['url']}): {place['cuisine']} in {place['area']}. "
-            f"Taste: {place['taste_label']}. Value: {place['value_label']}."
+            f"- [{md_link_text(place['name'])}]({SITE_URL}{place['url']}): {place['cuisine']} in {place['area']}. "
+            f"Taste: {place['taste_label']}. Value: {place['value_label']}. "
+            f"[markdown]({SITE_URL}/places/{place['slug']}.md)"
         )
     (build_dir / "llms.txt").write_text("\n".join(llms_lines) + "\n", encoding="utf-8")
 

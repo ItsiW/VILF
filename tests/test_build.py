@@ -318,3 +318,12 @@ def test_closed_place_keeps_page_but_leaves_lists(tmp_path):
     assert data["gone-place"]["closed"] is True and data["test-place"]["closed"] is False
     assert "- Status: permanently closed" in (build / "places" / "gone-place.md").read_text()
     assert "/places/gone-place/" in (build / "sitemap.xml").read_text()
+
+
+def test_llms_txt_links_markdown_and_escapes_brackets(tmp_path):
+    bracketed = PLACE.replace("name: Test Place", "name: Test [Place]")
+    result = build_in_tmp_repo(tmp_path, {"test-place.md": bracketed})
+    assert result.exit_code == 0, result.output
+    text = (tmp_path / "build" / "llms.txt").read_text()
+    assert "- [Test \\[Place\\]](" in text
+    assert f"[markdown]({SITE_URL}/places/test-place.md)" in text

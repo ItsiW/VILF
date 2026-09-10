@@ -203,3 +203,30 @@ def test_clean_url_strips_tracking_parameters():
     assert clean_url("https://x.com/menu?page=2&utm_medium=cpc#top") == "https://x.com/menu?page=2#top"
     assert clean_url("https://x.com/") == "https://x.com/"
     assert clean_url(None) is None
+
+
+def test_search_text_rejects_bad_max_results(monkeypatch):
+    from scripts.places import search_text
+
+    with pytest.raises(ValueError):
+        search_text("x", max_results=0)
+    with pytest.raises(ValueError):
+        search_text("x", max_results=21)
+
+
+def test_parse_place_without_id_raises_places_error():
+    from scripts.places import PlacesError, parse_place
+
+    with pytest.raises(PlacesError, match='"id"'):
+        parse_place({"displayName": {"text": "No Id"}})
+
+
+def test_main_rejects_query_and_id_together(capsys):
+    from scripts.places import _main
+
+    with pytest.raises(SystemExit) as exc:
+        _main(["Lion Dance", "--id", "ChIJx"])
+    assert exc.value.code == 2
+    with pytest.raises(SystemExit) as exc:
+        _main([])
+    assert exc.value.code == 2

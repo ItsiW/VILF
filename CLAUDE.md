@@ -20,9 +20,9 @@ python3 -m http.server 8080 --directory build   # serve locally; use localhost, 
 
 ./vilf spatula -s 'Lion Dance Cafe'      # new review: search Google, pick, prompt for ratings, write places/<slug>.md
 ./vilf spatula --place-id ChIJ... --photo ~/photo.jpg   # skip the search; drop the photo into raw/food/<slug>.jpg
-./vilf check --contact --fix places/*.md # compare (and correct) address/coords/phone/website against Google
+./vilf check --contact --fix             # compare (and correct) address/coords/phone/website against Google; FILES optional
 ./vilf enrich                            # link reviews without a place_id (nearest match within 150 m), fill city
-./vilf audit --mark-closed               # flag permanently closed reviews (closed: True); report temporary closures
+./vilf audit --mark-closed               # flag permanently closed reviews (closed: True); FILES optional
 uv run python -m scripts.places 'query' --details   # raw API lookup for debugging
 ```
 
@@ -71,4 +71,4 @@ Templates in `html/` extend `base.html` (nav, CSS, deferred Google Analytics, an
 
 - GitHub Actions: PRs to `develop` run pytest and the build and upload `build/` as a 7-day artifact. Pushes to `develop` build with full git history (for lastmod), `gsutil rsync -d` to `gs://vilf-org` (deletes pages of removed reviews), fix Content-Type on the text/markdown outputs, and ping IndexNow. So merging to `develop` is a production deploy.
 - CDN cache invalidation is manual: `gcloud compute url-maps invalidate-cdn-cache vilf-lb --path /`.
-- `infra/` is OpenTofu generated from Nix (`flake.nix` via canivete): GCP project `vilf-com`, bucket, load balancer, certificate, DNS, and the service account whose key is the `VILF_CREDS` secret. `infra/deploy.sh` is a never-enabled Postgres-to-markdown deploy script that still references the deleted `requirements.txt`; it is the closest prior art for the database migration.
+- `infra/` is OpenTofu generated from Nix (`flake.nix` via canivete): GCP project `vilf-com`, bucket, load balancer, certificate, DNS, and the service account whose key is the `VILF_CREDS` secret. The commented-out block in `infra/server.nix` is the remnant of a never-enabled Postgres-to-markdown deploy design; its script was deleted in September 2026.

@@ -167,10 +167,55 @@ def test_check_string_coordinate_reported_not_raised(tmp_path, monkeypatch):
     assert "✔ " + good in result.output  # later files are still checked
 
 
-def test_check_no_files():
+def test_check_no_files(tmp_path, monkeypatch):
+    # no arguments means every places/*.md in the current directory; none here
+    monkeypatch.chdir(tmp_path)
     result = runner.invoke(cross_reference_md, [])
     assert result.exit_code == 0
     assert "No files to check." in result.output
+
+
+def test_check_no_args_checks_every_place(tmp_path, monkeypatch):
+    repo, places_dir = repo_layout(tmp_path)
+    write(places_dir, "one")
+    write(places_dir, "two", name="Two", lat=37.9)
+    monkeypatch.setattr(cross_reference, "get_place", lion)
+    monkeypatch.chdir(repo)
+    result = runner.invoke(cross_reference_md, [])
+    assert result.exit_code == 1, result.output
+    assert "✔ places/one.md" in result.output and "✘ places/two.md" in result.output
+
+
+def test_check_search_fallback_fetches_one_result(tmp_path, monkeypatch):
+    repo, places_dir = repo_layout(tmp_path)
+    unlinked = write(places_dir, "unlinked", place_id=None)
+    seen = {}
+
+    def fake_search(query, **kw):
+        seen.update(kw)
+        return [LION]
+
+    monkeypatch.setattr(cross_reference, "search_text", fake_search)
+    result = runner.invoke(cross_reference_md, [unlinked])
+    assert result.exit_code == 0, result.output
+    assert seen["max_results"] == 1
+
+
+def test_audit_accepts_file_arguments(tmp_path, monkeypatch):
+    repo, places_dir = repo_layout(tmp_path)
+    a = write(places_dir, "a", place_id="A")
+    write(places_dir, "b", name="B Cafe", place_id="B")
+    calls = []
+
+    def fake_get(place_id, fields=None):
+        calls.append(place_id)
+        return place_with_status("OPERATIONAL")
+
+    monkeypatch.setattr(audit, "get_place", fake_get)
+    result = runner.invoke(audit_places, [a, "--no-log"])
+    assert result.exit_code == 0, result.output
+    assert calls == ["A"]
+    assert "1 places audited" in result.output
 
 
 # --- audit ---
@@ -269,7 +314,7 @@ def test_check_fix_keeps_name_and_skips_unlinked(tmp_path, monkeypatch):
     renamed = write(places_dir, "renamed", name="Lion Dance Café (old name)", lat=37.9)
     unlinked = write(places_dir, "unlinked", place_id=None, lat=37.9)
     monkeypatch.setattr(cross_reference, "get_place", lion)
-    monkeypatch.setattr(cross_reference, "search_text", lambda q, fields=None: [LION])
+    monkeypatch.setattr(cross_reference, "search_text", lambda q, **kw: [LION])
     result = runner.invoke(cross_reference_md, ["--fix", renamed, unlinked])
     assert result.exit_code == 1, result.output  # the unlinked file is still flagged
     assert "name kept: Lion Dance Café (old name) | Google: Lion Dance Cafe" in result.output

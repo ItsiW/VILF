@@ -5,6 +5,8 @@ from pathlib import Path
 
 import pytest
 
+from scripts import schema
+
 from scripts.schema import (
     BOOLEAN_LABELS,
     FIELDS,
@@ -315,3 +317,29 @@ def test_validate_unique():
     ]) == []
     assert any("phone" in p for p in validate_unique([a, place("c", name="C", lat=5.0, lon=6.0, phone="+14155550001", menu=None)]))
     assert any("blurb" in p for p in validate_unique([a, {**place("c", name="C", lat=5.0, lon=6.0, phone=None, menu=None), "blurb": "blurb a"}]))
+
+
+def test_visited_must_be_yyyy_mm_dd():
+    problems = schema.validate_place({**VALID, "visited": "20240331"}, BODY, "slug")
+    assert any(p.startswith("visited:") for p in problems)
+    assert not any(p.startswith("visited:") for p in schema.validate_place(VALID, BODY, "slug"))
+
+
+def test_duplicate_frontmatter_key_is_an_error(tmp_path):
+    f = tmp_path / "dup.md"
+    f.write_text("---\nname: A\nname: B\n---\n")
+    with pytest.raises(schema.PlaceFileError, match="duplicate key 'name'"):
+        schema.load_place(f)
+
+
+def test_bad_yaml_is_a_value_error(tmp_path):
+    f = tmp_path / "bad.md"
+    f.write_text("---\nname: [unclosed\n---\n")
+    with pytest.raises(ValueError) as exc:  # PlaceFileError subclasses ValueError
+        schema.load_place(f)
+    assert isinstance(exc.value, schema.PlaceFileError) and "flow sequence" in str(exc.value)
+
+
+def test_split_frontmatter_for_about_page():
+    meta, body = schema.split_frontmatter('---\ntitle: "About"\n---\n\n# Hi\n\n---\n', "about.md")
+    assert meta == {"title": "About"} and body == "\n# Hi\n\n---\n"

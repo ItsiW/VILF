@@ -33,24 +33,17 @@ principles:
 
 ## Priority 3: Tooling follow-ups (cheap, from the overhaul's review notes)
 
-- `check` with no arguments should mean every `places/*.md`; run `validate_place` first
-  and list schema problems next to Google mismatches (a full pre-commit gate); the
-  `--contact` search fallback bills five Enterprise results to use one (`max_results=1`).
-- `audit`: accept file arguments; print problems as found so an interrupted run still
-  yields output. Consider an `unlinked: true` frontmatter flag so `fiji-airways` and
-  `boba-binge` stop appearing in the "without a place_id" count.
+- `check` could run `validate_place` first and list schema problems next to Google
+  mismatches (a full pre-commit gate).
+- `audit`: print problems as found so an interrupted run still yields output. Consider an
+  `unlinked: true` frontmatter flag so `fiji-airways` and `boba-binge` stop appearing in
+  the "without a place_id" count.
 - `spatula`: `maps.app.goo.gl` short links aren't recognised (resolve the redirect or hint);
   iPhone HEIC photos need `pillow-heif` or a hint; compute the output path after the
   duplicate check so an aborted run leaves no empty directory.
-- `schema`: wrap `yaml.YAMLError` in `ValueError` so callers catch one type; use
-  `re.fullmatch`; anchor `visited` to `YYYY-MM-DD`; detect duplicate frontmatter keys;
-  warn on a raw ` #` outside quotes (the truncation bug class); fixed-point floats.
-- `places`: raise `PlacesError` (not `KeyError`) when a response lacks `id`; make `query`
-  and `--id` mutually exclusive in `__main__`; clamp `max_results` to 1..20.
-- `build.py`: parse `about.md` with schema's frontmatter regex instead of `split('---', 2)`;
-  drop `format_phone_number`'s asserts (redundant with `PHONE_RE`); build into a temp dir
-  and rename so two concurrent builds can't race; `cuisine_places` is unused.
-- `llms.txt` review lines could also link `/places/<slug>.md`; escape `]` in names.
+- `schema`: warn on a raw ` #` outside quotes (the truncation bug class); fixed-point floats.
+- `build.py`: build into a temp dir and rename so two concurrent builds can't race
+  (only matters when several agents build in one tree).
 - tests: a `tests/conftest.py` for the shared fixture loader and no-network guard
   (duplicated in three files); the tmp-repo helper symlinks `static/` so builds write into
   the real image cache.
@@ -73,8 +66,7 @@ principles:
   Give the deploy service account the permission and add it as the last workflow step so
   changes show immediately instead of after an hour.
 - **Vercel's GitHub app** emails about the repo on every push; disconnect it in Vercel if unwanted.
-- `infra/deploy.sh` still pip-installs the deleted `requirements.txt`; delete it or port to
-  uv once the database design settles. Add uv to the Nix dev shell.
+- Add uv to the Nix dev shell.
 - **Instagram poster.** Untouched, still Selenium (`uv sync --group instagram`). Either move
   to the official Graph API or drop it.
 - **Infra refactor from `origin/nix-infra`** (Tristan): cleaner auth scripts,

@@ -12,11 +12,6 @@
   #   "${location}-${lib.strings.toLower format}.pkg.dev/${project}/${repository_id}/function";
   name = "localhost/server";
   tag = "0.0.1";
-  deploy = pkgs.writeShellApplication {
-    name = "deploy";
-    runtimeInputs = with pkgs; [git google-cloud-sdk jq postgresql python312];
-    text = builtins.readFile ./deploy.sh;
-  };
   server = let
     libraries = with pkgs.python3Packages; lib.concat [fastapi uvicorn] uvicorn.optional-dependencies.standard;
   in
@@ -26,7 +21,6 @@
       inherit name tag;
       layers = [
         (buildLayer {deps = [server];})
-        (buildLayer {deps = [deploy];})
       ];
       config.entrypoint = ["${server}/bin/uvicorn" "${server}/bin/main:app" "--reload"];
     };
@@ -57,7 +51,6 @@ in {
   #     VILF_PG_DB = "";
   #     VILF_PG_TABLE = "submission";
   #     VILF_GCS_BUCKET = "\${ google_storage_bucket.main.url }";
-  #     VILF_DEPLOY = toString deploy;
   #   };
   # };
 }

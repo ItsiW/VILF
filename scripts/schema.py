@@ -67,6 +67,39 @@ _FRONTMATTER_RE = re.compile(r"^---[ \t]*\n(.*?)\n---[ \t]*(?:\n(.*))?\Z", re.DO
 _BOLD_RE = re.compile(r"\*\*.+?\*\*")
 
 
+class PlaceFileError(ValueError):
+    """A place file that cannot be read: no frontmatter, bad YAML, duplicate keys."""
+
+
+class _StrictLoader(yaml.SafeLoader):
+    """SafeLoader that rejects duplicate mapping keys (PyYAML silently keeps the last)."""
+
+    def construct_mapping(self, node, deep=False):
+        seen = set()
+        for key_node, _ in node.value:
+            key = self.construct_object(key_node, deep=deep)
+            if key in seen:
+                raise yaml.constructor.ConstructorError(
+                    None, None, f"duplicate key {key!r}", key_node.start_mark
+                )
+            seen.add(key)
+        return super().construct_mapping(node, deep)
+
+
+def split_frontmatter(text: str, source: str = "") -> tuple[dict, str]:
+    """Split a markdown document into (frontmatter dict, body). Raises PlaceFileError."""
+    match = _FRONTMATTER_RE.match(text)
+    if not match:
+        raise PlaceFileError(f"{source}: no leading frontmatter block")
+    try:
+        meta = yaml.load(match.group(1), Loader=_StrictLoader)
+    except yaml.YAMLError as e:
+        raise PlaceFileError(f"{source}: {' '.join(str(e).split())}") from e
+    if not isinstance(meta, dict):
+        raise PlaceFileError(f"{source}: frontmatter is not a mapping")
+    return meta, match.group(2) or ""
+
+
 def load_place(path) -> tuple[dict, str]:
     """Read a place file and return (meta, body).
 
@@ -74,17 +107,11 @@ def load_place(path) -> tuple[dict, str]:
     means the same as `phone: `), missing optional keys get their default, and
     the body is returned verbatim (it starts with the newline after `---`).
     """
-    text = Path(path).read_text(encoding="utf-8")
-    match = _FRONTMATTER_RE.match(text)
-    if not match:
-        raise ValueError(f"{path}: no leading frontmatter block")
-    meta = yaml.safe_load(match.group(1))
-    if not isinstance(meta, dict):
-        raise ValueError(f"{path}: frontmatter is not a mapping")
+    meta, body = split_frontmatter(Path(path).read_text(encoding="utf-8"), str(path))
     meta = {k: ((v.strip() or None) if isinstance(v, str) else v) for k, v in meta.items()}
     for key, default in DEFAULTS.items():
         meta.setdefault(key, default)
-    return meta, match.group(2) or ""
+    return meta, body
 
 
 def _is_number(v) -> bool:
@@ -98,7 +125,7 @@ def _is_int(v) -> bool:
 def validate_place(meta: dict, body: str, slug: str) -> list[str]:
     """Return a list of human-readable problems; empty means valid. Never raises."""
     problems = []
-    if not re.match(SLUG_RE, slug):
+    if not re.fullmatch(SLUG_RE, slug):
         problems.append(f"slug: must match {SLUG_RE}, got {slug!r}")
     for key in meta:
         if key not in KNOWN_KEYS:
@@ -129,6 +156,8 @@ def validate_place(meta: dict, body: str, slug: str) -> list[str]:
                 )
             else:
                 try:
+                    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", v):
+                        raise ValueError
                     date.fromisoformat(v)
                 except ValueError:
                     problems.append(f"{field.name}: must be an ISO date like 2024-03-31, got {v!r}")
@@ -140,7 +169,7 @@ def validate_place(meta: dict, body: str, slug: str) -> list[str]:
         problems.append(f"lon: must be within -180..180, got {lon!r}")
 
     phone = meta.get("phone")
-    if isinstance(phone, str) and phone and not re.match(PHONE_RE, phone):
+    if isinstance(phone, str) and phone and not re.fullmatch(PHONE_RE, phone):
         problems.append(f"phone: must look like +14155551234, got {phone!r}")
 
     for key in ["taste", "value"]:

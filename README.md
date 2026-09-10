@@ -143,7 +143,7 @@ Extras:
 Before committing new markdown files, compare them with what Google Places has:
 
 ```bash
-./vilf check $(git diff --staged --name-only places/)
+./vilf check $(git diff --staged --name-only places/)   # or just ./vilf check for every review
 ```
 
 Files with a `place_id` are looked up directly; older files without one are matched by a text search on the name and address (the output says so). Name and address must match exactly, coordinates within 1e-4 degrees. Add `--contact` to also compare the phone number and show a website the file lacks. The command exits 1 on any mismatch or error, so it can gate a commit.

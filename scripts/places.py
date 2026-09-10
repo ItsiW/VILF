@@ -115,6 +115,10 @@ def clean_url(url: str | None) -> str | None:
     return urlunsplit((parts.scheme, parts.netloc, parts.path, query, parts.fragment))
 
 
+def _missing_id():
+    raise PlacesError('response has no "id"; include "id" in the field mask')
+
+
 def parse_place(data: dict) -> Place:
     """Map one Places API place object onto a Place. Pure; never touches the network."""
     comps = data.get("addressComponents", [])
@@ -132,7 +136,7 @@ def parse_place(data: dict) -> Place:
             break
     loc = data.get("location") or {}
     return Place(
-        place_id=data["id"],
+        place_id=data["id"] if "id" in data else _missing_id(),
         name=(data.get("displayName") or {}).get("text"),
         street_address=street_address,
         city=city,
@@ -186,6 +190,8 @@ def _request(method: str, path: str, *, body: dict | None = None, field_mask: st
 
 def search_text(query: str, *, max_results: int = 5, fields=CORE_FIELDS) -> list[Place]:
     """Text Search biased to the SF Bay Area. The mask needs a 'places.' prefix here."""
+    if not 1 <= max_results <= 20:
+        raise ValueError(f"max_results must be 1..20, got {max_results}")
     # pageSize replaces the deprecated maxResultCount
     body = {"textQuery": query, "locationBias": BAY_AREA_BIAS, "pageSize": max_results}
     mask = ",".join("places." + f for f in fields)
@@ -199,16 +205,15 @@ def get_place(place_id: str, *, fields=CORE_FIELDS) -> Place:
 
 def _main(argv=None):
     parser = argparse.ArgumentParser(description="Query the Google Places API (New).")
-    parser.add_argument("query", nargs="?", help="text search query")
+    target = parser.add_mutually_exclusive_group(required=True)
+    target.add_argument("query", nargs="?", help="text search query")
+    target.add_argument("--id", help="look up a place id directly instead of searching")
     parser.add_argument("--details", action="store_true", help="fetch CONTACT fields for the first result")
-    parser.add_argument("--id", help="look up a place id directly instead of searching")
     args = parser.parse_args(argv)
     try:
         if args.id:
             places = [get_place(args.id, fields=CONTACT_FIELDS if args.details else CORE_FIELDS)]
         else:
-            if not args.query:
-                parser.error("query or --id required")
             places = search_text(args.query)
             if args.details and places:
                 places = [get_place(places[0].place_id, fields=CONTACT_FIELDS)]

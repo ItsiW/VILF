@@ -60,7 +60,7 @@ def resolve(meta: dict, fields) -> tuple[Place, str | None]:
     """Return (place, note); the note explains a search fallback for files without a place_id."""
     if meta.get("place_id"):
         return get_place(meta["place_id"], fields=fields), None
-    results = search_text(f"{meta['name']} {meta['address']}", fields=fields)
+    results = search_text(f"{meta['name']} {meta['address']}", max_results=1, fields=fields)
     if not results:
         raise PlacesError("no search results")
     place = results[0]
@@ -151,7 +151,7 @@ def apply_fixes(meta: dict, place: Place, contact: bool) -> list[str]:
 def cross_reference_md(files, contact, fix):
     """Check place files against Google Places.
 
-    Files with a place_id are looked up directly; others are matched by a text
+    With no FILES, every places/*.md is checked. Files with a place_id are looked up directly; others are matched by a text
     search on the name and address (noted in the output). Name and address must
     match exactly, coordinates within 1e-4 degrees. Exits 1 if any file
     mismatches or errors, so it can gate a commit. With --fix, files that have
@@ -159,8 +159,10 @@ def cross_reference_md(files, contact, fix):
     differences, unlinked files, errors) count as mismatches.
     """
     if not files:
-        click.echo("No files to check.")
-        return
+        files = sorted(str(path) for path in Path("places").glob("*.md"))
+        if not files:
+            click.echo("No files to check.")
+            return
     fields = CONTACT_FIELDS if contact else CORE_FIELDS
     reports = {}
     fixed = {}

@@ -27,12 +27,13 @@ def set_closed(path: Path) -> None:
 
 
 @click.command()
+@click.argument("files", type=click.Path(exists=True, dir_okay=False), nargs=-1)
 @click.option(
     "--directory",
     default="./places/",
     show_default=True,
     type=click.Path(file_okay=False),
-    help="Directory of place files to audit.",
+    help="Directory of place files to audit when no FILES are given.",
 )
 @click.option(
     "--mark-closed",
@@ -41,20 +42,27 @@ def set_closed(path: Path) -> None:
     "banner, out of the map and lists). Temporarily closed places are only reported.",
 )
 @click.option("--log/--no-log", default=True, show_default=True, help="Append a line to AUDIT_LOG.md.")
-def audit_places(directory, mark_closed, log):
+def audit_places(files, directory, mark_closed, log):
     """Report reviewed places Google no longer lists as OPERATIONAL.
+
+    Pass FILES to audit just those (e.g. a review you just added); with no
+    FILES every file in --directory is audited.
 
     One Pro-tier Place Details call per file that has a place_id (a few hundred
     per run; free at monthly volume). Files without a place_id are only counted.
     Informational: always exits 0. Each run is appended to AUDIT_LOG.md so the
     next person can see when a re-audit is due.
     """
+    if files:
+        files = [Path(f) for f in files]
+        directory = str(files[0].resolve().parent)
+    else:
+        files = sorted(Path(directory).glob("*.md"))
     previous = auditlog.last(directory, "audit")
     if previous:
         click.echo(f"Last audit: {previous} ({(date.today() - previous).days} days ago)")
     else:
         click.echo("No previous audit logged.")
-    files = sorted(Path(directory).glob("*.md"))
     closed_paths = []
     groups = {
         "Permanently closed": [],
