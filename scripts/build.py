@@ -1,11 +1,11 @@
 #!/bin/python3
 """`./vilf build`: assemble snapshot-format rows and hand them to render.render_site.
 
-Legacy mode (default) reads places/*.md and raw/food/*.jpg from the current
-directory, keeps the static/img cache up to date, and takes each page's
-lastmod from git. `--snapshot` renders a JSON list of rows instead (the
-database world), with `--copy-media` to drop pre-processed images into the
-output.
+`--source db` (default) renders the rows in the database and copies the local
+media directory's img/ into the output. `--source files` is the legacy mode:
+places/*.md and raw/food/*.jpg from the current directory, the static/img
+cache kept up to date, lastmod from git. `--source snapshot` (implied by
+`--snapshot PATH`) renders a JSON list of rows.
 """
 
 import json
@@ -56,7 +56,8 @@ def load_legacy_rows(places_dir="places", raw_dir="raw/food", modified_dates=Non
 
     Files are taken in glob order (not sorted) so sitemap.xml keeps its historical order.
     """
-    modified_dates = modified_dates or {}
+    # git reports repo-relative paths whatever places_dir looks like, so match on the file name
+    modified_dates = {Path(k).name: v for k, v in (modified_dates or {}).items()}
     rows, errors = [], []
     for path in Path(places_dir).glob("*.md"):
         slug = path.stem
@@ -73,7 +74,7 @@ def load_legacy_rows(places_dir="places", raw_dir="raw/food", modified_dates=Non
         row["photo_height"] = None
         row["photo_crop_y"] = 0.5
         row["created_at"] = None
-        row["updated_at"] = f"{modified_dates.get(str(path), meta.get('visited'))}T00:00:00Z"
+        row["updated_at"] = f"{modified_dates.get(path.name, meta.get('visited'))}T00:00:00Z"
         row["published_at"] = None
         rows.append(row)
     return rows, errors
@@ -101,25 +102,36 @@ def process_raw_photos(raw_dir="raw/food", static_dir="static") -> None:
 
 @click.command()
 @click.option(
+    "--source",
+    type=click.Choice(["db", "files", "snapshot"]),
+    default=None,
+    help="Where the rows come from [default: db, or snapshot when --snapshot is given].",
+)
+@click.option(
     "--snapshot",
     type=click.Path(exists=True, dir_okay=False),
     default=None,
-    help="Render this JSON list of snapshot rows instead of places/*.md.",
+    help="Render this JSON list of snapshot rows (implies --source snapshot).",
 )
 @click.option("--out", default="build", show_default=True, help="Output directory (wiped first).")
 @click.option(
     "--copy-media",
     type=click.Path(file_okay=False),
     default=None,
-    help="Copy <DIR>/img into <out>/img after rendering.",
+    help="Copy <DIR>/img into <out>/img after rendering [default with --source db: the local media storage].",
 )
-def build_vilf(snapshot, out, copy_media) -> None:
+def build_vilf(source, snapshot, out, copy_media) -> None:
     """Build VILF locally."""
-    print("Starting build of scripts...")
+    from .config import settings
 
-    if snapshot:
+    print("Starting build of scripts...")
+    source = source or ("snapshot" if snapshot else "db")
+
+    if source == "snapshot":
+        if not snapshot:
+            raise click.UsageError("--source snapshot needs --snapshot PATH")
         rows = json.loads(Path(snapshot).read_text(encoding="utf-8"))
-    else:
+    elif source == "files":
         rows, load_errors = load_legacy_rows(modified_dates=git_modified_dates())
         if load_errors:
             for line in load_errors:
@@ -127,15 +139,24 @@ def build_vilf(snapshot, out, copy_media) -> None:
             print(f"Build failed: {len(load_errors)} problem(s)")
             raise SystemExit(1)
         process_raw_photos()
+    else:
+        from . import repo
+        from .cli import open_db
+
+        with open_db() as conn:
+            rows = repo.all_rows(conn)
+        media = settings().media_storage
+        if copy_media is None and not media.startswith("gs://") and (Path(media) / "img").is_dir():
+            copy_media = media
 
     slugs = {row["slug"] for row in rows}
     try:
-        stats = render_site(rows, Path(out))
+        stats = render_site(rows, Path(out), site_url=settings().site_url)
     except RenderError as e:
         for line in e.problems:
             head, sep, tail = line.partition(": ")
-            # legacy mode reports per-file problems as '<slug>.md <problem>', like the old build
-            print(f"{head}.md {tail}" if sep and head in slugs and not snapshot else line)
+            # file mode reports per-file problems as '<slug>.md <problem>', like the old build
+            print(f"{head}.md {tail}" if sep and head in slugs and source == "files" else line)
         print(f"Build failed: {len(e.problems)} problem(s)")
         raise SystemExit(1)
 

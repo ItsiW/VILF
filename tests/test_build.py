@@ -350,7 +350,7 @@ PLACE = (
 def test_legacy_build():
     with pytest.MonkeyPatch.context() as mp:
         mp.chdir(REPO_ROOT)
-        result = CliRunner().invoke(build_vilf, [], catch_exceptions=False)
+        result = CliRunner().invoke(build_vilf, ["--source", "files"], catch_exceptions=False)
     assert result.exit_code == 0, result.output
     assert "220 open, 26 closed" in result.output
     assert "Done building VILF with 220 places" in result.output
@@ -365,7 +365,7 @@ def test_legacy_build_reports_bad_place(tmp_path):
     (root / "places" / "broken.md").write_text("---\nname: Broken\ntaste: 9\n---\n\nno metadata\n")
     with pytest.MonkeyPatch.context() as mp:
         mp.chdir(root)
-        result = CliRunner().invoke(build_vilf, [], catch_exceptions=False)
+        result = CliRunner().invoke(build_vilf, ["--source", "files"], catch_exceptions=False)
     assert result.exit_code == 1, result.output
     errors = [line for line in result.stdout.splitlines() if PLACE_ERROR.match(line)]
     assert errors, result.output

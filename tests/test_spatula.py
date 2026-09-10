@@ -1,32 +1,37 @@
 """Offline tests for the spatula command and its helpers (scripts/spatula.py)."""
 
+import importlib.util
 import json
+from datetime import date
 from pathlib import Path
 
-import click
 import pytest
+import requests
 from click.testing import CliRunner
 from PIL import Image
 
 import scripts.places as places
 import scripts.spatula as spatula
+from scripts import repo
+from scripts.config import settings
+from scripts.db import init_db, make_engine
 from scripts.places import CONTACT_FIELDS, parse_place
-from scripts.schema import load_place, validate_place, write_place
+from scripts.schema import validate_place
 from scripts.spatula import (
+    BODY,
     BOLD_PROBLEM,
     find_duplicate,
-    find_duplicate_in_dir,
     place_to_meta,
     query_from_maps_url,
-    save_photo,
     scrape_and_gen_md,
     slugify,
     unique_name,
-    unique_path,
 )
+from scripts.storage import LocalStorage
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 FIXTURES = REPO_ROOT / "tests" / "fixtures" / "places"
+HAVE_PHOTOS = importlib.util.find_spec("scripts.photos") is not None
 
 
 def load(name):
@@ -58,6 +63,29 @@ def repo_untouched():
     assert _repo_files() == before
 
 
+@pytest.fixture(autouse=True)
+def db(tmp_path, monkeypatch):
+    url = f"sqlite:///{tmp_path}/t.db"
+    monkeypatch.setenv("DATABASE_URL", url)
+    monkeypatch.setenv("VILF_MEDIA_STORAGE", str(tmp_path / "media"))
+    monkeypatch.setenv("VILF_SITE_STORAGE", str(tmp_path / "site"))
+    settings.cache_clear()
+    engine = make_engine(url)
+    init_db(engine)
+    yield engine
+    settings.cache_clear()
+
+
+def seed(engine, slug, meta, body="\n**x**\n"):
+    with engine.begin() as conn:
+        repo.insert(conn, repo.meta_to_row(meta, body, slug=slug))
+
+
+def rows(engine):
+    with engine.connect() as conn:
+        return {r["slug"]: r for r in repo.all_rows(conn)}
+
+
 def fake_search(*results_per_call):
     """A search_text stand-in: one result list per call (the last repeats), queries recorded."""
     remaining = list(results_per_call)
@@ -84,21 +112,6 @@ def test_slugify():
     assert slugify("Ladle & Leaf") == "ladle-leaf"
     assert slugify("St. John's, Pizza") == "st-johns-pizza"
     assert slugify("Lion Dance Cafe", "380 17th St") == "lion-dance-cafe-380-17th-st"
-
-
-def test_unique_path(tmp_path):
-    d = tmp_path / "p"
-    assert unique_path(d, "foo") == d / "foo.md"
-    assert d.is_dir()
-    (d / "foo.md").touch()
-    assert unique_path(d, "foo") == d / "foo-0.md"
-    (d / "foo-0.md").touch()
-    assert unique_path(d, "foo") == d / "foo-1.md"
-    # a trailing -N on the base is stripped before appending
-    e = tmp_path / "q"
-    e.mkdir()
-    (e / "foo-3.md").touch()
-    assert unique_path(e, "foo-3") == e / "foo-0.md"
 
 
 def test_query_from_maps_url():
@@ -130,16 +143,6 @@ def test_place_to_meta():
     core = place_to_meta(SEARCH[0])
     assert core["website"] is None
     assert core["phone"] is None
-
-
-def test_find_duplicate(tmp_path):
-    base = {**place_to_meta(LION), **REVIEW}
-    write_place(tmp_path / "a.md", {**base, "lat": 37.9, "lon": -122.5}, "\n**x**\n")
-    write_place(tmp_path / "b.md", {**base, "place_id": None, "lat": 37.8062}, "\n**x**\n")  # ~11 m away
-    (tmp_path / "junk.md").write_text("no frontmatter here")
-    assert find_duplicate_in_dir({**base, "lat": 0.0, "lon": 0.0}, tmp_path) == tmp_path / "a.md"
-    assert find_duplicate_in_dir({**base, "place_id": "new"}, tmp_path) == tmp_path / "b.md"
-    assert find_duplicate_in_dir({**base, "place_id": "new", "lat": 37.7, "lon": -122.4}, tmp_path) is None
 
 
 def test_find_duplicate_rows():
@@ -184,63 +187,61 @@ def test_unique_name():
     assert unique_name("bar-7", exists) == "bar-7"
 
 
-def test_spatula_end_to_end(tmp_path, monkeypatch):
+def test_spatula_end_to_end(db, monkeypatch):
     search = fake_search(SEARCH)
     monkeypatch.setattr(spatula, "search_text", search)
     monkeypatch.setattr(spatula, "get_place", lion)
     result = runner.invoke(
         scrape_and_gen_md,
-        ["-s", "Lion Dance Cafe", "--directory", str(tmp_path)],
+        ["-s", "Lion Dance Cafe"],
         input="1\nThai\nDowntown Oakland\ny\n2\n1\nnot-a-date\n2024-03-31\n",
     )
     assert result.exit_code == 0, result.output
     assert search.queries == ["Lion Dance Cafe"]
-    path = tmp_path / "lion-dance-cafe.md"
-    meta, body = load_place(path)
-    assert meta["cuisine"] == "Thai"
-    assert meta["area"] == "Downtown Oakland"
-    assert meta["drinks"] is True
-    assert meta["taste"] == 2
-    assert meta["value"] == 1
-    assert meta["visited"] == "2024-03-31"
-    assert meta["phone"] == "+15105550199"
-    assert meta["website"] == "https://example.com/lion-dance"
-    assert meta["city"] == "Oakland"
-    assert meta["place_id"] == "ChIJfixtureLionDance"
-    assert body == "\n<REVIEW>\n"
+    row = rows(db)["lion-dance-cafe"]
+    assert row["cuisine"] == "Thai"
+    assert row["area"] == "Downtown Oakland"
+    assert row["drinks"] is True
+    assert row["taste"] == 2
+    assert row["value"] == 1
+    assert row["visited"] == "2024-03-31"
+    assert row["phone"] == "+15105550199"
+    assert row["website"] == "https://example.com/lion-dance"
+    assert row["city"] == "Oakland"
+    assert row["place_id"] == "ChIJfixtureLionDance"
+    assert row["body"] == BODY == "\n<REVIEW>\n"
+    assert row["photo_key"] is None
+    assert repo.is_dirty(row)
+    meta, body = repo.row_to_meta(row)
     assert validate_place(meta, body, "lion-dance-cafe") == [BOLD_PROBLEM]
-    assert "lion-dance-cafe.md" in result.output
+    assert "Created lion-dance-cafe" in result.output
     assert "bold" in result.output
 
 
-def test_spatula_no_prompt_skeleton(tmp_path, monkeypatch):
+def test_spatula_no_prompt_placeholders(db, monkeypatch):
     monkeypatch.setattr(spatula, "search_text", single())
     monkeypatch.setattr(spatula, "get_place", lambda *a, **k: pytest.fail("get_place called"))
-    result = runner.invoke(
-        scrape_and_gen_md,
-        ["-s", "x", "--no-prompt", "--no-details", "--city-as-area", "--directory", str(tmp_path)],
-    )
+    result = runner.invoke(scrape_and_gen_md, ["-s", "x", "--no-prompt", "--no-details", "--city-as-area"])
     assert result.exit_code == 0, result.output
-    path = tmp_path / "lion-dance-cafe.md"
-    text = path.read_text()
-    for line in (
-        "cuisine: \n",
-        "drinks: \n",
-        "visited: \n",
-        "taste: \n",
-        "area: Oakland\n",
-        "phone: \n",
-        "place_id: ChIJfixtureLionDance\n",
-    ):
-        assert line in text
-    assert "website" not in text
-    assert text.endswith("---\n\n<REVIEW>\n")
-    meta, body = load_place(path)
-    assert "cuisine: required" in validate_place(meta, body, path.stem)
+    row = rows(db)["lion-dance-cafe"]
+    # the database requires these, so --no-prompt fills placeholders to replace later
+    assert row["cuisine"] == "TBD" and row["area"] == "Oakland"
+    assert (row["drinks"], row["taste"], row["value"]) == (False, 0, 0)
+    assert row["visited"] == date.today().isoformat()
+    assert row["phone"] is None and row["website"] is None
+    assert row["place_id"] == "ChIJfixtureLionDance"
+    assert row["body"] == BODY
     assert "To do" in result.output
+    assert "placeholder area, cuisine, drinks, taste, value, visited values" in result.output
+    assert "write the review" in result.output
+    # without --city-as-area the area placeholder is still the city
+    monkeypatch.setattr(spatula, "search_text", fake_search([SEARCH[1]]))
+    result = runner.invoke(scrape_and_gen_md, ["-s", "x", "--no-prompt", "--no-details"])
+    assert result.exit_code == 0, result.output
+    assert rows(db)["fixture-vegan-kitchen"]["area"] == SEARCH[1].city
 
 
-def test_spatula_place_id(tmp_path, monkeypatch):
+def test_spatula_place_id(db, monkeypatch):
     calls = []
 
     def fake_get(place_id, fields=None):
@@ -249,110 +250,130 @@ def test_spatula_place_id(tmp_path, monkeypatch):
 
     monkeypatch.setattr(spatula, "get_place", fake_get)
     monkeypatch.setattr(spatula, "search_text", lambda *a, **k: pytest.fail("search called"))
-    result = runner.invoke(
-        scrape_and_gen_md, ["--place-id", "X", "--no-prompt", "--directory", str(tmp_path)]
-    )
+    result = runner.invoke(scrape_and_gen_md, ["--place-id", "X", "--no-prompt"])
     assert result.exit_code == 0, result.output
     assert calls == [("X", CONTACT_FIELDS)]
-    assert (tmp_path / "lion-dance-cafe.md").exists()
+    assert "lion-dance-cafe" in rows(db)
 
 
-def test_spatula_maps_url_and_retry(tmp_path, monkeypatch):
+def test_spatula_maps_url_and_retry(db, monkeypatch):
     search = fake_search([], [SEARCH[0]])
     monkeypatch.setattr(spatula, "search_text", search)
     monkeypatch.setattr(spatula, "get_place", lion)
     result = runner.invoke(
-        scrape_and_gen_md,
-        ["-s", MAPS_URL, "--no-prompt", "--directory", str(tmp_path)],
-        input="Lion Dance Cafe Oakland\n",
+        scrape_and_gen_md, ["-s", MAPS_URL, "--no-prompt"], input="Lion Dance Cafe Oakland\n"
     )
     assert result.exit_code == 0, result.output
     assert search.queries == ["Lion Dance Café", "Lion Dance Cafe Oakland"]
     assert "No results" in result.output
+    assert "lion-dance-cafe" in rows(db)
 
 
-def test_spatula_duplicate_aborts(tmp_path, monkeypatch):
-    existing = {**place_to_meta(LION), **REVIEW, "lat": 37.9, "lon": -122.5}
-    write_place(tmp_path / "existing.md", existing, "\n**x**\n")
+def test_spatula_duplicate_aborts(db, monkeypatch):
+    seed(db, "existing", {**place_to_meta(LION), **REVIEW, "name": "Existing", "lat": 37.9, "lon": -122.5, "phone": None})
     monkeypatch.setattr(spatula, "search_text", single())
     monkeypatch.setattr(spatula, "get_place", lion)
-    args = ["-s", "x", "--no-prompt", "--directory", str(tmp_path)]
+    args = ["-s", "x", "--no-prompt"]
     result = runner.invoke(scrape_and_gen_md, args)
     assert result.exit_code != 0
-    assert "existing.md" in result.output
-    assert not (tmp_path / "lion-dance-cafe.md").exists()
+    assert "existing already covers this place" in result.output
+    assert set(rows(db)) == {"existing"}
 
+    # --force ignores the duplicate; the place_id is UNIQUE though, so that clash is reported
     result = runner.invoke(scrape_and_gen_md, args + ["--force"])
-    assert result.exit_code == 0, result.output
-    assert (tmp_path / "lion-dance-cafe.md").exists()
+    assert result.exit_code != 0
+    assert "place_id ChIJfixtureLionDance already used by existing" in result.output
+    assert set(rows(db)) == {"existing"}
 
 
-def test_spatula_ask_first_declined(tmp_path, monkeypatch):
+def test_spatula_force_and_unique_slug(db, monkeypatch):
+    # same name and slug, different place and coordinates: --force writes lion-dance-cafe-0
+    seed(db, "lion-dance-cafe", {**place_to_meta(LION), **REVIEW, "name": "Lion Dance Cafe (Berkeley)", "place_id": "OTHER", "lat": 37.9, "lon": -122.5, "phone": None})
     monkeypatch.setattr(spatula, "search_text", single())
     monkeypatch.setattr(spatula, "get_place", lion)
-    result = runner.invoke(
-        scrape_and_gen_md,
-        ["-s", "x", "--no-prompt", "--ask-first", "--directory", str(tmp_path)],
-        input="n\n",
-    )
+    result = runner.invoke(scrape_and_gen_md, ["-s", "x", "--no-prompt", "--force"])
     assert result.exit_code == 0, result.output
+    assert "Created lion-dance-cafe-0" in result.output
+    assert set(rows(db)) == {"lion-dance-cafe", "lion-dance-cafe-0"}
+
+
+def test_spatula_name_clash_reported(db, monkeypatch):
+    seed(db, "far", {**place_to_meta(LION), **REVIEW, "place_id": "FAR", "lat": 37.9, "lon": -122.5, "phone": None})
+    monkeypatch.setattr(spatula, "search_text", single())
+    monkeypatch.setattr(spatula, "get_place", lion)
+    result = runner.invoke(scrape_and_gen_md, ["-s", "x", "--no-prompt"])
+    assert result.exit_code == 1, result.output
+    assert result.exception is None or isinstance(result.exception, SystemExit)
+    assert "name 'Lion Dance Cafe' reused by far and lion-dance-cafe" in result.output
+    assert set(rows(db)) == {"far"}
+
+
+def test_spatula_ask_first_declined(db, monkeypatch):
+    monkeypatch.setattr(spatula, "search_text", single())
+    monkeypatch.setattr(spatula, "get_place", lion)
+    result = runner.invoke(scrape_and_gen_md, ["-s", "x", "--no-prompt", "--ask-first"], input="n\n")
+    assert result.exit_code == 0, result.output
+    assert "Create lion-dance-cafe?" in result.output
     assert "Not writing" in result.output
-    assert list(tmp_path.glob("*.md")) == []
+    assert rows(db) == {}
 
 
-def test_spatula_photo(tmp_path, monkeypatch):
+def test_spatula_photo(db, tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     Image.new("RGB", (40, 20), "red").save("pic.png")
     monkeypatch.setattr(spatula, "search_text", single())
     monkeypatch.setattr(spatula, "get_place", lion)
-    result = runner.invoke(
-        scrape_and_gen_md,
-        ["-s", "x", "--photo", "pic.png", "--no-prompt", "--directory", "places"],
-    )
+    result = runner.invoke(scrape_and_gen_md, ["-s", "x", "--photo", "pic.png", "--no-prompt"])
     assert result.exit_code == 0, result.output
-    out = Path("raw/food/lion-dance-cafe.jpg")
-    assert out.exists()
-    assert Image.open(out).format == "JPEG"
-    assert "wider than 16:9" in result.output
-    assert Path("places/lion-dance-cafe.md").exists()
+    row = rows(db)["lion-dance-cafe"]
+    media = LocalStorage(tmp_path / "media")
+    if HAVE_PHOTOS:
+        assert row["photo_key"] == "originals/lion-dance-cafe.jpg"
+        assert (row["photo_width"], row["photo_height"]) == (40, 20)
+        assert media.exists("originals/lion-dance-cafe.jpg")
+        assert media.exists("img/food/lion-dance-cafe.webp")
+    else:
+        assert "Photo skipped" in result.output
+        assert row["photo_key"] is None
+        assert media.listing() == {}
+    assert not Path("raw").exists()
 
 
-def test_spatula_bad_photo_aborts_before_writing(tmp_path, monkeypatch):
+def test_spatula_photo_url_failure_aborts(db, monkeypatch):
+    def boom(url, **kw):
+        raise requests.ConnectionError("no network")
+
+    monkeypatch.setattr(spatula.requests, "get", boom)
+    monkeypatch.setattr(spatula, "search_text", single())
+    monkeypatch.setattr(spatula, "get_place", lion)
+    result = runner.invoke(
+        scrape_and_gen_md, ["-s", "x", "--photo", "https://example.com/pic.jpg"], input="Thai\n"
+    )
+    assert result.exit_code == 1
+    assert "cannot download photo https://example.com/pic.jpg" in result.output
+    assert "cuisine" not in result.output
+    assert rows(db) == {}
+
+
+def test_spatula_bad_photo_aborts_before_writing(db, tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     Path("not-really.png").write_bytes(b"<html>not an image</html>")
     monkeypatch.setattr(spatula, "search_text", single())
     monkeypatch.setattr(spatula, "get_place", lion)
     result = runner.invoke(
         scrape_and_gen_md,
-        ["-s", "x", "--photo", "not-really.png", "--directory", "places"],
+        ["-s", "x", "--photo", "not-really.png"],
         input="Thai\n",  # never reached: the photo is decoded before the prompts
     )
     assert result.exit_code != 0
     assert result.exception is None or isinstance(result.exception, SystemExit)
     assert "cannot decode photo not-really.png" in result.output
     assert "cuisine" not in result.output
-    assert list(Path("places").glob("*.md")) == []  # unique_path made the dir, nothing else
+    assert rows(db) == {}
     assert not Path("raw").exists()
-
-
-def test_save_photo_rules(tmp_path, monkeypatch, capsys):
-    monkeypatch.chdir(tmp_path)
-    Image.new("RGB", (16, 9), "blue").save("src.jpg")
-    data = Path("src.jpg").read_bytes()
-    dest = save_photo("src.jpg", "slug")
-    assert dest == Path("raw/food/slug.jpg")
-    assert dest.read_bytes() == data  # .jpg sources are copied byte-for-byte
-    assert "Warning" not in capsys.readouterr().out
-    with pytest.raises(click.ClickException, match="--force"):
-        save_photo("src.jpg", "slug")
-    Image.new("RGB", (8, 8), "green").save("other.png")
-    save_photo("other.png", "slug", force=True)
-    assert dest.read_bytes() != data
-    with pytest.raises(click.ClickException):
-        save_photo("missing.png", "slug2")
 
 
 def test_cli_registers_commands():
     from scripts.cli import cli
 
-    assert set(cli.commands) == {"build", "spatula", "check", "audit", "enrich"}
+    assert set(cli.commands) == {"build", "spatula", "check", "audit", "enrich", "publish", "serve", "db"}

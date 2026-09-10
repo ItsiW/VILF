@@ -7,7 +7,7 @@ import pytest
 import requests
 from click.testing import CliRunner
 
-from scripts.indexnow import ENDPOINT, fresh_urls, main
+from scripts.indexnow import ENDPOINT, fresh_urls, main, submit
 
 KEY = "0123456789abcdef0123456789abcdef"
 TODAY = date.today()
@@ -142,3 +142,31 @@ def test_fresh_urls_two_day_boundary(tmp_path):
         "https://vilf.org/b/",
         "https://vilf.org/d/",
     ]
+
+
+def test_submit_payload(posted):
+    response = submit([FRESH, STALE], key=KEY, host="vilf.org")
+    assert response.status_code == 200
+    assert posted == [
+        (
+            ENDPOINT,
+            {
+                "json": {
+                    "host": "vilf.org",
+                    "key": KEY,
+                    "keyLocation": f"https://vilf.org/{KEY}.txt",
+                    "urlList": [FRESH, STALE],
+                },
+                "timeout": 30,
+            },
+        )
+    ]
+
+
+def test_submit_propagates_request_error(monkeypatch):
+    def boom(url, **kw):
+        raise requests.ConnectionError("no network")
+
+    monkeypatch.setattr(requests, "post", boom)
+    with pytest.raises(requests.ConnectionError):
+        submit([FRESH], key=KEY)

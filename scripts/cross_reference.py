@@ -1,23 +1,20 @@
 """
-The `check` command: re-resolve place files against Google Places and diff them.
+The `check` command: re-resolve place rows against Google Places and diff them.
 
-Files with a place_id are looked up directly; the rest fall back to a text
+Rows with a place_id are looked up directly; the rest fall back to a text
 search on "<name> <address>" (first result, noted in the output). Exits 1 on
-any mismatch or error so it can gate a commit.
+any mismatch or error so it can gate a publish.
 """
 
 import re
 import sys
 from dataclasses import dataclass
-from pathlib import Path
 
 import click
-import yaml
 from unidecode import unidecode
 
-from . import auditlog
+from . import repo, runs
 from .places import CONTACT_FIELDS, CORE_FIELDS, Place, PlacesError, get_place, search_text
-from .schema import load_place, write_place
 
 LAT_RES = 1e-4
 LON_RES = 1e-4
@@ -178,76 +175,111 @@ def check_place(
 
 
 @click.command()
-@click.argument("files", type=click.Path(exists=True, dir_okay=False), nargs=-1)
+@click.argument("slugs", nargs=-1)
 @click.option(
     "--contact",
     is_flag=True,
-    help="Also fetch phone and website (Enterprise billing tier, one call per file).",
+    help="Also fetch phone and website (Enterprise billing tier, one call per place).",
 )
 @click.option(
     "--fix",
     is_flag=True,
     help="Write Google's address, coordinates, city (and with --contact: phone, website) "
-    "back into files that have a place_id. Names are never changed. Appends to AUDIT_LOG.md.",
+    "back into places that have a place_id. Names are never changed. Logs a check run.",
 )
-def cross_reference_md(files, contact, fix):
-    """Check place files against Google Places.
+def cross_reference_md(slugs, contact, fix):
+    """Check places against Google Places.
 
-    With no FILES, every places/*.md is checked. Files with a place_id are looked up directly; others are matched by a text
-    search on the name and address (noted in the output). Name and address must
-    match exactly, coordinates within 1e-4 degrees. Exits 1 if any file
-    mismatches or errors, so it can gate a commit. With --fix, files that have
-    a place_id are corrected in place and only remaining problems (name
-    differences, unlinked files, errors) count as mismatches.
+    With no SLUGS, every place in the database is checked. Places with a
+    place_id are looked up directly; others are matched by a text search on the
+    name and address (noted in the output). Name and address must match
+    exactly, coordinates within 1e-4 degrees. Exits 1 if any place mismatches
+    or errors, so it can gate a publish. With --fix, places that have a
+    place_id are corrected in the database and only remaining problems (name
+    differences, unlinked places, errors) count as mismatches.
     """
-    if not files:
-        files = sorted(str(path) for path in Path("places").glob("*.md"))
-        if not files:
+    reports = {}
+    from .cli import open_db
+
+    with open_db() as conn:
+        rows = load_rows(conn, slugs)
+        if not rows:
             click.echo("No files to check.")
             return
-    reports = {}
-    fixed = {}
-    click.echo("\nTesting files:")
-    for file in files:
-        note = None
-        info = []
-        try:
-            meta, body = load_place(file)
-            # get/search are looked up here so a monkeypatched module attribute is honoured
-            result = check_place(meta, contact=contact, fix=fix, get=get_place, search=search_text)
-            note, info, mismatches = result.note, result.info, result.mismatches
-            if result.changed:
-                write_place(file, result.meta, body)
-                fixed[file] = result.changed
-        except (PlacesError, ValueError, yaml.YAMLError) as e:
-            mismatches = [str(e)]
-        mark = "✘ " if mismatches else "✔ "
-        click.echo(mark + file + (" " + note if note else ""))
-        for line in info:
-            click.echo("  " + line)
-        if mismatches:
-            reports[file] = mismatches
+        fixed = {}
+        click.echo("\nTesting files:")
+        for row in rows:
+            slug = row["slug"]
+            note = None
+            info = []
+            try:
+                meta, _ = repo.row_to_meta(row)
+                # get/search are looked up here so a monkeypatched module attribute is honoured
+                result = check_place(meta, contact=contact, fix=fix, get=get_place, search=search_text)
+                note, info, mismatches = result.note, result.info, result.mismatches
+                if result.changed:
+                    fields = {k: v for k, v in result.meta.items() if v != meta.get(k)}
+                    clashes = unique_clashes(repo.validate_for_save(conn, {**row, **fields}), fields)
+                    if clashes:
+                        mismatches = mismatches + ["not fixed: " + p for p in clashes]
+                    else:
+                        repo.update(conn, slug, fields)
+                        fixed[slug] = result.changed
+            except (PlacesError, ValueError) as e:
+                mismatches = [str(e)]
+            mark = "✘ " if mismatches else "✔ "
+            click.echo(mark + slug + (" " + note if note else ""))
+            for line in info:
+                click.echo("  " + line)
+            if mismatches:
+                reports[slug] = mismatches
 
-    if fix:
-        counts = {}
-        for changed in fixed.values():
-            for field in changed:
-                counts[field] = counts.get(field, 0) + 1
-        detail = ", ".join(f"{k} {v}" for k, v in sorted(counts.items())) or "nothing"
-        summary = f"{len(files)} files checked, {len(fixed)} fixed ({detail}), {len(reports)} still flagged"
-        places_dir = Path(files[0]).resolve().parent
-        auditlog.append(places_dir, "check --fix", summary)
-        click.echo("\n" + summary + f" (logged to {auditlog.FILENAME})")
+        if fix:
+            counts = {}
+            for changed in fixed.values():
+                for field in changed:
+                    counts[field] = counts.get(field, 0) + 1
+            detail = ", ".join(f"{k} {v}" for k, v in sorted(counts.items())) or "nothing"
+            summary = f"{len(rows)} files checked, {len(fixed)} fixed ({detail}), {len(reports)} still flagged"
+            runs.append(
+                conn, "check", summary, scope=",".join(slugs) or "all",
+                details={"fixed": fixed, "flagged": reports},
+            )
+            click.echo("\n" + summary + " (logged)")
 
+        if reports:
+            click.echo("\nThe following files may need inspection:\n")
+            for slug, lines in reports.items():
+                click.echo(slug)
+                for line in lines:
+                    click.echo(line)
+                click.echo("")
+    # exit only after the transaction committed: SystemExit inside it would roll fixes back
     if reports:
-        click.echo("\nThe following files may need inspection:\n")
-        for file, lines in reports.items():
-            click.echo(file)
-            for line in lines:
-                click.echo(line)
-            click.echo("")
         sys.exit(1)
     click.echo("\nAll files look good.")
+
+
+_UNIQUE_LABELS = {"lat": "coordinates", "lon": "coordinates", "name": "name", "menu": "menu", "phone": "phone"}
+
+
+def unique_clashes(problems: list[str], fields: dict) -> list[str]:
+    """The 'X reused by A and B' problems caused by the fields being written (a UNIQUE column would raise)."""
+    touched = {_UNIQUE_LABELS[k] for k in fields if k in _UNIQUE_LABELS}
+    return [p for p in problems if " reused by " in p and p.split(" ", 1)[0] in touched]
+
+
+def load_rows(conn, slugs) -> list[dict]:
+    """The rows for SLUGS (unknown ones abort with exit 1), or every row when none are given."""
+    if not slugs:
+        return repo.all_rows(conn)
+    rows = []
+    for slug in slugs:
+        row = repo.get(conn, slug)
+        if row is None:
+            raise click.ClickException(f"unknown slug {slug!r}")
+        rows.append(row)
+    return rows
 
 
 if __name__ == "__main__":
