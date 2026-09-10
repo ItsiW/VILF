@@ -140,7 +140,8 @@ iap() {
     gcloud run services add-iam-policy-binding "$SERVICE" --region="$REGION" \
         --member="serviceAccount:$IAP_AGENT" --role=roles/run.invoker >/dev/null
     say "iap: enabling IAP on $SERVICE and allowing $OWNER"
-    gcloud run services update "$SERVICE" --region="$REGION" --iap --no-allow-unauthenticated
+    # (the service was deployed with --no-allow-unauthenticated; `update` has no such flag)
+    gcloud run services update "$SERVICE" --region="$REGION" --iap
     gcloud iap web add-iam-policy-binding --resource-type=cloud-run --region="$REGION" \
         --service="$SERVICE" --member="user:$OWNER" --role=roles/iap.httpsResourceAccessor >/dev/null
     printf '\nAdmin URL: %s\n' "$(gcloud run services describe "$SERVICE" --region="$REGION" --format='value(status.url)')"
