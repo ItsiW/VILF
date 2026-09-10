@@ -65,7 +65,6 @@ principles:
   invalidate-cdn-cache vilf-lb --path '/*'`; gcloud is installed and logged in on the Mac).
   Give the deploy service account the permission and add it as the last workflow step so
   changes show immediately instead of after an hour.
-- **Vercel's GitHub app** emails about the repo on every push; disconnect it in Vercel if unwanted.
 - Add uv to the Nix dev shell.
 - **Instagram poster.** Untouched, still Selenium (`uv sync --group instagram`). Either move
   to the official Graph API or drop it.
