@@ -9,6 +9,7 @@ scripts.places; GOOGLE_PLACES_API_KEY must be set (a .env at the repo root works
 
 import io
 import re
+from collections.abc import Callable, Iterable
 from datetime import date
 from pathlib import Path
 from urllib.parse import unquote, urlparse
@@ -46,17 +47,22 @@ def slugify(name: str, street: str | None = None) -> str:
     return base.lower()
 
 
+def unique_name(base: str, exists: Callable[[str], bool]) -> str:
+    """base, or base-N for the first N whose name `exists` rejects (a trailing -N is stripped first)."""
+    name = base
+    appendage = 0
+    while exists(name):
+        name = re.split(r"-\d+$", name)[0] + f"-{appendage}"
+        appendage += 1
+    return name
+
+
 def unique_path(directory, base: str) -> Path:
     """<directory>/<base>.md, or <base>-N.md for the first N that does not exist yet."""
     directory = Path(directory)
     directory.mkdir(parents=True, exist_ok=True)
-    path = directory / f"{base}.md"
-    appendage = 0
-    while path.exists():
-        stem = re.split(r"-\d+$", path.stem)[0] + f"-{appendage}"
-        path = directory / f"{stem}.md"
-        appendage += 1
-    return path
+    stem = unique_name(base, lambda name: (directory / f"{name}.md").exists())
+    return directory / f"{stem}.md"
 
 
 def query_from_maps_url(text: str) -> str | None:
@@ -110,19 +116,35 @@ def _is_number(v) -> bool:
     return isinstance(v, (int, float)) and not isinstance(v, bool)
 
 
-def find_duplicate(meta: dict, places_dir) -> Path | None:
-    """First existing file with the same place_id or within DUPLICATE_RADIUS_M metres."""
+def find_duplicate(meta: dict, rows: Iterable[dict]) -> str | None:
+    """Slug of the first row (slug, place_id, lat, lon) with the same place_id or within DUPLICATE_RADIUS_M metres."""
+    for other in rows:
+        if meta.get("place_id") and other.get("place_id") == meta["place_id"]:
+            return other["slug"]
+        coords = (meta.get("lat"), meta.get("lon"), other.get("lat"), other.get("lon"))
+        if all(_is_number(c) for c in coords) and distance_m(*coords) <= DUPLICATE_RADIUS_M:
+            return other["slug"]
+    return None
+
+
+def find_duplicate_in_dir(meta: dict, places_dir) -> Path | None:
+    """First existing file in places_dir that find_duplicate flags; unreadable files are skipped."""
+    rows = []
     for path in sorted(Path(places_dir).glob("*.md")):
         try:
             other, _ = load_place(path)
         except Exception:
             continue
-        if meta.get("place_id") and other.get("place_id") == meta["place_id"]:
-            return path
-        coords = (meta.get("lat"), meta.get("lon"), other.get("lat"), other.get("lon"))
-        if all(_is_number(c) for c in coords) and distance_m(*coords) <= DUPLICATE_RADIUS_M:
-            return path
-    return None
+        rows.append(
+            {
+                "slug": path.stem,
+                "place_id": other.get("place_id"),
+                "lat": other.get("lat"),
+                "lon": other.get("lon"),
+            }
+        )
+    slug = find_duplicate(meta, rows)
+    return Path(places_dir) / f"{slug}.md" if slug else None
 
 
 def _legend(labels: list[str]) -> str:
@@ -333,7 +355,7 @@ def scrape_and_gen_md(
         path = unique_path(directory, slugify(place.name, street))
 
     if not force:
-        dup = find_duplicate(meta, directory)
+        dup = find_duplicate_in_dir(meta, directory)
         if dup:
             raise click.ClickException(
                 f"{dup} already covers this place (same place_id or within "

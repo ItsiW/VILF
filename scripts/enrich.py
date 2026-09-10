@@ -38,12 +38,12 @@ def _describe(p: Place) -> str:
     return f"{p.name!r} at {p.street_address}, {p.city}"
 
 
-def resolve(meta: dict) -> tuple[Place | None, str]:
+def resolve(meta: dict, *, search=search_text) -> tuple[Place | None, str]:
     """Search for the file's place; returns (place, note) or (None, why it was not accepted)."""
     if meta.get("name") is None or meta.get("address") is None:
         raise ValueError("missing name/address")
     query = f"{meta['name']} {meta['address']}"
-    results = search_text(query, max_results=MAX_RESULTS)
+    results = search(query, max_results=MAX_RESULTS)
     if not results:
         return None, f"no search results for {query!r}"
     top = _describe(results[0])
@@ -58,14 +58,20 @@ def resolve(meta: dict) -> tuple[Place | None, str]:
     return place, f"{d:.0f} m"
 
 
-def enrich_file(path, *, force: bool, contact: bool, dry_run: bool) -> tuple[str, str]:
-    """Enrich one file; returns (status, detail) with status updated/unchanged/unresolved."""
-    meta, body = load_place(path)
+def enrich_meta(
+    meta: dict, *, search=search_text, get=get_place, force: bool = False, contact: bool = False
+) -> tuple[str, str, dict]:
+    """Work out what Google can add to one place's meta.
+
+    Pure: no file IO, no output. Returns (status, detail, changes) with status
+    updated/unchanged/unresolved and changes the fields to set (place_id, city,
+    website); changes is empty unless status is 'updated'.
+    """
     if meta.get("place_id") and not force:
-        return "unchanged", "already has a place_id (use --force to re-resolve)"
-    place, note = resolve(meta)
+        return "unchanged", "already has a place_id (use --force to re-resolve)", {}
+    place, note = resolve(meta, search=search)
     if place is None:
-        return "unresolved", note
+        return "unresolved", note, {}
 
     changes = {}
     if place.place_id != meta.get("place_id"):
@@ -73,16 +79,26 @@ def enrich_file(path, *, force: bool, contact: bool, dry_run: bool) -> tuple[str
     if place.city and (meta.get("city") is None or force) and place.city != meta.get("city"):
         changes["city"] = place.city
     if contact and meta.get("website") is None:
-        detail = get_place(place.place_id, fields=CONTACT_FIELDS)
+        detail = get(place.place_id, fields=CONTACT_FIELDS)
         if detail.website:
             changes["website"] = detail.website
 
     name_note = f" (Google name: {place.name!r})" if place.name != meta["name"] else ""
     if not changes:
-        return "unchanged", "already up to date" + name_note
-    if not dry_run:
+        return "unchanged", "already up to date" + name_note, {}
+    return "updated", ", ".join(f"{k}={v}" for k, v in changes.items()) + f" [{note}]" + name_note, changes
+
+
+def enrich_file(path, *, force: bool, contact: bool, dry_run: bool) -> tuple[str, str]:
+    """Enrich one file; returns (status, detail) with status updated/unchanged/unresolved."""
+    meta, body = load_place(path)
+    # search/get are looked up here so a monkeypatched module attribute is honoured
+    status, detail, changes = enrich_meta(
+        meta, search=search_text, get=get_place, force=force, contact=contact
+    )
+    if status == "updated" and not dry_run:
         write_place(path, {**meta, **changes}, body)
-    return "updated", ", ".join(f"{k}={v}" for k, v in changes.items()) + f" [{note}]" + name_note
+    return status, detail
 
 
 @click.command()

@@ -2,6 +2,7 @@
 
 import copy
 import json
+import time
 from pathlib import Path
 
 import pytest
@@ -10,9 +11,9 @@ from click.testing import CliRunner
 import scripts.audit as audit
 import scripts.cross_reference as cross_reference
 import scripts.places as places
-from scripts.audit import audit_places
-from scripts.cross_reference import cross_reference_md
-from scripts.places import CONTACT_FIELDS, PlacesError, parse_place
+from scripts.audit import AuditReport, audit_places, audit_rows
+from scripts.cross_reference import CheckResult, check_place, cross_reference_md
+from scripts.places import CONTACT_FIELDS, CORE_FIELDS, PlacesError, parse_place
 from scripts.schema import write_place
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "places"
@@ -274,6 +275,30 @@ def test_audit_bad_files_do_not_abort(tmp_path, monkeypatch):
     assert lines[i + 2] == "2 places audited, 0 without a place_id (cannot be audited), 0 already marked closed (skipped)."
 
 
+def test_audit_load_and_api_errors_interleave_in_file_order(tmp_path, monkeypatch):
+    write(tmp_path, "a-broken", name="A Cafe", place_id="E")
+    (tmp_path / "b-bad-yaml.md").write_text("---\nname: [unclosed\nplace_id: Z\n---\n")
+    write(tmp_path, "c-broken", name="C Cafe", place_id="E")
+    (tmp_path / "d-bad-yaml.md").write_text("---\nname: [unclosed\nplace_id: Z\n---\n")
+    write(tmp_path, "e-open", place_id="A")
+
+    def fake_get(place_id, fields=None):
+        if place_id == "E":
+            raise PlacesError("quota")
+        return place_with_status("OPERATIONAL")
+
+    monkeypatch.setattr(audit, "get_place", fake_get)
+    result = runner.invoke(audit_places, ["--directory", str(tmp_path), "--no-log"])
+    assert result.exit_code == 0, result.output
+    lines = result.output.splitlines()
+    i = lines.index("Could not check (4):")
+    assert lines[i + 1] == "  a-broken: A Cafe: quota"
+    assert lines[i + 2].startswith("  b-bad-yaml: ")
+    assert lines[i + 3] == "  c-broken: C Cafe: quota"
+    assert lines[i + 4].startswith("  d-bad-yaml: ")
+    assert lines[i + 5].startswith("3 places audited, ")
+
+
 def test_audit_all_operational(tmp_path, monkeypatch):
     write(tmp_path, "open", place_id="A")
     monkeypatch.setattr(audit, "get_place", lion)
@@ -403,3 +428,179 @@ def test_check_fix_keeps_unit_detail_and_numberless_addresses(tmp_path, monkeypa
     result = runner.invoke(cross_reference_md, ["--fix", other])
     assert cross_reference.load_place(other)[0]["address"] == "One Ferry Building"
     assert "Current address" in result.output  # still reported, just not overwritten
+
+
+# --- pure cores: check_place and audit_rows ---
+
+
+def recording(place=LION):
+    """A get_place stand-in returning `place`; calls recorded as (place_id, fields)."""
+
+    def get(place_id, fields=None):
+        get.calls.append((place_id, fields))
+        return place
+
+    get.calls = []
+    return get
+
+
+def no_search(*a, **k):
+    pytest.fail("search called")
+
+
+def test_check_place_contact():
+    get = recording()
+    meta = {**BASE, "phone": "+15105550100"}
+    before = dict(meta)
+    result = check_place(meta, contact=True, fix=False, get=get, search=no_search)
+    assert isinstance(result, CheckResult)
+    assert get.calls == [("ChIJfixtureLionDance", CONTACT_FIELDS)]
+    assert result.place is LION
+    assert result.note is None
+    assert result.mismatches == [
+        "Current phone number: +15105550100 | Determined phone number: +15105550199"
+    ]
+    assert result.info == ["Website (not in file): https://example.com/lion-dance"]
+    assert result.changed == []
+    assert result.meta == before and meta == before
+
+
+def test_check_place_all_good_core_fields():
+    get = recording()
+    result = check_place(BASE, contact=False, fix=False, get=get, search=no_search)
+    assert get.calls == [("ChIJfixtureLionDance", CORE_FIELDS)]
+    assert (result.mismatches, result.info, result.changed) == ([], [], [])
+
+
+def test_check_place_fix():
+    meta = {**BASE, "address": "1 Wrong St", "lat": 37.9, "lon": -122.0, "phone": "+15105550000"}
+    before = dict(meta)
+    result = check_place(meta, contact=True, fix=True, get=recording(), search=no_search)
+    assert result.changed == ["address", "coordinates", "phone", "website"]
+    assert "fixed: address, coordinates, phone, website" in result.info
+    assert result.mismatches == []
+    assert result.meta["address"] == LION.street_address
+    assert result.meta["lat"] == round(LION.lat, 7) and result.meta["lon"] == round(LION.lon, 7)
+    assert result.meta["phone"] == LION.phone and result.meta["website"] == LION.website
+    assert result.meta["name"] == "Lion Dance Cafe"
+    assert meta == before  # the caller's dict is never mutated
+
+
+def test_check_place_fix_nothing_to_fix():
+    result = check_place(BASE, contact=True, fix=True, get=recording(), search=no_search)
+    assert result.changed == []
+    assert result.mismatches == []
+    assert not any(line.startswith("fixed") for line in result.info)
+
+
+def test_check_place_fix_keeps_name():
+    meta = {**BASE, "name": "Lion Dance Café (old name)", "lat": 37.9}
+    result = check_place(meta, contact=False, fix=True, get=recording(), search=no_search)
+    assert result.mismatches == []
+    assert result.changed == ["coordinates"]
+    assert "name kept: Lion Dance Café (old name) | Google: Lion Dance Cafe" in result.info
+    assert result.meta["name"] == "Lion Dance Café (old name)"
+    # without fix the name difference is still a mismatch
+    result = check_place(meta, contact=False, fix=False, get=recording(), search=no_search)
+    assert any(m.startswith("Current name") for m in result.mismatches)
+    assert result.changed == []
+
+
+def test_check_place_search_fallback():
+    seen = {}
+
+    def search(query, **kw):
+        seen["query"] = query
+        seen.update(kw)
+        return [SEARCH[0]]
+
+    meta = {**BASE, "place_id": None, "lat": 37.8161}
+    result = check_place(meta, contact=False, fix=True, get=recording(), search=search)
+    assert seen == {"query": "Lion Dance Cafe 380 17th St", "max_results": 1, "fields": CORE_FIELDS}
+    assert result.note == "(no place_id: matched by search to Lion Dance Cafe, ChIJfixtureLionDance)"
+    assert result.mismatches == ["Current latitude: 37.8161 | Determined latitude: 37.8061"]
+    assert result.changed == []  # never fixes a place without a place_id
+    assert result.meta["lat"] == 37.8161
+
+    with pytest.raises(PlacesError, match="no search results"):
+        check_place(meta, contact=False, fix=False, get=recording(), search=lambda *a, **k: [])
+
+
+def test_check_place_missing_name_raises():
+    with pytest.raises(ValueError, match="missing name"):
+        check_place({**BASE, "name": None}, contact=False, fix=False, get=recording(), search=no_search)
+    with pytest.raises(ValueError, match="missing name, address"):
+        check_place({}, contact=False, fix=False, get=recording(), search=no_search)
+
+
+def test_check_place_places_error_propagates():
+    def boom(place_id, fields=None):
+        raise PlacesError("boom")
+
+    with pytest.raises(PlacesError, match="boom"):
+        check_place(BASE, contact=False, fix=False, get=boom, search=no_search)
+
+
+AUDIT_ROWS = [
+    ("open", {**BASE, "name": "Lion Dance Cafe", "place_id": "A"}),
+    ("closed", {**BASE, "name": "Shuttered Vegan Diner", "place_id": "B"}),
+    ("temp", {**BASE, "name": "Temp Cafe", "place_id": "C"}),
+    ("weird", {**BASE, "name": "Weird Cafe", "place_id": "D"}),
+    ("broken", {**BASE, "name": "Broken Cafe", "place_id": "E"}),
+    ("noid", {**BASE, "name": "No Id Cafe", "place_id": None}),
+    ("done", {**BASE, "name": "Done Cafe", "place_id": "F", "closed": True}),
+]
+
+
+def audit_get(delay=0.0):
+    responses = {
+        "A": place_with_status("OPERATIONAL"),
+        "B": parse_place(load("details_closed.json")),
+        "C": place_with_status("CLOSED_TEMPORARILY"),
+        "D": place_with_status("SOMETHING_NEW"),
+    }
+
+    def get(place_id, fields=None):
+        get.calls.append(place_id)
+        if delay:
+            # earlier rows finish later, so the pool has to keep row order itself
+            time.sleep(delay * (6 - "ABCDE".index(place_id)))
+        if place_id == "E":
+            raise PlacesError("quota")
+        return responses[place_id]
+
+    get.calls = []
+    return get
+
+
+def test_audit_rows():
+    get = audit_get()
+    report = audit_rows(AUDIT_ROWS, get=get)
+    assert isinstance(report, AuditReport)
+    assert report.groups == {
+        "Permanently closed": ["closed: Shuttered Vegan Diner: CLOSED_PERMANENTLY"],
+        "Temporarily closed": ["temp: Temp Cafe: CLOSED_TEMPORARILY"],
+        "Unknown status": ["weird: Weird Cafe: SOMETHING_NEW"],
+        "Could not check": ["broken: Broken Cafe: quota"],
+    }
+    assert report.closed_slugs == ["closed"]
+    assert (report.audited, report.no_id, report.already_closed) == (5, 1, 1)
+    assert sorted(get.calls) == ["A", "B", "C", "D", "E"]  # nothing fetched for noid / done
+
+
+def test_audit_rows_empty_and_all_operational():
+    report = audit_rows([], get=lambda *a, **k: pytest.fail("get called"))
+    assert report == AuditReport()
+    assert list(report.groups) == ["Permanently closed", "Temporarily closed", "Unknown status", "Could not check"]
+    report = audit_rows([("open", {**BASE, "place_id": "A"})], get=audit_get())
+    assert not any(report.groups.values()) and report.audited == 1
+
+
+def test_audit_rows_workers_equal():
+    sequential = audit_rows(AUDIT_ROWS, get=audit_get(), workers=1)
+    parallel = audit_rows(AUDIT_ROWS, get=audit_get(delay=0.002), workers=4)
+    assert sequential == parallel
+    assert parallel.groups["Could not check"] == ["broken: Broken Cafe: quota"]
+    # more rows than one bucket, still in row order
+    rows = [(f"r{i}", {**BASE, "name": f"Cafe {i}", "place_id": "B"}) for i in range(10)]
+    assert audit_rows(rows, get=audit_get(), workers=4).closed_slugs == [f"r{i}" for i in range(10)]

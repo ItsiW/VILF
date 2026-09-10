@@ -2,12 +2,14 @@
 The `audit` command: which reviewed places does Google no longer list as OPERATIONAL?
 """
 
+from collections.abc import Iterable
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
 
 import click
 import yaml
-from tqdm.auto import tqdm
 
 from . import auditlog
 from .places import PlacesError, get_place
@@ -17,6 +19,59 @@ BUCKET = {
     "CLOSED_PERMANENTLY": "Permanently closed",
     "CLOSED_TEMPORARILY": "Temporarily closed",
 }
+GROUPS = ("Permanently closed", "Temporarily closed", "Unknown status", "Could not check")
+
+
+@dataclass
+class AuditReport:
+    """Outcome of audit_rows: '<slug>: <name>: <STATUS>' lines per group, in row order."""
+
+    groups: dict[str, list[str]] = field(default_factory=lambda: {g: [] for g in GROUPS})
+    closed_slugs: list[str] = field(default_factory=list)  # CLOSED_PERMANENTLY, not yet marked
+    audited: int = 0
+    no_id: int = 0
+    already_closed: int = 0
+
+
+def audit_rows(rows: Iterable[tuple[str, dict]], *, get=get_place, workers: int = 8) -> AuditReport:
+    """Fetch the business status of every (slug, meta) row that has a place_id and is not closed.
+
+    Pure: no file IO, no output. Rows are fetched concurrently when workers > 1;
+    lines keep row order either way. A PlacesError lands in 'Could not check'.
+    """
+    report = AuditReport()
+    todo = []
+    for slug, meta in rows:
+        if meta.get("closed"):
+            report.already_closed += 1
+        elif not meta.get("place_id"):
+            report.no_id += 1
+        else:
+            report.audited += 1
+            # load_place only defaults the optional keys, so name may be absent
+            todo.append((slug, meta.get("name"), meta["place_id"]))
+
+    def fetch(item):
+        slug, name, place_id = item
+        try:
+            return slug, name, get(place_id).business_status
+        except PlacesError as e:
+            return slug, name, e
+
+    if workers > 1 and len(todo) > 1:
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            results = list(pool.map(fetch, todo))
+    else:
+        results = [fetch(item) for item in todo]
+
+    for slug, name, status in results:
+        if isinstance(status, PlacesError):
+            report.groups["Could not check"].append(f"{slug}: {name}: {status}")
+        elif status != "OPERATIONAL":
+            report.groups[BUCKET.get(status, "Unknown status")].append(f"{slug}: {name}: {status}")
+            if status == "CLOSED_PERMANENTLY":
+                report.closed_slugs.append(slug)
+    return report
 
 
 def set_closed(path: Path) -> None:
@@ -63,43 +118,34 @@ def audit_places(files, directory, mark_closed, log):
         click.echo(f"Last audit: {previous} ({(date.today() - previous).days} days ago)")
     else:
         click.echo("No previous audit logged.")
-    closed_paths = []
-    groups = {
-        "Permanently closed": [],
-        "Temporarily closed": [],
-        "Unknown status": [],
-        "Could not check": [],
-    }
-    no_id = 0
-    already_closed = 0
-    audited = 0
-    # disable=None: the bar only shows on a TTY, so tests and CI logs stay clean
-    for path in tqdm(files, desc="auditing places", disable=None):
+    rows = []
+    load_errors = {}
+    for path in files:
         try:
             meta, _ = load_place(path)
         except (ValueError, yaml.YAMLError) as e:
             # YAML errors span several lines; keep one line per place
-            groups["Could not check"].append(f"{path.stem}: {' '.join(str(e).split())}")
+            load_errors[path] = f"{path.stem}: {' '.join(str(e).split())}"
             continue
-        if meta.get("closed"):
-            already_closed += 1
-            continue
-        if not meta.get("place_id"):
-            no_id += 1
-            continue
-        audited += 1
-        name = meta.get("name")  # load_place only defaults the optional keys
-        try:
-            place = get_place(meta["place_id"])
-        except PlacesError as e:
-            groups["Could not check"].append(f"{path.stem}: {name}: {e}")
-            continue
-        status = place.business_status
-        if status == "OPERATIONAL":
-            continue
-        groups[BUCKET.get(status, "Unknown status")].append(f"{path.stem}: {name}: {status}")
-        if status == "CLOSED_PERMANENTLY":
-            closed_paths.append(path)
+        rows.append((path.stem, meta))
+    # get_place is looked up here so a monkeypatched module attribute is honoured
+    report = audit_rows(rows, get=get_place)
+    groups = report.groups
+    if load_errors:
+        # interleave load failures with the API failures (already in file order) by file order
+        api_errors = iter(groups["Could not check"])
+        pending = next(api_errors, None)
+        merged = []
+        for path in files:
+            if path in load_errors:
+                merged.append(load_errors[path])
+            elif pending is not None and pending.startswith(f"{path.stem}: "):
+                merged.append(pending)
+                pending = next(api_errors, None)
+        groups["Could not check"] = merged
+    audited, no_id, already_closed = report.audited, report.no_id, report.already_closed
+    by_stem = {p.stem: p for p in files}
+    closed_paths = [by_stem[slug] for slug in report.closed_slugs]
 
     for title, lines in groups.items():
         if lines:

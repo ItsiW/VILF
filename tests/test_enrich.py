@@ -9,6 +9,7 @@ from click.testing import CliRunner
 import scripts.enrich as enrich
 import scripts.places as places
 from scripts.enrich import enrich as enrich_cmd
+from scripts.enrich import enrich_meta
 from scripts.places import CONTACT_FIELDS, distance_m, parse_place
 from scripts.schema import load_place, write_place
 
@@ -255,3 +256,95 @@ def test_cli_registers_enrich():
     from scripts.cli import cli
 
     assert "enrich" in cli.commands
+
+
+# --- pure core: enrich_meta (search/get passed explicitly; the autouse no_get_place fixture
+# proves the module-level get_place is never reached) ---
+
+
+def no_search(*a, **k):
+    pytest.fail("search called")
+
+
+def no_get(*a, **k):
+    pytest.fail("get called")
+
+
+def test_enrich_meta_updated():
+    search = fake_search([SEARCH[0]])
+    before = dict(BASE)
+    status, detail, changes = enrich_meta(BASE, search=search, get=no_get)
+    assert status == "updated"
+    assert detail == "place_id=ChIJfixtureLionDance, city=Oakland [0 m]"
+    assert changes == {"place_id": "ChIJfixtureLionDance", "city": "Oakland"}
+    assert search.queries == ["Lion Dance Cafe 380 17th St"]
+    assert BASE == before  # never mutated
+
+
+def test_enrich_meta_unresolved():
+    # nearest is SEARCH[0] (~500 m), listed second so the nearest-not-first logic is exercised
+    status, detail, changes = enrich_meta(
+        {**BASE, "lat": 37.8106}, search=fake_search([SEARCH[1], SEARCH[0]]), get=no_get
+    )
+    assert status == "unresolved"
+    assert "'Lion Dance Cafe'" in detail and "500 m" in detail and "limit 150 m" in detail
+    assert changes == {}
+    status, detail, changes = enrich_meta(BASE, search=fake_search([]), get=no_get)
+    assert (status, changes) == ("unresolved", {})
+    assert detail == "no search results for 'Lion Dance Cafe 380 17th St'"
+    status, detail, changes = enrich_meta({**BASE, "lat": None}, search=fake_search([SEARCH[0]]), get=no_get)
+    assert status == "unresolved" and detail.startswith("no coordinates in file") and changes == {}
+
+
+def test_enrich_meta_unchanged():
+    status, detail, changes = enrich_meta({**BASE, "place_id": "OLD"}, search=no_search, get=no_get)
+    assert (status, detail, changes) == ("unchanged", "already has a place_id (use --force to re-resolve)", {})
+    linked = {**BASE, "place_id": "ChIJfixtureLionDance", "city": "Oakland"}
+    status, detail, changes = enrich_meta(linked, search=fake_search([SEARCH[0]]), get=no_get, force=True)
+    assert (status, detail, changes) == ("unchanged", "already up to date", {})
+
+
+def test_enrich_meta_force():
+    stale = {**BASE, "place_id": "OLD", "city": "Elsewhere"}
+    status, detail, changes = enrich_meta(stale, search=fake_search([SEARCH[0]]), get=no_get, force=True)
+    assert status == "updated"
+    assert changes == {"place_id": "ChIJfixtureLionDance", "city": "Oakland"}
+    # without force an existing city is kept even when Google's differs
+    status, _, changes = enrich_meta({**BASE, "city": "Elsewhere"}, search=fake_search([SEARCH[0]]), get=no_get)
+    assert status == "updated" and changes == {"place_id": "ChIJfixtureLionDance"}
+
+
+def test_enrich_meta_contact():
+    calls = []
+
+    def get(place_id, fields=None):
+        calls.append((place_id, fields))
+        return LION
+
+    status, detail, changes = enrich_meta(BASE, search=fake_search([SEARCH[0]]), get=get, contact=True)
+    assert status == "updated"
+    assert calls == [("ChIJfixtureLionDance", CONTACT_FIELDS)]
+    assert changes["website"] == LION.website
+    assert "website=https://example.com/lion-dance" in detail
+    # a website already in the file is kept and costs no details call
+    calls.clear()
+    status, _, changes = enrich_meta(
+        {**BASE, "website": "https://keep.example"}, search=fake_search([SEARCH[0]]), get=get, contact=True
+    )
+    assert calls == [] and "website" not in changes and status == "updated"
+    # without contact the details call never happens
+    enrich_meta(BASE, search=fake_search([SEARCH[0]]), get=no_get)
+
+
+def test_enrich_meta_name_note():
+    status, detail, changes = enrich_meta(
+        {**BASE, "name": "Lion Dance Café"}, search=fake_search([SEARCH[0]]), get=no_get
+    )
+    assert status == "updated"
+    assert detail.endswith(" (Google name: 'Lion Dance Cafe')")
+    assert "name" not in changes
+
+
+def test_enrich_meta_missing_name_raises():
+    with pytest.raises(ValueError, match="missing name/address"):
+        enrich_meta({**BASE, "name": None}, search=no_search, get=no_get)
