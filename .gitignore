@@ -15,3 +15,6 @@ scripts/tmp.jpg
 .venv/
 .pytest_cache/
 __pycache__/
+vilf.db
+.media/
+.site/
