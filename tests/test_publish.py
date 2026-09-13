@@ -176,6 +176,21 @@ def test_bookkeeping_failure_reports_partial_publish_and_retry(env, monkeypatch)
     assert not repo.is_dirty(repo.get(env["conn"], "draft-place"))
 
 
+def test_bookkeeping_failure_inside_request_transaction(env, monkeypatch):
+    def broken(*args, **kwargs):
+        raise RuntimeError("bookkeeping failed")
+
+    monkeypatch.setattr(repo, "mark_published", broken)
+    with env["engine"].begin() as conn:
+        result = publish(conn, media=env["media"], site=env["site"], settings=Settings(),
+                         html_dir=env["root"] / "html", static_dir=env["root"] / "static",
+                         about_path=env["root"] / "about.md", today=TODAY)
+        assert result.status == "failed" and result.partially_applied
+    with env["engine"].connect() as conn:
+        assert runs.recent(conn)[0]["status"] == "failed"
+        assert repo.is_dirty(repo.get(conn, "draft-place"))
+
+
 def test_edit_changes_only_its_page_and_feeds(env):
     conn, site = env["conn"], env["site"]
     run(env)

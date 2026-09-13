@@ -244,8 +244,11 @@ def publish(
         except Exception:  # noqa: BLE001 - reported, not raised, so the row is not left running
             error = traceback.format_exc()
             conn.rollback()
-            runs.finish(conn, run_id, "failed", "crashed: " + error.strip().splitlines()[-1], error=error,
-                        details=progress, snapshot_key=progress.get("snapshot_key"))
+            # The caller may own an engine.begin() context, which cannot be reused
+            # after rollback. Record failure independently, including SQL failures.
+            with conn.engine.begin() as own:
+                runs.finish(own, run_id, "failed", "crashed: " + error.strip().splitlines()[-1], error=error,
+                            details=progress, snapshot_key=progress.get("snapshot_key"))
             return PublishResult(
                 run_id, "failed", progress["uploaded"], progress["deleted"], progress["unchanged"],
                 progress.get("snapshot_key"), None, error, progress.get("cdn_invalidated", False),
