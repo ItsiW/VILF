@@ -174,7 +174,7 @@
   {% if closed %}
   <p class="closed-banner"><b class="dnr">Permanently closed.</b> This review is kept for the record; the restaurant is no longer open.</p>
   {% endif %}
-  <p class="address"><a href="geo://?q={{ geodata }}">{{ address }}, <b>{{ area }}</b></a></p>
+  <p class="address"><a href="https://www.google.com/maps/search/?api=1&amp;query={{ geodata | urlencode }}{% if place_id %}&amp;query_place_id={{ place_id | urlencode }}{% endif %}" target="_blank" rel="noopener noreferrer">{{ address }}, <b>{{ area }}</b></a></p>
   <p class="cuisine"><a href="/cuisines/{{ cuisine.lower().replace(' ','-') }}/">{{ cuisine }} food</a></p>
   <p class="restaurant-links">
     {% set menu_link = menu or website %}

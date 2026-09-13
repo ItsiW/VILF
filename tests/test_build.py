@@ -235,6 +235,29 @@ def test_images_follow_photo_key(site):
     assert "gone-place" not in preload and "bare-place" not in preload
 
 
+def test_address_links_use_google_place_id_with_coordinates_fallback(site):
+    from html import unescape
+    from urllib.parse import parse_qs, urlparse
+
+    rows, out, _ = site
+    assert any(r.get("place_id") for r in rows)
+    assert any(not r.get("place_id") for r in rows)
+    for row in rows:
+        html = page(out, row["slug"])
+        href = unescape(re.search(r'<p class="address"><a href="([^"]+)"', html).group(1))
+        url = urlparse(href)
+        assert url.scheme == "https" and url.netloc == "www.google.com"
+        assert url.path == "/maps/search/"
+        query = parse_qs(url.query)
+        assert query["api"] == ["1"]
+        assert query["query"] == [f'{row["lat"]},{row["lon"]}']
+        if row.get("place_id"):
+            assert query["query_place_id"] == [row["place_id"]]
+        else:
+            assert "query_place_id" not in query
+        assert "geo://" not in html
+
+
 def test_media_base_url(tmp_path):
     root = make_site_root(tmp_path)
     out, _ = render(load_rows(), root, media_base_url="https://media.example")
