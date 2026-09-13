@@ -231,7 +231,7 @@ def test_images_follow_photo_key(site):
     assert '<div class="food-image-container">' in page(out, "test-place")
     assert '<div class="food-image-container">' not in page(out, "bare-place")
     preload = re.search(r"preload\(\.\.\.(\[.*?\])\)", (out / "index.html").read_text()).group(1)
-    assert "'/img/thumb/test-place.webp'" in preload
+    assert "/img/thumb/test-place.webp" in json.loads(preload)
     assert "gone-place" not in preload and "bare-place" not in preload
 
 

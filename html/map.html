@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block extra_head %}
-<script src="https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.js"></script>
-<link href="https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.css" rel="stylesheet" />
+<link href="https://unpkg.com/maplibre-gl@6.9.0/dist/maplibre-gl.css" rel="stylesheet" />
 <link rel="alternate" type="application/json" href="/places.json">
 
 <style>
@@ -177,14 +176,15 @@
   <p class="state-legend-text"><b class="mono-info">Open:</b> again</p>
 </div>
 
-<script>
+<script type="module">
+import * as maplibregl from 'https://unpkg.com/maplibre-gl@6.9.0/dist/maplibre-gl.mjs';
+
 // Defer heavy map initialization until after critical rendering
 function initializeMap() {
-  maplibregl.accessToken = "pk.eyJ1IjoidHJpc2NodGFuZGVyIiwiYSI6ImNsNmZwNXY2MDAxOWEzZG41b213NWJ2ZjIifQ.pMjBga8kA5XQuDw19WQ8TQ";
 
 var map = new maplibregl.Map({
   container: "map",
-  style: "mapbox://styles/mapbox/outdoors-v11",
+  style: "https://tiles.openfreemap.org/styles/liberty",
   center: [-122.3556,37.7989],
   zoom: 11,
   hash: "spot",
@@ -213,7 +213,7 @@ map.addControl(
 
 function placeHTML(properties) {
   // don't show image if unavailable or on mobile
-  if (properties.food_thumb_path == "null") {
+  if (!properties.food_thumb_path || properties.food_thumb_path == "null") {
     return `${_placeHTMLbody(properties)}`;
   }
   return `
@@ -257,7 +257,7 @@ function _placeHTMLbody(properties) {
 // open in new window
 function placeClickedDesktop(event) {
   var feature = event.features[0];
-  window.open(feature.properties.url, '_blank');
+  window.open(feature.properties.url, '_blank', 'noopener,noreferrer');
 }
 
 map.on("load", function () {
@@ -288,6 +288,7 @@ map.on("load", function () {
 
   map.addLayer({
     "id": "poi-labels",
+    "minzoom": 14,
     "type": "symbol",
     "source": "places",
     'layout': {
@@ -295,7 +296,7 @@ map.on("load", function () {
       'text-variable-anchor': ['top'],
       'text-radial-offset': 1,
       'text-justify': 'auto',
-      'text-font': ["Open Sans Bold","Arial Unicode MS Regular"],
+      'text-font': ["Noto Sans Bold"],
     },
     'paint':{
       'text-color': ["get", "taste_color"],
@@ -303,7 +304,6 @@ map.on("load", function () {
       'text-halo-width': .8,
       'text-halo-color': "#000000",
     },
-    "filter": [">=", ["zoom"], 14]
   });
 
   // preload thumbnails after a short delay to prevent blocking
@@ -316,7 +316,7 @@ map.on("load", function () {
   });
 
   function createPopup(event) {
-    feature = event.features[0];
+    const feature = event.features[0];
     popup
       .setLngLat(feature.geometry.coordinates)
       .setHTML(
@@ -328,11 +328,7 @@ map.on("load", function () {
     const popupElement = popup.getElement();
     if (popupElement) {
       popupElement.addEventListener('click', () => {
-        if (activeFeature && activeFeature.url === feature.url) {
-          location.href = feature.properties.url;
-          activeFeature = null;
-          popup.remove();
-        }
+        location.href = feature.properties.url;
       });
     }
     
@@ -383,15 +379,6 @@ map.on("load", function () {
       activeFeature = clickedFeature;
       createPopup(e);
 
-      // Also handle clicks on the popup to open the link
-      const popupElement = popup.getElement();
-      if (popupElement) {
-        popupElement.addEventListener('click', () => {
-          location.href = clickedFeature.properties.url;
-          activeFeature = null;
-          popup.remove();
-        });
-      }
     });
 
 
@@ -427,20 +414,20 @@ map.on("load", function () {
 
 function imagePreloader() {
   var images = new Array()
-  function preload() {
-    for (i = 0; i < preload.arguments.length; i++) {
+  function preload(...urls) {
+    for (let i = 0; i < urls.length; i++) {
       images[i] = new Image()
-      images[i].src = preload.arguments[i]
+      images[i].src = urls[i]
     }
   }
-  preload(...{{ thumbnails }});
+  preload(...{{ thumbnails | tojson }});
 }
 
 } // End of initializeMap function
 
 // Initialize map after critical rendering, or when browser is idle
 if (window.requestIdleCallback) {
-  requestIdleCallback(initializeMap);
+  requestIdleCallback(initializeMap, {timeout: 1000});
 } else {
   setTimeout(initializeMap, 100);
 }

@@ -73,10 +73,9 @@ already protect against laptop loss; see `infra/backup/README.md`.
 - **No staging environment for the site.** Publish goes straight to vilf.org. The admin's
   Preview covers single pages; a full preview would need a second bucket (or a Neon
   branch plus a local build, see above).
-- **Mapbox access token is hardcoded in `html/map.html`** on a collaborator's account, and
-  pins MapLibre to a 2021 version. Move to your own token or a free tile source
-  (OpenFreeMap / Protomaps). Also `maplibre-gl.js` loads synchronously from unpkg; `defer`
-  would help first paint more than anything else on the page.
+- **Map provider migration complete:** the homepage uses OpenFreeMap Liberty and
+  pinned MapLibre 6.9.0, loaded as a deferred JavaScript module. No Mapbox account
+  or token is needed. Retain provider attribution when changing the map style.
 - Add a Dependabot config for github-actions and uv (setup-uv has no floating major tag).
 - Add uv to the Nix dev shell.
 - **Instagram poster.** Untouched, still Selenium (`uv sync --group instagram`) and still

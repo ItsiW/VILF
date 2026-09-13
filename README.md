@@ -57,6 +57,13 @@ Every admin action has a command, all reading `.env`:
 
 ## Infrastructure
 
+The public homepage map uses [OpenFreeMap Liberty](https://openfreemap.org/quick_start/)
+with MapLibre GL JS 6.9.0 (pinned JS module/CSS URLs in `html/map.html`). No account,
+API key, or billing setup is required. OpenFreeMap's public service has no uptime
+guarantee; keep its automatic OpenStreetMap/OpenMapTiles attribution visible.
+Restaurant markers still come from our generated `places.geojson`. This does not
+change the Google Places lookup or Google Maps embeds in the admin.
+
 Everything is in the GCP project `vilf-com`: the site bucket behind a load balancer with Cloud CDN, the media bucket served at `vilf.org/img/`, the admin on Cloud Run behind IAP, the database on Neon. `infra/README.md` documents what exists, the setup script (`infra/admin/setup-admin.sh`), CI, backups and the migration runbook. The 2024 Nix/OpenTofu config under `infra/` is frozen; `nix develop` still gives a dev shell with the formatting hooks.
 
 If you edit the bucket by hand, drop the CDN cache:
