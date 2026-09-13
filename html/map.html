@@ -10,10 +10,22 @@
   flex: 0 0 auto;
   line-height: 1.2;
 }
+/* Comic Sans is much wider than the final title font on some systems and
+   pushes navigation onto a second row until the web font arrives. */
+.header .vilf, .header .tm {
+  font-family: 'Emilys Candy', 'Times New Roman', Times, serif;
+}
+/* Choose the stacked layout by viewport, not by changing font widths. */
+@media (max-width: 1349px) {
+  .header > .left {
+    flex-basis: 100%;
+  }
+}
 .content-wrapper {
   flex: 1 1 0;
   min-height: 0;
   height: auto;
+  position: relative;
 }
 #map {
   padding: 0;
@@ -46,7 +58,7 @@
 .state-legend {
   background-color: #ffffff;
   border-radius: 3px;
-  top: 12rem;
+  top: 5.5rem;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   font: 12px/20px 'Lato', sans-serif;
   padding: 0.1rem .3rem 0.1rem .3rem;
@@ -62,18 +74,13 @@
 .label-legend {
   background-color: #ffffff;
   border-radius: 3px;
-  top: 7rem;
+  top: 0.5rem;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   font: 12px/20px 'Lato', sans-serif;
   padding: 0.1rem .3rem 0.1rem .3rem;
   position: absolute;
   left: 0.5rem;
   z-index: 1;
-}
-@media (min-width: 720px) {
-  .label-legend {
-    top: 7.5rem;
-  }
 }
 .label-legend-line {
   padding: 0;
