@@ -111,16 +111,32 @@ def boolean_html(boolean):
 
 
 def format_title(meta):
-    return f'{meta["name"]} — Tasty vegan food in {meta["area"]}, in the San Francisco Bay Area — Vegans In Love with Food'
+    cuisine = f" {meta['cuisine']}" if meta.get("cuisine") else ""
+    location = meta.get("city") or meta.get("area")
+    location_text = f", {location}" if location else ""
+    closed = " (closed)" if meta.get("closed") else ""
+    return f"{meta['name']}{closed}: Vegan{cuisine} review{location_text} | VILF"
 
 
-def format_description_with_dishes(meta, md):
-    """Generate enhanced meta description with specific dishes mentioned"""
-    dishes = re.findall(r"\*\*(.*?)\*\*", md)
-    if dishes:
-        dishes_text = ", ".join(dishes[:2])  # Max 2 dishes for meta description
-        return f'Read our review on {meta["name"]} featuring {dishes_text} at {meta["address"]} in {meta["area"]}, and more tasty vegan {meta["cuisine"]} food in the San Francisco Bay Area from V.I.L.F!'
-    return f'Read our review on {meta["name"]} at {meta["address"]} in {meta["area"]}, and more tasty vegan {meta["cuisine"]} food in the San Francisco Bay Area from V.I.L.F!'
+def format_description(meta):
+    """Use recorded facts, never infer dishes or current menus from review prose."""
+    locations = []
+    for key in ("area", "city"):
+        location = meta.get(key)
+        if location and location.casefold() not in [x.casefold() for x in locations]:
+            locations.append(location)
+    location_text = f" in {', '.join(locations)}" if locations else ""
+    cuisine = f" {meta['cuisine']}" if meta.get("cuisine") else ""
+    description = f"Vegan{cuisine} food review of {meta['name']}{location_text}."
+    if meta.get("closed"):
+        description = f"Permanently closed. Archived {description[0].lower()}{description[1:]}"
+    taste_labels = ["Do Not Recommend", "Something Going For It", "Good", "Phenomenal"]
+    if meta.get("taste") is not None:
+        description += f" Rated {taste_labels[meta['taste']]} for taste."
+    if meta.get("visited"):
+        visited = date.fromisoformat(meta["visited"])
+        description += f" Visited {visited.strftime('%B %Y')}."
+    return description
 
 
 def format_phone_number(meta):
@@ -253,7 +269,7 @@ def render_place_page(env: Environment, place: dict, *, cuisine_names=None) -> s
             f"/cuisines/{place['cuisine'].lower().replace(' ', '-')}/" if has_cuisine_page else None
         ),
         title=format_title(place),
-        description=format_description_with_dishes(place, place["md"]),
+        description=format_description(place),
         content=markdown(place["md"]),
     )
 
