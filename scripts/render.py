@@ -242,10 +242,16 @@ def enrich_place(row: dict, *, today: date, media_base_url: str = "") -> dict:
     return place
 
 
-def render_place_page(env: Environment, place: dict) -> str:
+def render_place_page(env: Environment, place: dict, *, cuisine_names=None) -> str:
     """HTML for one enriched place (also used by the admin preview)."""
+    has_cuisine_page = (
+        place["cuisine"] in cuisine_names if cuisine_names is not None else not place.get("closed")
+    )
     return env.get_template("place.html").render(
         **place,
+        cuisine_url=(
+            f"/cuisines/{place['cuisine'].lower().replace(' ', '-')}/" if has_cuisine_page else None
+        ),
         title=format_title(place),
         description=format_description_with_dishes(place, place["md"]),
         content=markdown(place["md"]),
@@ -297,6 +303,7 @@ def render_site(
     # Closed places keep their page (with a banner) but stay out of the map, the
     # best/latest/cuisine/neighborhood lists and llms.txt.
     places = [place for place in all_places if not place.get("closed")]
+    cuisine_names = sorted({place["cuisine"] for place in places})
 
     # map page
     _write(
@@ -331,7 +338,10 @@ def render_site(
 
     # place pages
     for place in all_places:
-        _write(out_dir / "places" / place["slug"] / "index.html", render_place_page(env, place))
+        _write(
+            out_dir / "places" / place["slug"] / "index.html",
+            render_place_page(env, place, cuisine_names=cuisine_names),
+        )
         pages += 1
         sitemap.append({"url": f"{site_url}{place['url']}", "lastmod": place["modified"]})
 
@@ -389,10 +399,11 @@ def render_site(
     sitemap.insert(2, {"url": f"{site_url}/latest/", "changefreq": "daily"})
 
     # cuisines
-    cuisine_names = sorted(set([place["cuisine"] for place in places]))
     _write(
         out_dir / "cuisines" / "index.html",
         env.get_template("cuisine-list.html").render(
+            title="Vegan food by cuisine in the Bay Area | VILF",
+            description="Browse VILF's restaurant reviews by cuisine to find vegan options across the San Francisco Bay Area.",
             url="/cuisines/",
             cuisines=[
                 {
@@ -424,16 +435,6 @@ def render_site(
         )
         pages += 1
         sitemap.append({"url": f"{site_url}/cuisines/{slug}/", "changefreq": "daily"})
-
-    _write(
-        out_dir / "sitemap.xml",
-        env.get_template("sitemap.xml").render(
-            urls=[
-                (item.get("url"), item.get("lastmod", today), item.get("changefreq"))
-                for item in sitemap
-            ]
-        ),
-    )
 
     # neighborhood pages (only areas with 3+ places)
     neighborhood_names = sorted(set([place["area"] for place in places]))
@@ -470,6 +471,17 @@ def render_site(
     )
     pages += 1
     sitemap.append({"url": f"{site_url}/neighborhoods/", "changefreq": "weekly"})
+
+    # Write only after every canonical HTML page has been collected.
+    _write(
+        out_dir / "sitemap.xml",
+        env.get_template("sitemap.xml").render(
+            urls=[
+                (item.get("url"), item.get("lastmod", today), item.get("changefreq"))
+                for item in sitemap
+            ]
+        ),
+    )
 
     # AI-assistant outputs: llms.txt, llms-full.txt, places/<slug>.md, places.json
     llms_lines = [INTRO, "## Pages", ""]

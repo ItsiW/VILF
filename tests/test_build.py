@@ -193,8 +193,48 @@ def test_sitemap_lastmod(site):
         assert lastmods[f"{SITE_URL}/places/{row['slug']}/"] == row["updated_at"][:10], row["slug"]
     for path in ["/", "/about/", "/best/", "/latest/", "/cuisines/"]:
         assert lastmods[f"{SITE_URL}{path}"] == "2026-09-09", path
-    # the old build wrote sitemap.xml before appending the neighborhood URLs; kept for parity
-    assert f"{SITE_URL}/neighborhoods/" not in lastmods
+    assert lastmods[f"{SITE_URL}/neighborhoods/"] == "2026-09-09"
+
+
+def test_sitemap_includes_all_generated_pages(tmp_path, make_site_root):
+    root = make_site_root(tmp_path)
+    rows = load_rows()
+    for row in rows:
+        row["area"] = "The Mission"
+    out, _ = render(rows, root)
+    urls = re.findall(r"<loc>([^<]+)</loc>", (out / "sitemap.xml").read_text())
+    expected = {
+        SITE_URL + "/" + str(p.relative_to(out)).removesuffix("index.html")
+        for p in out.rglob("index.html")
+    }
+    assert set(urls) == expected
+    assert len(urls) == len(expected)
+    assert SITE_URL + "/neighborhoods/the-mission/" in urls
+    assert '<a href="/neighborhoods/">Neighborhoods</a>' in (out / "index.html").read_text()
+
+
+def test_cuisine_directory_metadata(site):
+    _, out, _ = site
+    html = (out / "cuisines/index.html").read_text()
+    assert "<title>Vegan food by cuisine in the Bay Area | VILF</title>" in html
+    assert 'name="description" content="Browse VILF' in html
+
+
+@pytest.mark.parametrize("shared_cuisine", [False, True])
+def test_closed_cuisine_links_only_when_destination_exists(tmp_path, make_site_root, shared_cuisine):
+    root = make_site_root(tmp_path)
+    rows = load_rows()
+    closed = next(r for r in rows if r["closed"])
+    closed["cuisine"] = rows[0]["cuisine"] if shared_cuisine else "Peruvian"
+    out, _ = render(rows, root)
+    html = page(out, closed["slug"])
+    url = f"/cuisines/{closed['cuisine'].lower().replace(' ', '-')}/"
+    assert (f'href="{url}"' in html) == shared_cuisine
+    items = ld_blocks(html)["BreadcrumbList"]["itemListElement"]
+    assert [i["position"] for i in items] == list(range(1, len(items) + 1))
+    assert len(items) == (3 if shared_cuisine else 2)
+    for item in items:
+        assert (out / item["item"].removeprefix(SITE_URL).lstrip("/") / "index.html").exists()
 
 
 def test_menu_link_falls_back_to_website(site):

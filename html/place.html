@@ -151,15 +151,15 @@
       "name": "Home",
       "item": "{{ SITE_URL }}/"
     },
-    {
+    {% if cuisine_url %}{
       "@type": "ListItem",
       "position": 2,
       "name": {{ (cuisine ~ " Restaurants") | tojson }},
-      "item": "{{ SITE_URL }}/cuisines/{{ cuisine.lower().replace(' ','-') }}/"
-    },
+      "item": "{{ SITE_URL }}{{ cuisine_url }}"
+    },{% endif %}
     {
       "@type": "ListItem",
-      "position": 3,
+      "position": {{ 3 if cuisine_url else 2 }},
       "name": {{ name | tojson }},
       "item": "{{ SITE_URL }}{{ url }}"
     }
@@ -175,7 +175,7 @@
   <p class="closed-banner"><b class="dnr">Permanently closed.</b> This review is kept for the record; the restaurant is no longer open.</p>
   {% endif %}
   <p class="address"><a href="https://www.google.com/maps/search/?api=1&amp;query={{ geodata | urlencode }}{% if place_id %}&amp;query_place_id={{ place_id | urlencode }}{% endif %}" target="_blank" rel="noopener noreferrer">{{ address }}, <b>{{ area }}</b></a></p>
-  <p class="cuisine"><a href="/cuisines/{{ cuisine.lower().replace(' ','-') }}/">{{ cuisine }} food</a></p>
+  <p class="cuisine">{% if cuisine_url %}<a href="{{ cuisine_url }}">{{ cuisine }} food</a>{% else %}{{ cuisine }} food{% endif %}</p>
   <p class="restaurant-links">
     {% set menu_link = menu or website %}
     {% if menu_link %}
