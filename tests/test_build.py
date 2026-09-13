@@ -56,6 +56,17 @@ def site(tmp_path_factory, make_site_root):
     return rows, out, stats
 
 
+def test_map_styles_arrive_in_html_without_a_blocking_cdn_request(site):
+    _, out, _ = site
+    homepage = (out / "index.html").read_text()
+    css = (REPO_ROOT / "html/vendor/maplibre-gl-6.9.0.css").read_text().strip()
+    assert css in homepage
+    assert 'href="https://unpkg.com/maplibre-gl@' not in homepage
+    assert 'maplibre-gl@6.9.0/dist/maplibre-gl.mjs' in homepage
+    assert (REPO_ROOT / "static/vendor/maplibre-gl-LICENSE.txt").is_file()
+    assert 'setTimeout(imagePreloader, 1000);' in homepage
+
+
 def ld_blocks(page_text):
     """Every JSON-LD block on a page, parsed and keyed by @type."""
     blocks = {}

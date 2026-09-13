@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block extra_head %}
-<link href="https://unpkg.com/maplibre-gl@6.9.0/dist/maplibre-gl.css" rel="stylesheet" />
+{# Keep this vendored stylesheet in sync with the pinned JavaScript version. #}
+<style>/* MapLibre GL JS 6.9.0; license: /vendor/maplibre-gl-LICENSE.txt */
+{% include "vendor/maplibre-gl-6.9.0.css" %}</style>
 <link rel="alternate" type="application/json" href="/places.json">
 
 <style>

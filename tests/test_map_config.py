@@ -6,7 +6,7 @@ def test_map_uses_account_free_tiles_and_pinned_module():
     assert 'https://tiles.openfreemap.org/styles/liberty' in template
     assert 'mapbox://' not in template and 'accessToken' not in template
     assert 'maplibre-gl@6.9.0/dist/maplibre-gl.mjs' in template
-    assert 'maplibre-gl@6.9.0/dist/maplibre-gl.css' in template
+    assert 'vendor/maplibre-gl-6.9.0.css' in template
     assert '<script type="module">' in template
     assert '"Noto Sans Bold"' in template
     assert '"minzoom": 14' in template
