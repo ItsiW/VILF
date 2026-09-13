@@ -19,7 +19,7 @@ uv sync                                  # deps into .venv (add --group instagra
 ./vilf serve [--reload]                  # admin app at http://localhost:8000 (no IAP: you are VILF_DEV_USER)
 ./vilf build [--source db|files|snapshot] [--snapshot FILE] [--out build] [--copy-media DIR]   # static build into build/ (wiped first); exits 1 on bad data
 python3 -m http.server 8080 --directory build   # serve the build; use localhost, not 0.0.0.0, or the map won't render
-uv run pytest                            # ~560 offline tests including a real render and the e2e test
+uv run pytest                            # offline tests including a real render and the e2e test
 
 ./vilf spatula -s 'Lion Dance Cafe'      # new review row: search Google, pick, prompt for ratings; body stays <REVIEW>
 ./vilf spatula --place-id ChIJ... --photo ~/photo.jpg   # skip the search; photo goes into media storage
@@ -57,7 +57,7 @@ name, cuisine, address, area, lat, lon, phone, menu, drinks, visited, taste, val
 
 ## Media keys (scripts/photos.py, scripts/images.py)
 
-Media storage (`VILF_MEDIA_STORAGE`, a directory or `gs://vilf-media`) holds `originals/<slug>.jpg` (the upload re-encoded as a plain JPEG, EXIF stripped, orientation applied), the four variants `img/food/<slug>.jpg|.webp` (1200x675) and `img/thumb/<slug>.jpg|.webp` (426x240), and `snapshots/<UTC stamp>.json` written by every publish. `set_photo` stores original + variants, `recrop` rewrites the variants at a new `crop_y` (0 top .. 1 bottom; ignored for photos 16:9 or wider), `delete_photo` removes all five keys. Publish never writes or deletes `img/` in site storage: the bucket serves `/img/*` from media, and the local `static/img/` cache must never be pushed.
+Media storage (`VILF_MEDIA_STORAGE`, a directory or `gs://vilf-media`) holds `originals/<slug>.jpg` (EXIF stripped, orientation applied) and four variants: `img/food/<slug>.jpg|.webp` (1200x675) and `img/thumb/<slug>.jpg|.webp` (426x240). Publish snapshots are private in `VILF_BACKUP_STORAGE=gs://vilf-backups`, not the public media bucket. `set_photo` stores original + variants, `recrop` rewrites variants at a new `crop_y` (0 top .. 1 bottom; ignored for photos 16:9 or wider), and `delete_photo` removes all five media keys. Publish never writes or deletes `img/` in site storage; the load balancer serves those paths from media.
 
 ## Admin app (app/)
 
@@ -87,7 +87,7 @@ House style: `router = APIRouter(dependencies=[Depends(current_user)])`; `search
 `publish(conn, *, media, site, settings, cdn=None, by_email=None, force=False, today=None, html_dir='html', static_dir='static', about_path='about.md') -> PublishResult` does, in order:
 
 1. `validate_rows` every row (`validate_place` + `validate_unique`); any problem fails the run before anything is written.
-2. Write `snapshots/<stamp>.json` of the rows to media storage.
+2. Write `snapshots/<stamp>.json` of the rows to private backup storage (local-only setups without backup storage fall back to local media).
 3. `render.render_site` into a temp dir (place pages, `/best/`, `/latest/`, `/cuisines/*`, `/neighborhoods/*` for areas with 3+ places, `places.geojson`, `sitemap.xml`, `robots.txt`, `llms.txt`, `llms-full.txt`, `places.json`, `places/<slug>.md`; the `Verdict:` line on each page is reused there).
 4. Upload every file whose md5 differs from the site listing (16 threads; `max-age=3600` for html/json/geojson/txt/xml/md, `86400` otherwise; `img/` excluded), then delete stale keys unless there are more than `max(MASS_DELETE_MIN=25, 20%)` of them and `force` is false.
 5. Invalidate the CDN (`/*`, non-fatal), `mark_published` the dirty rows, finish the `runs` row (details: counts, added/removed/changed diff against the last snapshot), and submit fresh sitemap URLs to IndexNow when `VILF_INDEXNOW=1`.
@@ -134,6 +134,6 @@ A `running` runs row is committed on its own connection first; a second publish 
 - **Cutover complete**: CI deploys the admin, not restaurant content. Public content is published from the database; `/img/*` is served from the media bucket. Legacy files are recoverable from Git history but are no longer a live data source.
 - **`infra/admin/setup-admin.sh <section>`**: `apis`, `buckets` (gs://vilf-media, soft delete on both buckets), `cdn` (backend bucket with `X-Vilf-Backend: media`), `service-accounts`, `roles` (objectAdmin on both buckets, custom `vilfCdnInvalidator`), `registry` (Artifact Registry with cleanup policy), `secrets`, `run` (bootstraps the service with the hello image, sets env and secrets), `iap`, `deployer` (`vilf-deployer@` + `VILF_DEPLOY_KEY`), `urlmap` (routes `/img/*` to the media bucket; exports `urlmap-before.yaml` first), `all-but-urlmap`. Re-runnable.
 - **Frozen**: the 2024 Nix/OpenTofu config (`flake.nix`, `infra/*.nix`) created the project, `gs://vilf-org`, url map `vilf-lb`, certificate, DNS and the old `vilfer` service account (`VILF_CREDS`). Its state is encrypted to a departed collaborator's key: never run tofu.
-- **Backups**: `infra/backup/pg-backup.sh` + launchd plist dump the Neon database nightly at 04:15 into `~/Backups/vilf/` (30 days kept). Restore with `pg_restore`, then publish.
+- **Backups**: private cloud JSON + original photos run daily at 04:30 UTC. `infra/backup/pg-backup.sh` + launchd dump the database and copy originals to `~/Backups/vilf/` daily at 04:15 Mac local time. See `infra/backup/README.md` for retention and recovery. Admin backup status includes both.
 - Manual CDN invalidation (publish does it itself): `gcloud compute url-maps invalidate-cdn-cache vilf-lb --path '/*'`.
 - Migration status and the step-by-step runbook: `infra/README.md`.

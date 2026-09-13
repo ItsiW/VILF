@@ -353,13 +353,25 @@ a guarantee that every historical data-access event was logged.
 - Disabled `vilfer@vilf-com.iam.gserviceaccount.com`, removed its
   `roles/storage.objectAdmin` binding on `gs://vilf-org`, then deleted it.
 - Deleted the GitHub Actions secret `VILF_CREDS`.
-- Retained `VILF_DEPLOY_KEY` and the unrelated `CLIMAX_VILF_SA_KEY` secret.
+- Retained `VILF_DEPLOY_KEY`. Subsequently deleted `CLIMAX_VILF_SA_KEY`,
+  the obsolete 2022 GitHub credential for `climax-vilf-bucket`, replaced in 2024.
+  Its underlying Google key was not identified or revoked.
 
 Retired account unique ID: `102747106945516708717`. Its one user-managed key
 was `41766467194d30ada4633432ed18324945d9f909`. The deleted GitHub secret cannot
 be retrieved. Do not recreate the legacy identity; use the current deployer.
 The frozen Nix definitions still describe the retired resources: do not run
 OpenTofu or use that old configuration to restore infrastructure.
+
+### Deployment credential packaging
+
+Docker images are built and smoke-tested before GitHub authentication. All three
+ignore files exclude `gha-creds-*.json`; the image smoke check rejects credential
+files and `.env`. During September 12 cleanup, the old deployer key
+`b0dee6f222c9b2ed158cf022fe0d5f84258df808` was disabled and replaced in
+`VILF_DEPLOY_KEY` because previous Docker builds could include the auth action's
+generated credential file. Old images must not be treated as clean artifacts;
+the retired key must remain unusable. Never print credentials in build logs.
 
 ## CI
 

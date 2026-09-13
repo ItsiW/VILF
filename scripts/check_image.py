@@ -13,6 +13,13 @@ import time
 from urllib.request import urlopen
 
 
+def check_no_credentials(root):
+    """Fail the image check if deployment credentials entered the build context."""
+    assert not list(root.rglob("gha-creds-*.json")), "Deployment credentials found in image"
+    assert not (root / ".env").exists(), "Local environment file found in image"
+    assert not (root / "scripts/credentials.json").exists(), "Local credentials found in image"
+
+
 def main():
     from jinja2 import Environment, FileSystemLoader
     from scripts.neighborhoods import suggest_area
@@ -20,6 +27,7 @@ def main():
     assert suggest_area(37.7633332, -122.4801045) == "Outer Sunset"
 
     root = Path(__file__).resolve().parent.parent
+    check_no_credentials(root)
     templates = Environment(loader=FileSystemLoader(root / "app/templates"))
     for name in ["base.html", "places/list.html", "places/new.html", "places/edit.html",
                  "places/_form.html", "places/_table.html", "places/_candidates.html",

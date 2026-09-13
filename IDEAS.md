@@ -2,10 +2,10 @@
 
 Things to pursue, in priority order. The 2026-09-09 overhaul (branch cleanup, uv, Places
 API, schema, SEO, AI discoverability, data reconciliation) is done, and the database
-migration is built. The `runs` table (visible on the admin's Sync page, or
+migration is complete. The `runs` table (visible on the admin's Sync page, or
 `runs.last(conn, "audit")`) says when the data was last checked against Google.
 
-## Database migration: built, pending cutover
+## Database migration: complete
 
 What exists (runbook and status in `infra/README.md`): a `places` + `runs` schema derived
 from `scripts/schema.py` (`scripts/db.py`, `repo.py`), the importer from the markdown
@@ -13,11 +13,12 @@ archive, the FastAPI + htmx admin app (`app/`: Google lookup, edit, photo upload
 relink, preview, sync, publish), `scripts/publish.py` (validate, snapshot, render, md5
 mirror, mass-delete guard, CDN, IndexNow), JSON snapshots per publish with
 `db restore-snapshot`, Cloud Run behind IAP deployed by CI, the media bucket on the CDN,
-nightly pg_dump. 557 offline tests including an end-to-end one.
+nightly cloud JSON/original-photo backups, and Mac database/original-photo backups.
+The admin is at `admin.vilf.org`; the legacy reviews/photos and old deployment
+credentials have been removed. Tests run offline, including an end-to-end test.
 
 Deliberately not in v1:
 
-- A custom domain for the admin (the `*.run.app` URL behind IAP is enough for one user).
 - Row versioning or an edit history beyond the per-publish snapshots.
 - Staged or draft photos: a photo change is live on the CDN as soon as it is saved, only
   the page that references it waits for Publish.
@@ -26,9 +27,6 @@ Deliberately not in v1:
 
 ### Surfaced by the migration
 
-- `raw/food/rheas-deli-market.jpg` has no review (`rhea-s-deli-market.md` is a different
-  slug and has its own photo). Write the review in the admin or delete the file before
-  the cleanup PR removes `raw/food`.
 - An `unlinked` boolean column so `fiji-airways` and `boba-binge` stop appearing in the
   audit and enrich "without a place_id" counts.
 - The git packfile stays large after `git rm -r places raw/food`: history keeps every
@@ -42,12 +40,8 @@ Deliberately not in v1:
   objects; revisit if the site grows or shrinks a lot.
 - `--source files` and `scripts/importer.py` can go a release after the cleanup PR; the
   fixtures they use are small so there is no rush.
-- The admin's Preview renders `/img/...` URLs, which resolve against the admin host and
-  404 locally; pass `media_base_url` (the `/media/` route) to `enrich_place` there.
 - Neon branches are a free staging database: `./vilf build --source db` against a branch
   URL previews a data change without a second bucket.
-- `setup-admin.sh buckets` still carries the commented rsync seed block; replace it with
-  a pointer to `./vilf db import-markdown`.
 
 ## Priority 2: New content surfaces
 
@@ -71,8 +65,8 @@ Deliberately not in v1:
   `test_build.py`, `test_publish.py` and `test_e2e.py`.
 - `Dockerfile`/`deploy.yaml`: build with `--platform linux/amd64` explicitly so a local
   `docker build` on Apple Silicon matches CI.
-- `pg-backup.sh` could also `gcloud storage cp` the dump to `gs://vilf-media/backups/`
-  so a laptop loss does not lose the only backups.
+Never upload database backups to the public media bucket. Private cloud backups
+already protect against laptop loss; see `infra/backup/README.md`.
 
 ## Housekeeping (do opportunistically)
 

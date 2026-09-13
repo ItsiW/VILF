@@ -27,6 +27,11 @@ jobs:
 
       - run: uv run pytest
 
+      # Build and inspect before generating any deployment credentials.
+      - run: docker build -t "$IMAGE" .
+
+      - run: docker run --rm "$IMAGE" python -m scripts.check_image
+
       - uses: google-github-actions/auth@v2
         with:
           credentials_json: "${{ secrets.VILF_DEPLOY_KEY }}"
@@ -34,10 +39,6 @@ jobs:
       - uses: google-github-actions/setup-gcloud@v2
 
       - run: gcloud auth configure-docker us-west1-docker.pkg.dev --quiet
-
-      - run: docker build -t "$IMAGE" .
-
-      - run: docker run --rm "$IMAGE" python -m scripts.check_image
 
       - run: docker push "$IMAGE"
 
