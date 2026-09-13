@@ -13,16 +13,11 @@ this README is the record of what exists and, below, the migration runbook.
 
 ## What is here
 
-- **2024 Nix/OpenTofu config (frozen)**: `default.nix`, `bucket.nix`,
-  `network.nix`, `dns.nix`, `certificate.nix`, `server.nix`/`server.py`,
-  generated into OpenTofu by canivete from `flake.nix`. It created the project,
-  bucket `gs://vilf-org`, backend bucket `vilf-org`, url map `vilf-lb` with the
-  HTTP to HTTPS redirect, the static IP, certificate map, DNS, and the `vilfer`
-  service account whose key is the GitHub secret `VILF_CREDS`. Its tofu state is
-  sops-encrypted to a former collaborator's age key (`.sops.yaml`), so **do not
-  run tofu**: it cannot read the state and would try to recreate everything.
-  The commented block in `server.nix` is a never-enabled Postgres-to-markdown
-  deploy design.
+- **Live resources**: the site bucket, load balancer, certificates, and DNS are
+  managed directly in GCP. The unused 2024 Nix/OpenTofu definitions, generated
+  state, and unimplemented deploy server have been removed from the checkout.
+  Git history retains them for reference only; do not apply that obsolete state.
+  Removing these files did not delete any live resources.
 - **`admin/setup-admin.sh`**: the admin app's cloud setup, one section per
   resource group (below). `admin/ar-cleanup.json` is its Artifact Registry
   cleanup policy. `admin/urlmap-before.yaml` appears after the `urlmap` section
@@ -360,8 +355,8 @@ a guarantee that every historical data-access event was logged.
 Retired account unique ID: `102747106945516708717`. Its one user-managed key
 was `41766467194d30ada4633432ed18324945d9f909`. The deleted GitHub secret cannot
 be retrieved. Do not recreate the legacy identity; use the current deployer.
-The frozen Nix definitions still describe the retired resources: do not run
-OpenTofu or use that old configuration to restore infrastructure.
+The obsolete Nix/OpenTofu setup has been removed. Historical definitions still
+describe retired resources; do not use them to restore infrastructure.
 
 ### Deployment credential packaging
 

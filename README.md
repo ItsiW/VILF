@@ -64,7 +64,7 @@ guarantee; keep its automatic OpenStreetMap/OpenMapTiles attribution visible.
 Restaurant markers still come from our generated `places.geojson`. This does not
 change the Google Places lookup or Google Maps embeds in the admin.
 
-Everything is in the GCP project `vilf-com`: the site bucket behind a load balancer with Cloud CDN, the media bucket served at `vilf.org/img/`, the admin on Cloud Run behind IAP, the database on Neon. `infra/README.md` documents what exists, the setup script (`infra/admin/setup-admin.sh`), CI, backups and the migration runbook. The 2024 Nix/OpenTofu config under `infra/` is frozen; `nix develop` still gives a dev shell with the formatting hooks.
+Everything is in the GCP project `vilf-com`: the site bucket behind a load balancer with Cloud CDN, the media bucket served at `vilf.org/img/`, the admin on Cloud Run behind IAP, the database on Neon. `infra/README.md` documents what exists, the setup script (`infra/admin/setup-admin.sh`), CI, backups and the migration runbook. Development uses `uv`; the unused Nix/OpenTofu setup has been removed without changing live cloud resources.
 
 If you edit the bucket by hand, drop the CDN cache:
 

@@ -32,7 +32,7 @@ uv run pytest                            # offline tests including a real render
 uv run python -m scripts.places 'query' --details   # raw API lookup for debugging
 ```
 
-`build --source db` (the default) renders the database and copies `<media>/img` into `build/img` when the media storage is a local directory; `--source files` is the legacy mode (markdown + `raw/food`, `static/img/` cache, lastmod from git) and `--source snapshot --snapshot FILE` renders a JSON dump. Nix users get a dev shell via `nix develop` (direnv through `.envrc`); its pre-commit hooks only cover Nix formatting, markdownlint and lychee, and block direct commits to `develop`. uv is not in that shell.
+`build --source db` (the default) renders the database and copies `<media>/img` into `build/img` when media storage is local; `--source files` is legacy archive mode and `--source snapshot --snapshot FILE` renders a JSON dump. Development uses `uv`; there is no Nix shell or Nix-managed pre-commit configuration.
 
 ## Data model
 
@@ -133,7 +133,7 @@ A `running` runs row is committed on its own connection first; a second publish 
 - **Admin app**: Cloud Run service `vilf-admin` (`us-west1`, 0..1 instances, behind IAP, runtime SA `vilf-admin@vilf-com`). `.github/workflows/deploy.yaml` on push to `develop`: pytest, `docker build` and push to `us-west1-docker.pkg.dev/vilf-com/vilf/admin:<sha>`, `gcloud run deploy vilf-admin --image` (nothing else: env, secrets, scaling and IAP are owned by `infra/admin/setup-admin.sh`). It authenticates with the `VILF_DEPLOY_KEY` secret. `build.yaml` runs pytest on PRs. Merging to `develop` deploys the admin; the public site only changes when someone publishes.
 - **Cutover complete**: CI deploys the admin, not restaurant content. Public content is published from the database; `/img/*` is served from the media bucket. Legacy files are recoverable from Git history but are no longer a live data source.
 - **`infra/admin/setup-admin.sh <section>`**: `apis`, `buckets` (gs://vilf-media, soft delete on both buckets), `cdn` (backend bucket with `X-Vilf-Backend: media`), `service-accounts`, `roles` (objectAdmin on both buckets, custom `vilfCdnInvalidator`), `registry` (Artifact Registry with cleanup policy), `secrets`, `run` (bootstraps the service with the hello image, sets env and secrets), `iap`, `deployer` (`vilf-deployer@` + `VILF_DEPLOY_KEY`), `urlmap` (routes `/img/*` to the media bucket; exports `urlmap-before.yaml` first), `all-but-urlmap`. Re-runnable.
-- **Frozen**: the 2024 Nix/OpenTofu config (`flake.nix`, `infra/*.nix`) created the project, `gs://vilf-org`, url map `vilf-lb`, certificate, DNS and the old `vilfer` service account (`VILF_CREDS`). Its state is encrypted to a departed collaborator's key: never run tofu.
+- **Removed legacy infrastructure**: the unused Nix/OpenTofu setup and generated state are gone from the checkout; Git history retains them. Live GCP resources were not removed. Use the current scripts and runbook, not historical OpenTofu state.
 - **Backups**: private cloud JSON + original photos run daily at 04:30 UTC. `infra/backup/pg-backup.sh` + launchd dump the database and copy originals to `~/Backups/vilf/` daily at 04:15 Mac local time. See `infra/backup/README.md` for retention and recovery. Admin backup status includes both.
 - Manual CDN invalidation (publish does it itself): `gcloud compute url-maps invalidate-cdn-cache vilf-lb --path '/*'`.
 - Migration status and the step-by-step runbook: `infra/README.md`.

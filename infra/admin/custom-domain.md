@@ -51,8 +51,8 @@ For an admin-domain rollback, remove only the `admin.vilf.org` A record, then th
 Do not replace the entire URL map or alter the public site's certificate entry.
 Keep the certificate-authorization CNAME if the hostname will be restored later.
 
-The legacy OpenTofu configuration is frozen; these resources are managed through
-GCP directly. Do not run `tofu` to reconcile them.
+These resources are managed through GCP directly. The legacy OpenTofu setup has
+been removed; do not use its historical state to reconcile them.
 
 References: [Cloud Run custom domains](https://docs.cloud.google.com/run/docs/mapping-custom-domains)
 and [direct IAP protection](https://docs.cloud.google.com/iap/docs/enabling-cloud-run).
