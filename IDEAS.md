@@ -43,16 +43,7 @@ Deliberately not in v1:
 - Neon branches are a free staging database: `./vilf build --source db` against a branch
   URL previews a data change without a second bucket.
 
-## Priority 2: New content surfaces
-
-- **Cuisine-by-neighborhood pages** (e.g. vegan Chinese in Oakland) where there are three
-  or more places. This is the query shape people search and ask assistants.
-- **Short editorial summary** at the top of each neighborhood and cuisine index page so
-  assistants have a quotable answer.
-- **Hours on review pages.** `CONTACT_FIELDS` already returns them; not stored because
-  they go stale. Could be fetched at build time for places with a `place_id`.
-
-## Priority 3: Tooling follow-ups (cheap, from the overhaul's review notes)
+## Tooling follow-ups
 
 - `check` could run `validate_place` first and list schema problems next to Google
   mismatches (a full pre-publish gate).
