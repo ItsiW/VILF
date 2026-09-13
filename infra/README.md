@@ -97,7 +97,8 @@ printf %s "$MAPS_EMBED_KEY"  | gcloud secrets versions add vilf-maps-embed-api-k
 ```
 
 The sections can also be run one by one in that order. `deployer` stores
-`VILF_DEPLOY_KEY` in the GitHub repo; the old `VILF_CREDS` stays until step 10.
+`VILF_DEPLOY_KEY` in the GitHub repo. The old `VILF_CREDS` and `vilfer`
+service account were retired after cutover (see step 10).
 
 Verify:
 
@@ -338,9 +339,27 @@ files, so this cleanup does not shrink historical clone size. Roll back the
 file deletion with a revert after commit, or recover files from the preceding
 commit into a separate archive directory.
 
-No database rows, media objects, cloud backups, Git history, GitHub secrets,
-or service accounts were deleted. Retiring the old `VILF_CREDS`/`vilfer`
-credentials is a separate infrastructure cleanup, not part of file removal.
+The file cleanup did not delete database rows, media objects, cloud backups,
+or Git history.
+
+### 11. Retire the legacy deployment identity
+
+Completed September 12, 2026 PT after the new GitHub deployment succeeded.
+The active workflows use `VILF_DEPLOY_KEY`; Cloud Run admin, backup job, and
+Scheduler use their dedicated newer service accounts. No `vilfer` activity
+appeared in the available audit logs for the preceding 30 days; this is not
+a guarantee that every historical data-access event was logged.
+
+- Disabled `vilfer@vilf-com.iam.gserviceaccount.com`, removed its
+  `roles/storage.objectAdmin` binding on `gs://vilf-org`, then deleted it.
+- Deleted the GitHub Actions secret `VILF_CREDS`.
+- Retained `VILF_DEPLOY_KEY` and the unrelated `CLIMAX_VILF_SA_KEY` secret.
+
+Retired account unique ID: `102747106945516708717`. Its one user-managed key
+was `41766467194d30ada4633432ed18324945d9f909`. The deleted GitHub secret cannot
+be retrieved. Do not recreate the legacy identity; use the current deployer.
+The frozen Nix definitions still describe the retired resources: do not run
+OpenTofu or use that old configuration to restore infrastructure.
 
 ## CI
 
