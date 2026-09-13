@@ -46,6 +46,13 @@ def test_description_does_not_repeat_city_as_neighborhood():
     assert "San Francisco, San Francisco" not in format_description(review(area="San Francisco"))
 
 
+@pytest.mark.parametrize("city", ["Oakland", "Berkeley", "Mount Shasta", "Emeryville"])
+def test_titles_use_actual_city_not_a_san_francisco_default(city):
+    meta = review(city=city, area=city)
+    assert format_title(meta).endswith(f", {city} | VILF")
+    assert "San Francisco" not in format_description(meta)
+
+
 def test_metadata_is_escaped_and_consistent_across_channels():
     root = Path(__file__).resolve().parents[1]
     row = json.loads((root / "tests/fixtures/snapshot.json").read_text())[0]
