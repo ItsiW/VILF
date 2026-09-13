@@ -4,6 +4,17 @@
 <link rel="alternate" type="application/json" href="/places.json">
 
 <style>
+/* Reserve the map's remaining viewport space before its canvas is created.
+   A 100%-height flex child otherwise competes with the header for space. */
+.header {
+  flex: 0 0 auto;
+  line-height: 1.2;
+}
+.content-wrapper {
+  flex: 1 1 0;
+  min-height: 0;
+  height: auto;
+}
 #map {
   padding: 0;
   margin: 0;

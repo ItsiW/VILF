@@ -13,3 +13,14 @@ def test_map_uses_account_free_tiles_and_pinned_module():
     assert 'const feature = event.features[0]' in template
     assert '{{ thumbnails | tojson }}' in template
     assert 'preload.arguments' not in template
+
+
+def test_map_reserves_space_without_disabling_thumbnail_preloading():
+    template = (Path(__file__).resolve().parents[1] / "html/map.html").read_text()
+    assert 'flex: 0 0 auto;' in template
+    assert 'line-height: 1.2;' in template
+    assert 'flex: 1 1 0;' in template
+    assert 'min-height: 0;' in template
+    assert 'height: auto;' in template
+    assert 'setTimeout(imagePreloader, 1000);' in template
+    assert 'preload(...{{ thumbnails | tojson }});' in template
