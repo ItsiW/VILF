@@ -68,10 +68,10 @@ def sync_panel(request: Request, slug: str, conn=Depends(get_conn)):
 def check_against_google(request: Request, slug: str, contact: str = Form("0"), conn=Depends(get_conn)):
     row = _row_or_404(conn, slug)
     contact_flag = contact == "1"
-    meta, _ = repo.row_to_meta(row)
+    meta, body = repo.row_to_meta(row)
     try:
         # get/search are passed here so a monkeypatched module attribute is honoured
-        result = check_place(meta, contact=contact_flag, fix=False, get=get_place, search=search_text)
+        result = check_place(meta, body=body, slug=slug, contact=contact_flag, fix=False, get=get_place, search=search_text)
     except (PlacesError, ValueError) as e:
         return _panel(request, conn, row, contact=contact_flag, error=str(e))
     return _panel(request, conn, row, contact=contact_flag, result=result)
@@ -83,9 +83,9 @@ def apply_fixes(
 ):
     row = _row_or_404(conn, slug)
     contact_flag = contact == "1"
-    meta, _ = repo.row_to_meta(row)
+    meta, body = repo.row_to_meta(row)
     try:
-        result = check_place(meta, contact=contact_flag, fix=True, get=get_place, search=search_text)
+        result = check_place(meta, body=body, slug=slug, contact=contact_flag, fix=True, get=get_place, search=search_text)
     except (PlacesError, ValueError) as e:
         return _panel(request, conn, row, contact=contact_flag, error=str(e))
     fields = {k: v for k, v in result.meta.items() if v != meta[k]}

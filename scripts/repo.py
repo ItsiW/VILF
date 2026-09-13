@@ -68,6 +68,8 @@ def _to_db(row: dict) -> dict:
             v = v.strip() or None  # mirrors schema.load_place: '' means unset
         elif key in _BOOL_FIELDS and v is None:
             v = False
+        elif key in {"lat", "lon"} and isinstance(v, (int, float)) and not isinstance(v, bool):
+            v = round(v, 7)  # centimetre precision; discard Google floating-point noise
         out[key] = v
     return out
 

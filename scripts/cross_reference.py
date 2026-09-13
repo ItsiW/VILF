@@ -15,6 +15,7 @@ from unidecode import unidecode
 
 from . import repo, runs
 from .places import CONTACT_FIELDS, CORE_FIELDS, Place, PlacesError, get_place, search_text
+from .schema import validate_place
 
 LAT_RES = 1e-4
 LON_RES = 1e-4
@@ -58,7 +59,7 @@ def same_street(file_address, google_address) -> bool:
 class CheckResult:
     """One place checked against Google: what was found, what differs, what was fixed."""
 
-    place: Place
+    place: Place | None
     note: str | None  # explains a search fallback for places without a place_id
     mismatches: list[str]
     info: list[str]
@@ -146,7 +147,7 @@ def apply_fixes(meta: dict, place: Place, contact: bool) -> list[str]:
 
 
 def check_place(
-    meta: dict, *, contact: bool, fix: bool, get=get_place, search=search_text
+    meta: dict, *, contact: bool, fix: bool, body: str | None = None, slug: str = "review", get=get_place, search=search_text
 ) -> CheckResult:
     """Resolve, compare and (with fix, for places with a place_id) correct one place's meta.
 
@@ -155,9 +156,15 @@ def check_place(
     address is missing and PlacesError when Google cannot resolve the place.
     """
     meta = dict(meta)
+    if body is not None:
+        problems = validate_place(meta, body, slug)
+        if problems:
+            raise ValueError("Review validation: " + "; ".join(problems))
     missing = [key for key in ("name", "address") if meta.get(key) is None]
     if missing:
         raise ValueError(f"missing {', '.join(missing)}")
+    if meta.get("unlinked") and not meta.get("place_id"):
+        return CheckResult(None, "intentionally unlinked from Google (skipped)", [], [], [], meta)
     fields = CONTACT_FIELDS if contact else CORE_FIELDS
     place, note = resolve(meta, fields, get=get, search=search)
     mismatches, info = compare(meta, place, contact)
@@ -213,9 +220,9 @@ def cross_reference_md(slugs, contact, fix):
             note = None
             info = []
             try:
-                meta, _ = repo.row_to_meta(row)
+                meta, body = repo.row_to_meta(row)
                 # get/search are looked up here so a monkeypatched module attribute is honoured
-                result = check_place(meta, contact=contact, fix=fix, get=get_place, search=search_text)
+                result = check_place(meta, body=body, slug=slug, contact=contact, fix=fix, get=get_place, search=search_text)
                 note, info, mismatches = result.note, result.info, result.mismatches
                 if result.changed:
                     fields = {k: v for k, v in result.meta.items() if v != meta.get(k)}

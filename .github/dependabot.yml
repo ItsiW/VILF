@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: develop
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
+  - package-ecosystem: uv
+    directory: /
+    target-branch: develop
+    schedule:
+      interval: weekly
+    groups:
+      python:
+        patterns: ["*"]
+    ignore:
+      # Instagram tooling is deliberately out of scope for now.
+      - dependency-name: selenium
+      - dependency-name: webdriver-manager
+      - dependency-name: undetected-chromedriver
+      - dependency-name: matplotlib
+      - dependency-name: setuptools

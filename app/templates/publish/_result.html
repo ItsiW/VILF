@@ -7,6 +7,9 @@
   {% if counts %}<p class="note">changes: +{{ counts[0] }} -{{ counts[1] }} ~{{ counts[2] }}</p>{% endif %}
   <p class="note">CDN: {% if result.cdn_invalidated %}invalidated{% elif cdn_configured %}failed{% else %}skipped (not configured){% endif %}</p>
   {% if result.error %}<pre>{{ result.error }}</pre>{% endif %}
+  {% if result.partially_applied %}
+  <p>Publish only partially completed. Some live files may already have changed, but this run did not finish. Retry Publish to bring the site and saved status back into sync; already-uploaded files will be skipped.</p>
+  {% endif %}
 </div>
 {% endif %}
 <div hx-get="/publish" hx-trigger="load" hx-target="#pending" hx-swap="outerHTML"></div>

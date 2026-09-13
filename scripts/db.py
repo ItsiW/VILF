@@ -108,3 +108,8 @@ def make_engine(url: str):
 
 def init_db(engine) -> None:
     metadata.create_all(engine)
+    # Additive migration: existing reviews and old snapshots remain compatible.
+    with engine.begin() as conn:
+        if "unlinked" not in {c["name"] for c in sa.inspect(conn).get_columns("places")}:
+            guard = "IF NOT EXISTS " if conn.dialect.name == "postgresql" else ""
+            conn.execute(sa.text(f"ALTER TABLE places ADD COLUMN {guard}unlinked BOOLEAN NOT NULL DEFAULT FALSE"))

@@ -126,8 +126,8 @@ def new_place(request: Request, conn=Depends(get_conn)):
 
 @router.post("/places/new/search")
 def search_candidates(request: Request, q: str = Form(""), conn=Depends(get_conn)):
-    q = query_from_maps_url(q) or q.strip()
     try:
+        q = query_from_maps_url(q) or q.strip()
         results = search_text(q, max_results=5)
     except PlacesError as e:
         return render(request, "places/_error.html", message=str(e))
@@ -246,8 +246,8 @@ def relink_place(
         repo.update(conn, slug, fields)
         return RedirectResponse(f"/places/{slug}?flash=relinked", status_code=303)
     if q.strip():
-        q = query_from_maps_url(q) or q.strip()
         try:
+            q = query_from_maps_url(q) or q.strip()
             results = search_text(q, max_results=5)
         except PlacesError as e:
             return render(request, "places/_error.html", message=str(e))

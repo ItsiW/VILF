@@ -8,7 +8,7 @@ from scripts import repo, schema
 from scripts.db import init_db, make_engine
 
 FIXTURE = json.loads((Path(__file__).parent / "fixtures" / "snapshot.json").read_text())
-SORTED = sorted(FIXTURE, key=lambda r: r["slug"])
+SORTED = sorted((dict(r, unlinked=False) for r in FIXTURE), key=lambda r: r["slug"])
 
 
 def by_slug(slug):
@@ -63,7 +63,7 @@ def test_meta_to_row_inverse(conn):
         meta, body = repo.row_to_meta(row)
         extra = {k: row[k] for k in ["slug", "photo_key", "photo_width", "photo_height", "photo_crop_y"]}
         rebuilt = repo.meta_to_row(meta, body, **extra)
-        expect = dict(row, created_at=None, updated_at=None, published_at=None)
+        expect = dict(row, unlinked=False, created_at=None, updated_at=None, published_at=None)
         assert rebuilt == expect
 
 

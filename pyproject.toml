@@ -31,6 +31,7 @@ dependencies = [
 dev = [
     "httpx>=0.28.1",
     "pytest>=8",
+    "ruff>=0.15",
 ]
 # scripts/instagram_poster.py + scripts/image_generator.py (run directly, not via ./vilf)
 instagram = [
@@ -49,3 +50,10 @@ package = false
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+
+[tool.ruff]
+extend-exclude = ["scripts/instagram_poster.py", "scripts/image_generator.py"]
+
+[tool.ruff.lint]
+# Catch mistakes without imposing a wholesale formatting rewrite.
+select = ["E4", "E9", "F"]

@@ -6,9 +6,28 @@ still substitute their own fake at that level.
 
 import pytest
 import os
+import shutil
+from pathlib import Path
 
 import scripts.places as places
 from scripts import config, storage
+
+
+@pytest.fixture(scope="session")
+def make_site_root():
+    """Factory for isolated render roots without historical photo caches."""
+    source = Path(__file__).resolve().parent.parent
+
+    def make(root):
+        (root / "html").symlink_to(source / "html")
+        (root / "about.md").symlink_to(source / "about.md")
+        (root / "static").mkdir()
+        for path in (source / "static").iterdir():
+            if path.is_file():
+                shutil.copy(path, root / "static" / path.name)
+        return root
+
+    return make
 
 
 @pytest.fixture(autouse=True)

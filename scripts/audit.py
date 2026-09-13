@@ -3,7 +3,7 @@ The `audit` command: which reviewed places does Google no longer list as OPERATI
 """
 
 from collections.abc import Iterable
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from datetime import date
 
@@ -28,19 +28,23 @@ class AuditReport:
     audited: int = 0
     no_id: int = 0
     already_closed: int = 0
+    unlinked: int = 0
 
 
-def audit_rows(rows: Iterable[tuple[str, dict]], *, get=get_place, workers: int = 8) -> AuditReport:
+def audit_rows(rows: Iterable[tuple[str, dict]], *, get=get_place, workers: int = 8, on_problem=None) -> AuditReport:
     """Fetch the business status of every (slug, meta) row that has a place_id and is not closed.
 
-    Pure: no file IO, no output. Rows are fetched concurrently when workers > 1;
-    lines keep row order either way. A PlacesError lands in 'Could not check'.
+    Rows are fetched concurrently when workers > 1. Optional on_problem receives
+    failures as they arrive; the final report keeps row order either way.
+    A PlacesError lands in 'Could not check'.
     """
     report = AuditReport()
     todo = []
     for slug, meta in rows:
         if meta.get("closed"):
             report.already_closed += 1
+        elif meta.get("unlinked") and not meta.get("place_id"):
+            report.unlinked += 1
         elif not meta.get("place_id"):
             report.no_id += 1
         else:
@@ -55,11 +59,25 @@ def audit_rows(rows: Iterable[tuple[str, dict]], *, get=get_place, workers: int 
         except PlacesError as e:
             return slug, name, e
 
+    def report_problem(result):
+        slug, name, status = result
+        if on_problem and status != "OPERATIONAL":
+            on_problem(f"{slug}: {name}: {status}")
+
     if workers > 1 and len(todo) > 1:
         with ThreadPoolExecutor(max_workers=workers) as pool:
-            results = list(pool.map(fetch, todo))
+            futures = {pool.submit(fetch, item): index for index, item in enumerate(todo)}
+            results = [None] * len(todo)
+            for future in as_completed(futures):
+                result = future.result()
+                results[futures[future]] = result
+                report_problem(result)
     else:
-        results = [fetch(item) for item in todo]
+        results = []
+        for item in todo:
+            result = fetch(item)
+            results.append(result)
+            report_problem(result)
 
     for slug, name, status in results:
         if isinstance(status, PlacesError):
@@ -96,7 +114,7 @@ def audit_places(slugs, mark_closed, log):
     with open_db() as conn:
         previous = runs.last(conn, "audit")
         if previous:
-            day = previous.date()
+            day = previous.astimezone().date()
             click.echo(f"Last audit: {day} ({(date.today() - day).days} days ago)")
         else:
             click.echo("No previous audit logged.")
@@ -111,7 +129,7 @@ def audit_places(slugs, mark_closed, log):
             rows_db = repo.all_rows(conn)
         rows = [(row["slug"], repo.row_to_meta(row)[0]) for row in rows_db]
         # get_place is looked up here so a monkeypatched module attribute is honoured
-        report = audit_rows(rows, get=get_place)
+        report = audit_rows(rows, get=get_place, on_problem=click.echo)
         groups = report.groups
         audited, no_id, already_closed = report.audited, report.no_id, report.already_closed
 
@@ -131,6 +149,9 @@ def audit_places(slugs, mark_closed, log):
             for slug in report.closed_slugs:
                 repo.update(conn, slug, {"closed": True})
             click.echo(f"Marked {len(report.closed_slugs)} place(s) closed: " + ", ".join(report.closed_slugs))
+
+        if report.unlinked:
+            click.echo(f"{report.unlinked} intentionally unlinked from Google (skipped).")
 
         if log:
             names = lambda key: ", ".join(line.split(":")[0] for line in groups[key]) or "none"

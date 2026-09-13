@@ -25,10 +25,12 @@ jobs:
 
       - run: uv sync --locked
 
+      - run: uv run ruff check .
+
       - run: uv run pytest
 
       # Build and inspect before generating any deployment credentials.
-      - run: docker build -t "$IMAGE" .
+      - run: docker build --platform linux/amd64 -t "$IMAGE" .
 
       - run: docker run --rm "$IMAGE" python -m scripts.check_image
 

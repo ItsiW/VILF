@@ -1,4 +1,5 @@
 # VILF admin app image, built by .github/workflows/deploy.yaml and run on Cloud Run.
+# Local builds: docker build --platform linux/amd64 -t vilf-admin .
 #
 # Python version: every native dependency in uv.lock (pillow, pillow-heif,
 # psycopg-binary, uvloop, httptools) ships a cp314 manylinux wheel today. If a

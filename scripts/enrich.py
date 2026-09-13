@@ -63,6 +63,8 @@ def enrich_meta(
     updated/unchanged/unresolved and changes the fields to set (place_id, city,
     website); changes is empty unless status is 'updated'.
     """
+    if meta.get("unlinked") and not meta.get("place_id"):
+        return "unchanged", "intentionally unlinked from Google (skipped)", {}
     if meta.get("place_id") and not force:
         return "unchanged", "already has a place_id (use --force to re-resolve)", {}
     place, note = resolve(meta, search=search)

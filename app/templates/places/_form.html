@@ -42,6 +42,9 @@
     <a id="website-link" class="external-link" target="_blank" rel="noopener noreferrer"
       {% if meta.website and (meta.website.startswith('https://') or meta.website.startswith('http://')) %}href="{{ meta.website }}"{% else %}hidden{% endif %}>Open website ↗</a>
     <label>Google Place ID<input type="text" name="place_id" value="{{ val(meta.place_id) }}" readonly></label>
+    {% if not meta.place_id %}
+    <label class="inline"><input type="checkbox" name="unlinked" value="1" {% if meta.unlinked %}checked{% endif %}> Intentionally not on Google Maps (skip automatic checks)</label>
+    {% endif %}
     {% if mode == 'edit' %}<p class="note">To change this, use Relink to Google below.</p>{% endif %}
     <label>Visited<input type="date" name="visited" value="{{ val(meta.visited) }}"></label>
     <div class="row">

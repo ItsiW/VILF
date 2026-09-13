@@ -24,6 +24,9 @@
     {{ last.summary or '' }}
     {% if last.snapshot_key %}<br><span class="note">snapshot: {{ last.snapshot_key }}</span>{% endif %}
   </p>
+  {% if last.status == 'failed' and last.details and last.details.partially_applied %}
+  <p class="warning">The last publish only partially completed. Some live files may already have changed. Retry Publish to finish syncing the site and its saved status.</p>
+  {% endif %}
   {% else %}
   <p class="note">None yet</p>
   {% endif %}

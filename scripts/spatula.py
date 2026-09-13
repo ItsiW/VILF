@@ -12,7 +12,7 @@ import re
 from collections.abc import Callable, Iterable
 from datetime import date
 from pathlib import Path
-from urllib.parse import unquote, urlparse
+from urllib.parse import parse_qs, unquote, urljoin, urlparse
 
 import click
 import requests
@@ -60,9 +60,39 @@ def unique_name(base: str, exists: Callable[[str], bool]) -> str:
 
 
 def query_from_maps_url(text: str) -> str | None:
-    """'https://www.google.com/maps/place/Lion+Dance+Caf%C3%A9/@37.8,...' -> 'Lion Dance Café'."""
-    m = re.search(r"^https?://\S*?/maps/place/([^/?#]+)", text.strip())
-    return unquote(m.group(1).replace("+", " ")) if m else None
+    """Extract a search query, resolving Google short links with bounded redirects."""
+    url = text.strip()
+    allowed = {"maps.app.goo.gl", "goo.gl", "www.google.com", "google.com", "maps.google.com"}
+    short = urlparse(url).hostname in {"maps.app.goo.gl", "goo.gl"}
+    for _ in range(6):
+        parsed = urlparse(url)
+        if (parsed.scheme not in {"http", "https"} or parsed.hostname not in allowed
+                or parsed.username or parsed.password or parsed.netloc not in allowed):
+            if short:
+                raise PlacesError("That short link redirects outside Google Maps. Search by restaurant name instead.")
+            return None
+        match = re.match(r"/maps/place/([^/?#]+)", parsed.path)
+        if match:
+            return unquote(match.group(1).replace("+", " "))
+        query = parse_qs(parsed.query)
+        for key in ("query", "q"):
+            if query.get(key):
+                return query[key][0]
+        if not short:
+            return None
+        try:
+            response = requests.get(url, timeout=5, allow_redirects=False, stream=True)
+            try:
+                response.raise_for_status()
+                location = response.headers.get("Location")
+                if response.status_code not in {301, 302, 303, 307, 308} or not location:
+                    break
+                url = urljoin(url, location)
+            finally:
+                response.close()
+        except requests.RequestException as exc:
+            raise PlacesError("Could not open that Google Maps short link. Search by restaurant name instead.") from exc
+    raise PlacesError("Could not resolve that Google Maps short link. Search by restaurant name instead.")
 
 
 def pick_place(query: str, *, search=search_text) -> Place:

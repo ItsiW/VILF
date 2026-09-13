@@ -113,33 +113,15 @@ def serve(reload):
 
 @cli.group()
 def db():
-    """Database maintenance: init, import-markdown, snapshot, restore-snapshot."""
+    """Database maintenance: init, snapshot, restore-snapshot."""
 
 
 @db.command()
 def init():
     """Create the tables (idempotent)."""
-    init_db(_engine())
-    click.echo(f"Initialised {settings().database_url}")
-
-
-@db.command("import-markdown")
-@click.option("--places", default="places", show_default=True, help="Directory of place files.")
-@click.option("--raw", default="raw/food", show_default=True, help="Directory of raw photos.")
-@click.option("--dry-run", is_flag=True, help="Validate and report; write nothing.")
-@click.option("--replace", is_flag=True, help="Empty the places table first.")
-def import_markdown(places, raw, dry_run, replace):
-    """Load places/*.md and raw/food/*.jpg into the database (photos into media storage)."""
-    from .importer import import_markdown as run_import
-
     engine = _engine()
     init_db(engine)
-    with engine.begin() as conn:
-        report = run_import(
-            conn, _media(), places_dir=places, raw_dir=raw, dry_run=dry_run, replace=replace
-        )
-    if report.errors:
-        sys.exit(1)
+    click.echo(f"Initialised {engine.url.render_as_string(hide_password=True)}")
 
 
 @db.command()

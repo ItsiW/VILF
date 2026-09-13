@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-VILF (Vegans In Love with Food) is a static site of vegan restaurant reviews for the SF Bay Area at https://vilf.org. The source of truth is a database: one row per restaurant in a `places` table (Postgres on Neon in production, SQLite locally), holding the metadata that used to be YAML frontmatter plus the review body in markdown. A FastAPI + htmx admin app (`app/`) edits rows and photos and publishes: `scripts/publish.py` renders the whole site with the Jinja2 templates in `html/` and mirrors it into the site bucket `gs://vilf-org`. Photos live in the media bucket `gs://vilf-media` and are served at `vilf.org/img/...` because the load balancer routes `/img/*` to that bucket. Restaurant metadata is linked to Google Places by `place_id` and kept in sync through the CLI. There is no framework beyond FastAPI and no linter; `tests/` is an offline pytest suite that exercises the CLI, the app, the importer and publish against recorded fixtures.
+VILF (Vegans In Love with Food) is a static site of vegan restaurant reviews for the SF Bay Area at https://vilf.org. The source of truth is a database: one row per restaurant in a `places` table (Postgres on Neon in production, SQLite locally), holding the metadata that used to be YAML frontmatter plus the review body in markdown. A FastAPI + htmx admin app (`app/`) edits rows and photos and publishes: `scripts/publish.py` renders the whole site with the Jinja2 templates in `html/` and mirrors it into the site bucket `gs://vilf-org`. Photos live in the media bucket `gs://vilf-media` and are served at `vilf.org/img/...` because the load balancer routes `/img/*` to that bucket. Restaurant metadata is linked to Google Places by `place_id` and kept in sync through the CLI. Ruff provides lightweight correctness linting; `tests/` is an offline pytest suite that exercises the CLI, the app and publish against recorded fixtures.
 
 The database cutover is complete. Legacy `places/*.md` and `raw/food/*.jpg` have been removed from the checkout but remain in Git history. Use current cloud/Mac backups for recovery, not a fresh import of stale reviews. The owner's local `.env` points to production Postgres and buckets; SQLite remains the isolated-test/development option. `IDEAS.md` tracks future work; `infra/README.md` records the migration. The old `AUDIT_LOG.md` is gone: maintenance and publish operations write to the `runs` table.
 
@@ -15,10 +15,10 @@ All CLI entry points go through the `./vilf` wrapper (`uv run python -m scripts.
 ```bash
 uv sync                                  # deps into .venv (add --group instagram for the poster)
 ./vilf db init                           # create the tables in DATABASE_URL (default sqlite:///./vilf.db)
-./vilf db import-markdown [--dry-run] [--replace]   # legacy recovery only; requires an archive from Git history
 ./vilf serve [--reload]                  # admin app at http://localhost:8000 (no IAP: you are VILF_DEV_USER)
-./vilf build [--source db|files|snapshot] [--snapshot FILE] [--out build] [--copy-media DIR]   # static build into build/ (wiped first); exits 1 on bad data
+./vilf build [--source db|snapshot] [--snapshot FILE] [--out build] [--copy-media DIR]   # static build into build/ (wiped first); exits 1 on bad data
 python3 -m http.server 8080 --directory build   # serve the build; use localhost, not 0.0.0.0, or the map won't render
+uv run ruff check .                      # correctness linting, also run in CI
 uv run pytest                            # offline tests including a real render and the e2e test
 
 ./vilf spatula -s 'Lion Dance Cafe'      # new review row: search Google, pick, prompt for ratings; body stays <REVIEW>
@@ -32,14 +32,16 @@ uv run pytest                            # offline tests including a real render
 uv run python -m scripts.places 'query' --details   # raw API lookup for debugging
 ```
 
-`build --source db` (the default) renders the database and copies `<media>/img` into `build/img` when media storage is local; `--source files` is legacy archive mode and `--source snapshot --snapshot FILE` renders a JSON dump. Development uses `uv`; there is no Nix shell or Nix-managed pre-commit configuration.
+`build --source db` (the default) renders the database and copies `<media>/img` into `build/img` when media storage is local; `--source snapshot --snapshot FILE` renders a JSON dump. Development uses `uv`; there is no Nix shell or Nix-managed pre-commit configuration.
+
+Local development intentionally uses the production database; do not add staging or rewrite Git history. Instagram tooling and its fonts/PNGs are deferred. `db.init_db` applies the additive `unlinked` migration; coordinate writes round to seven decimal places without changing the underlying SQL type.
 
 ## Data model
 
 `scripts/schema.py` is still the single source of truth for the review fields: the ordered field list, rating labels and colours, `load_place`, `validate_place`, `validate_unique`, `dump_frontmatter`, `write_place`. `scripts/db.py` derives the `places` table from `schema.FIELDS` (SQLAlchemy Core) and adds the columns below; `scripts/repo.py` is the only module that reads and writes rows, always in "snapshot format" (`tests/fixtures/snapshot.json`: schema fields plus `slug`, `body`, `photo_*`, ISO 8601 `Z` timestamps).
 
 ```yaml
-name, cuisine, address, area, lat, lon, phone, menu, drinks, visited, taste, value, instagram_published, city, place_id, website, closed
+name, cuisine, address, area, lat, lon, phone, menu, drinks, visited, taste, value, instagram_published, city, place_id, unlinked, website, closed
 + slug, body, photo_key, photo_width, photo_height, photo_crop_y, created_at, updated_at, published_at
 ```
 
@@ -52,7 +54,7 @@ name, cuisine, address, area, lat, lon, phone, menu, drinks, visited, taste, val
 - **Dirty** = `published_at` is NULL or `updated_at > published_at` (`repo.is_dirty`); publish marks dirty rows published. `/places?filter=dirty` lists them.
 - **Slugs are immutable** in the admin (readonly field). New slugs come from `spatula.slugify` + `repo.unique_slug` (`base`, `base-0`, `base-1`...; a base ending in `-<digits>` has that suffix replaced, quirk kept from the file era).
 - **Only unpublished rows can be deleted** (`repo.delete` raises, the route answers 409). Anything that has been live is marked `closed: True` instead: the page stays online with a banner, out of the map, lists and llms.txt. Never delete reviews.
-- Two rows are deliberately unlinked (no `place_id`) and always show in audit counts: `fiji-airways` (joke entry) and `boba-binge` (branch gone from Maps).
+- `unlinked=True` skips Google check/audit/enrich for entries without a `place_id`. Two rows are deliberately unlinked: `fiji-airways` (joke entry) and `boba-binge` (branch gone from Maps).
 - `runs` table (`scripts/runs.py`): `kind` (publish, check, audit, import, restore), `scope`, `started_at`/`finished_at`, `status` running|ok|failed, `by_email`, `summary`, `details` JSON, `snapshot_key`, `error`. `runs.last(conn, kind)` answers "when was the data last audited".
 
 ## Media keys (scripts/photos.py, scripts/images.py)
@@ -88,11 +90,11 @@ House style: `router = APIRouter(dependencies=[Depends(current_user)])`; `search
 
 1. `validate_rows` every row (`validate_place` + `validate_unique`); any problem fails the run before anything is written.
 2. Write `snapshots/<stamp>.json` of the rows to private backup storage (local-only setups without backup storage fall back to local media).
-3. `render.render_site` into a temp dir (place pages, `/best/`, `/latest/`, `/cuisines/*`, `/neighborhoods/*` for areas with 3+ places, `places.geojson`, `sitemap.xml`, `robots.txt`, `llms.txt`, `llms-full.txt`, `places.json`, `places/<slug>.md`; the `Verdict:` line on each page is reused there).
-4. Upload every file whose md5 differs from the site listing (16 threads; `max-age=3600` for html/json/geojson/txt/xml/md, `86400` otherwise; `img/` excluded), then delete stale keys unless there are more than `max(MASS_DELETE_MIN=25, 20%)` of them and `force` is false.
+3. `render.render_site` into a temp dir (place pages, `/best/`, `/latest/`, `/cuisines/*`, `/neighborhoods/*` for areas with 3+ places, `places.geojson`, `sitemap.xml`, `robots.txt`, `llms.txt`, `llms-full.txt`, `places.json`, `places/<slug>.md`; the textual verdict is included in machine-readable summaries, not visible HTML).
+4. Check stale keys against `max(MASS_DELETE_MIN=25, 20%)`; stop before public uploads unless `force` permits the deletion. Upload files with changed md5 (16 threads; `max-age=3600` for page/data files, `86400` otherwise; `img/` excluded), then delete stale keys.
 5. Invalidate the CDN (`/*`, non-fatal), `mark_published` the dirty rows, finish the `runs` row (details: counts, added/removed/changed diff against the last snapshot), and submit fresh sitemap URLs to IndexNow when `VILF_INDEXNOW=1`.
 
-A `running` runs row is committed on its own connection first; a second publish within 15 minutes raises `PublishRunning`. Any exception becomes a failed runs row, never a crash. `pending_diff(conn, media)` and `last_snapshot_rows` back the admin's Publish page. The CLI passes `GcpCdnInvalidator(project, url_map)` when `GOOGLE_CLOUD_PROJECT` and `VILF_URL_MAP` are set.
+A `running` runs row is committed on its own connection first; a second publish within 15 minutes raises `PublishRunning`. Failures retain upload progress and warn when public files may already have changed; retry reconciles the site. `pending_diff(conn, media)` and `last_snapshot_rows` back the admin's Publish page. The CLI passes `GcpCdnInvalidator(project, url_map)` when `GOOGLE_CLOUD_PROJECT` and `VILF_URL_MAP` are set.
 
 ## Config (scripts/config.py)
 
@@ -121,7 +123,7 @@ A `running` runs row is committed on its own connection first; a second publish 
 ## Other scripts
 
 - `scripts/indexnow.py`: submits sitemap URLs modified in the last 2 days to IndexNow (Bing and friends; Google has no equivalent). Publish calls it; the public key lives in `static/<key>.txt`.
-- `scripts/importer.py`: legacy archive recovery only. Refuses to run on a non-empty table without `--replace`, reports orphan photos and logs an `import` run.
+- Legacy Markdown import has been removed. Restore current JSON/database backups instead.
 - `scripts/instagram_poster.py`, `scripts/image_generator.py`, `scripts/instagram_scratch.ipynb`: Selenium bot posting reviews with `instagram_published: False`. Needs `uv sync --group instagram` and `scripts/credentials.json` (gitignored). Not wired into the CLI, fragile, still reads markdown files.
 
 ## Tests

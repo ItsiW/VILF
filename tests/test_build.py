@@ -1,23 +1,19 @@
-"""render_site over the snapshot fixture, plus the legacy `./vilf build` wrapper."""
+"""render_site over snapshot fixtures and the `./vilf build` wrapper."""
 
 import json
 import re
-import shutil
 from datetime import date
 from pathlib import Path
 
 import pytest
 from click.testing import CliRunner
 
-from scripts.build import build_vilf, parse_git_dates
+from scripts.build import build_vilf
 from scripts.render import SITE_URL, RenderError, enrich_place, render_site
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SNAPSHOT = REPO_ROOT / "tests" / "fixtures" / "snapshot.json"
 TODAY = date(2026, 9, 9)
-
-# build.py reports a broken place with "<slug>.md <error>"
-PLACE_ERROR = re.compile(r"^.+\.md( |$)")
 
 PLACES_JSON_KEYS = {
     "name", "slug", "url", "cuisine", "area", "city", "address", "lat", "lon",
@@ -38,17 +34,6 @@ def load_rows():
     return json.loads(SNAPSHOT.read_text(encoding="utf-8"))
 
 
-def make_site_root(root: Path) -> Path:
-    """html/ and about.md from the repo, a static/ with only the top-level files (no img/ cache)."""
-    (root / "html").symlink_to(REPO_ROOT / "html")
-    (root / "about.md").symlink_to(REPO_ROOT / "about.md")
-    (root / "static").mkdir()
-    for file in (REPO_ROOT / "static").iterdir():
-        if file.is_file():
-            shutil.copy(file, root / "static" / file.name)
-    return root
-
-
 def render(rows, root: Path, **kw):
     out = root / "build"
     stats = render_site(
@@ -64,7 +49,7 @@ def render(rows, root: Path, **kw):
 
 
 @pytest.fixture(scope="module")
-def site(tmp_path_factory):
+def site(tmp_path_factory, make_site_root):
     root = make_site_root(tmp_path_factory.mktemp("site"))
     rows = load_rows()
     out, stats = render(rows, root)
@@ -258,7 +243,7 @@ def test_address_links_use_google_place_id_with_coordinates_fallback(site):
         assert "geo://" not in html
 
 
-def test_media_base_url(tmp_path):
+def test_media_base_url(tmp_path, make_site_root):
     root = make_site_root(tmp_path)
     out, _ = render(load_rows(), root, media_base_url="https://media.example")
     features = json.loads((out / "places.geojson").read_text())["features"]
@@ -280,7 +265,7 @@ def test_latest_orders_by_review_age(site):
     assert latest.index("Draft Place") < latest.index("Test Place")
 
 
-def test_render_error_on_duplicate_name(tmp_path):
+def test_render_error_on_duplicate_name(tmp_path, make_site_root):
     root = make_site_root(tmp_path)
     rows = load_rows()
     rows[1]["name"] = rows[0]["name"]
@@ -290,7 +275,7 @@ def test_render_error_on_duplicate_name(tmp_path):
     assert not (root / "build").exists()
 
 
-def test_render_error_on_bad_row(tmp_path):
+def test_render_error_on_bad_row(tmp_path, make_site_root):
     root = make_site_root(tmp_path)
     rows = load_rows()
     rows[0]["slug"] = "bad-row"
@@ -303,7 +288,7 @@ def test_render_error_on_bad_row(tmp_path):
     assert "bad-row: cuisine: required" in info.value.problems
 
 
-def test_render_error_on_unknown_key(tmp_path):
+def test_render_error_on_unknown_key(tmp_path, make_site_root):
     root = make_site_root(tmp_path)
     rows = load_rows()
     rows[0]["foo"] = "bar"
@@ -331,72 +316,7 @@ def test_enrich_place():
     assert place["food_image_path"] is None and place["food_thumb_path"] is None
 
 
-def test_parse_git_dates_newest_first():
-    # `git log --format=%cs --name-only` output: date, blank line, paths; newest commit first
-    log = (
-        "2026-06-11\n\nplaces/new.md\nplaces/old.md\n"
-        "2025-09-08\n\nplaces/old.md\nplaces/other.md\n"
-        "\n2022-10-08\n\nplaces/other.md\n"
-    )
-    assert parse_git_dates(log) == {
-        "places/new.md": "2026-06-11",
-        "places/old.md": "2026-06-11",
-        "places/other.md": "2025-09-08",
-    }
-    assert parse_git_dates("") == {}
-
-
-# --- the click wrapper ---
-
-PLACE = (
-    "---\n"
-    "name: Test Place\n"
-    "cuisine: Thai\n"
-    "address: 1 Main St\n"
-    "area: Mission District\n"
-    "lat: 37.76\n"
-    "lon: -122.42\n"
-    "phone: \n"
-    "menu: \n"
-    "drinks: True\n"
-    'visited: "2024-03-31"\n'
-    "taste: 2\n"
-    "value: 1\n"
-    "instagram_published: False\n"
-    "---\n"
-    "\n"
-    "Get the **pad thai**.\n"
-)
-
-
-@pytest.mark.skipif(not (REPO_ROOT / "places").is_dir(), reason="no places/ checkout")
-def test_legacy_build():
-    with pytest.MonkeyPatch.context() as mp:
-        mp.chdir(REPO_ROOT)
-        result = CliRunner().invoke(build_vilf, ["--source", "files"], catch_exceptions=False)
-    assert result.exit_code == 0, result.output
-    assert "220 open, 26 closed" in result.output
-    assert "Done building VILF with 220 places" in result.output
-    assert (REPO_ROOT / "build" / "places" / "a16" / "index.html").is_file()
-
-
-def test_legacy_build_reports_bad_place(tmp_path):
-    root = make_site_root(tmp_path)
-    (root / "raw").mkdir()
-    (root / "places").mkdir()
-    (root / "places" / "test-place.md").write_text(PLACE)
-    (root / "places" / "broken.md").write_text("---\nname: Broken\ntaste: 9\n---\n\nno metadata\n")
-    with pytest.MonkeyPatch.context() as mp:
-        mp.chdir(root)
-        result = CliRunner().invoke(build_vilf, ["--source", "files"], catch_exceptions=False)
-    assert result.exit_code == 1, result.output
-    errors = [line for line in result.stdout.splitlines() if PLACE_ERROR.match(line)]
-    assert errors, result.output
-    assert all(line.startswith("broken.md ") for line in errors), errors
-    assert "Build failed" in result.stdout
-
-
-def test_snapshot_cli(tmp_path):
+def test_snapshot_cli(tmp_path, make_site_root):
     root = make_site_root(tmp_path)
     media = tmp_path / "media" / "img" / "food"
     media.mkdir(parents=True)

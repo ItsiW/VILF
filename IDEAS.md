@@ -1,72 +1,36 @@
 # Ideas
 
-Things to pursue, in priority order. The 2026-09-09 overhaul (branch cleanup, uv, Places
-API, schema, SEO, AI discoverability, data reconciliation) is done, and the database
-migration is complete. The `runs` table (visible on the admin's Sync page, or
-`runs.last(conn, "audit")`) says when the data was last checked against Google.
+The database migration and practical tooling follow-ups are complete. Maintenance
+history lives in the admin's Sync page and the `runs` table; infrastructure and
+recovery instructions are in `infra/README.md` and `infra/backup/README.md`.
 
-## Database migration: complete
+## Completed tooling cleanup
 
-What exists (runbook and status in `infra/README.md`): a `places` + `runs` schema derived
-from `scripts/schema.py` (`scripts/db.py`, `repo.py`), the importer from the markdown
-archive, the FastAPI + htmx admin app (`app/`: Google lookup, edit, photo upload and crop,
-relink, preview, sync, publish), `scripts/publish.py` (validate, snapshot, render, md5
-mirror, mass-delete guard, CDN, IndexNow), JSON snapshots per publish with
-`db restore-snapshot`, Cloud Run behind IAP deployed by CI, the media bucket on the CDN,
-nightly cloud JSON/original-photo backups, and Mac database/original-photo backups.
-The admin is at `admin.vilf.org`; the legacy reviews/photos and old deployment
-credentials have been removed. Tests run offline, including an end-to-end test.
+- Explicit `unlinked` preference for entries intentionally absent from Google Maps.
+- Review validation before Google checks, streaming CLI audit output, and Google
+  Maps short-link support shared by the CLI and admin.
+- Coordinates rounded to seven decimal places on save, avoiding floating-point
+  noise without a SQL type migration.
+- Clear partial-publish failure messages and deletion checks before uploads.
+  The existing `max(25, 20%)` deletion threshold remains appropriate at this size.
+- Removed the Markdown importer and `--source files`; JSON backup restore remains.
+- Ruff correctness linting in CI, shared render-test fixtures, explicit Linux/AMD64
+  container builds, and grouped weekly Dependabot PRs (reviewed before merging).
+- Homepage migrated from collaborator-owned Mapbox to OpenFreeMap + MapLibre;
+  retain provider attribution.
 
-Deliberately not in v1:
+## Deliberate decisions
 
-- Row versioning or an edit history beyond the per-publish snapshots.
-- Staged or draft photos: a photo change is live on the CDN as soon as it is saved, only
-  the page that references it waits for Publish.
-- Multi-user roles: `VILF_ADMIN_EMAIL` is one address.
-- Per-visitor site features (accounts, comments, favourites). The public site stays static.
+- Local admin uses production data. No hosted staging or separate preview workflow.
+- Keep Git history intact, including historical photos; no history rewrite.
+- No visitor accounts, comments, favourites, or other visitor-facing additions.
+- No multi-user roles, row edit-history system, or draft-photo system for now.
+  Photo changes reach the public media bucket immediately; page edits wait for Publish.
+- Never upload database backups to the public media bucket. Cloud and Mac backups
+  already cover restaurant data and original photos.
 
-### Surfaced by the migration
+## Deferred: Instagram
 
-- An `unlinked` boolean column so `fiji-airways` and `boba-binge` stop appearing in the
-  audit and enrich "without a place_id" counts.
-- The git packfile stays large after `git rm -r places raw/food`: history keeps every
-  JPEG. Either accept it or rewrite history with `git filter-repo` once nobody has an
-  old clone.
-- `publish` uploads and invalidates the CDN before `mark_published` and the runs row; a
-  crash in between leaves the site updated and the rows dirty, which the next publish
-  reconciles. Fine, but a "publish partially applied" note on the Publish page would
-  save a puzzled minute.
-- The mass-delete guard (`max(25, 20%)` stale objects) is tuned for a site of ~550
-  objects; revisit if the site grows or shrinks a lot.
-- `--source files` and `scripts/importer.py` can go a release after the cleanup PR; the
-  fixtures they use are small so there is no rush.
-- Neon branches are a free staging database: `./vilf build --source db` against a branch
-  URL previews a data change without a second bucket.
-
-## Tooling follow-ups
-
-- `check` could run `validate_place` first and list schema problems next to Google
-  mismatches (a full pre-publish gate).
-- `audit`: print problems as found so an interrupted run still yields output.
-- `spatula`: `maps.app.goo.gl` short links aren't recognised (resolve the redirect or hint).
-- `schema`: fixed-point floats for coordinates.
-- `ruff` in the dev group; nothing lints today. Fonts and PNGs in `scripts/` belong in
-  `scripts/assets/`.
-- A shared `site_root` fixture in `tests/conftest.py`: `make_site_root` is copied in
-  `test_build.py`, `test_publish.py` and `test_e2e.py`.
-- `Dockerfile`/`deploy.yaml`: build with `--platform linux/amd64` explicitly so a local
-  `docker build` on Apple Silicon matches CI.
-Never upload database backups to the public media bucket. Private cloud backups
-already protect against laptop loss; see `infra/backup/README.md`.
-
-## Housekeeping (do opportunistically)
-
-- **No staging environment for the site.** Publish goes straight to vilf.org. The admin's
-  Preview covers single pages; a full preview would need a second bucket (or a Neon
-  branch plus a local build, see above).
-- **Map provider migration complete:** the homepage uses OpenFreeMap Liberty and
-  pinned MapLibre 6.9.0, loaded as a deferred JavaScript module. No Mapbox account
-  or token is needed. Retain provider attribution when changing the map style.
-- Add a Dependabot config for github-actions and uv (setup-uv has no floating major tag).
-- **Instagram poster.** Untouched, still Selenium (`uv sync --group instagram`) and still
-  reads markdown files. Either move to the official Graph API and the database, or drop it.
+The poster still uses Selenium and expects legacy Markdown input. Leave it alone
+until deciding whether to adapt it to the database/official API or remove it.
+Its fonts and PNG assets in `scripts/` are also deliberately unchanged.

@@ -1,7 +1,6 @@
 """scripts/publish.py against LocalStorage, a tmp SQLite and a recording fake CDN."""
 
 import json
-import shutil
 from datetime import date
 from pathlib import Path
 
@@ -27,16 +26,6 @@ SNAPSHOT = REPO_ROOT / "tests" / "fixtures" / "snapshot.json"
 TODAY = date(2026, 9, 9)
 FIXTURE = json.loads(SNAPSHOT.read_text(encoding="utf-8"))
 SLUGS = sorted(r["slug"] for r in FIXTURE)
-
-
-def make_site_root(root: Path) -> Path:
-    (root / "html").symlink_to(REPO_ROOT / "html")
-    (root / "about.md").symlink_to(REPO_ROOT / "about.md")
-    (root / "static").mkdir()
-    for file in (REPO_ROOT / "static").iterdir():
-        if file.is_file():
-            shutil.copy(file, root / "static" / file.name)
-    return root
 
 
 class FakeCdn:
@@ -66,7 +55,7 @@ class RecordingStorage(LocalStorage):
 
 
 @pytest.fixture
-def env(tmp_path):
+def env(tmp_path, make_site_root):
     (tmp_path / "root").mkdir()
     root = make_site_root(tmp_path / "root")
     engine = make_engine(f"sqlite:///{tmp_path}/t.db")
@@ -168,6 +157,25 @@ def test_second_publish_is_noop(env):
     assert not second.changes
 
 
+def test_bookkeeping_failure_reports_partial_publish_and_retry(env, monkeypatch):
+    mark = repo.mark_published
+
+    def broken(*args, **kwargs):
+        raise RuntimeError("bookkeeping failed")
+
+    monkeypatch.setattr(repo, "mark_published", broken)
+    result = run(env)
+    assert result.status == "failed" and result.partially_applied
+    assert result.uploaded > 0 and result.snapshot_key
+    last = runs.recent(env["conn"])[0]
+    assert last["details"]["partially_applied"]
+    assert repo.is_dirty(repo.get(env["conn"], "draft-place"))
+    monkeypatch.setattr(repo, "mark_published", mark)
+    retried = run(env)
+    assert retried.status == "ok" and retried.uploaded == 0
+    assert not repo.is_dirty(repo.get(env["conn"], "draft-place"))
+
+
 def test_edit_changes_only_its_page_and_feeds(env):
     conn, site = env["conn"], env["site"]
     run(env)
@@ -222,12 +230,13 @@ def test_mass_delete_guard(env):
     result = run(env)
     assert result.status == "failed"
     assert result.error == f"refusing to delete {len(junk)} of {existing} objects (use force)"
-    assert result.deleted == 0 and result.uploaded > 0
+    assert result.deleted == 0 and result.uploaded == 0
+    assert not result.partially_applied
     assert all(site.exists(k) for k in junk)
-    assert "larb" in site.get("places/test-place/index.html").decode()
+    assert "larb" not in site.get("places/test-place/index.html").decode()
     r = runs.recent(conn)[0]
     assert r["status"] == "failed" and "refusing to delete" in r["error"]
-    assert f"{result.uploaded} uploaded before refusing" in r["summary"]
+    assert r["summary"].startswith("refusing to delete")
     assert repo.is_dirty(repo.get(conn, "test-place"))  # not marked published on failure
     forced = run(env, force=True)
     assert forced.status == "ok" and forced.deleted == len(junk)
@@ -241,6 +250,7 @@ def test_put_failure_mid_upload(env, tmp_path):
     result = run(env, site=flaky)
     assert result.status == "failed"
     assert result.error == "upload of places.json failed: bucket exploded"
+    assert result.partially_applied
     assert result.deleted == 0 and flaky.exists("stale/index.html")
     assert runs.recent(conn)[0]["status"] == "failed"
     assert all(repo.is_dirty(r) for r in repo.all_rows(conn) if r["slug"] == "draft-place")

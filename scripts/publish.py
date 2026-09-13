@@ -93,6 +93,7 @@ class PublishResult:
     error: str | None
     cdn_invalidated: bool
     seconds: float
+    partially_applied: bool = False
 
 
 def validate_rows(rows: list[dict]) -> list[str]:
@@ -233,24 +234,29 @@ def publish(
         started = time.monotonic()
         with conn.engine.begin() as own:  # committed now, visible to other processes
             run_id = runs.start(own, "publish", by_email=by_email)
+        progress = {"uploaded": 0, "deleted": 0, "unchanged": 0, "partially_applied": False}
         try:
             return _publish(
                 conn, run_id, started, media=media, site=site, settings=settings, cdn=cdn,
                 force=force, today=today, html_dir=html_dir, static_dir=static_dir,
-                about_path=about_path,
+                about_path=about_path, progress=progress,
             )
         except Exception:  # noqa: BLE001 - reported, not raised, so the row is not left running
             error = traceback.format_exc()
-            runs.finish(conn, run_id, "failed", "crashed: " + error.strip().splitlines()[-1], error=error)
+            conn.rollback()
+            runs.finish(conn, run_id, "failed", "crashed: " + error.strip().splitlines()[-1], error=error,
+                        details=progress, snapshot_key=progress.get("snapshot_key"))
             return PublishResult(
-                run_id, "failed", 0, 0, 0, None, None, error, False, time.monotonic() - started
+                run_id, "failed", progress["uploaded"], progress["deleted"], progress["unchanged"],
+                progress.get("snapshot_key"), None, error, progress.get("cdn_invalidated", False),
+                time.monotonic() - started, progress["partially_applied"],
             )
     finally:
         _LOCK.release()
 
 
 def _publish(conn, run_id, started, *, media, site, settings, cdn, force, today,
-             html_dir, static_dir, about_path) -> PublishResult:
+             html_dir, static_dir, about_path, progress) -> PublishResult:
     from .storage import storage_from_url
 
     if settings.backup_storage:
@@ -266,7 +272,7 @@ def _publish(conn, run_id, started, *, media, site, settings, cdn, force, today,
     else:
         snapshots = media  # Existing local workflows and fixtures.
     snapshot_key = None
-    counts = {"uploaded": 0, "deleted": 0, "unchanged": 0}
+    counts = progress
     cdn_invalidated = False
 
     def fail(error: str, summary: str | None = None) -> PublishResult:
@@ -277,6 +283,7 @@ def _publish(conn, run_id, started, *, media, site, settings, cdn, force, today,
         return PublishResult(
             run_id, "failed", counts["uploaded"], counts["deleted"], counts["unchanged"],
             snapshot_key, None, error, cdn_invalidated, time.monotonic() - started,
+            counts["partially_applied"],
         )
 
     # (b) rows and validation: nothing is written when a row is broken
@@ -289,6 +296,7 @@ def _publish(conn, run_id, started, *, media, site, settings, cdn, force, today,
     # (c) snapshot
     now = datetime.now(UTC)
     snapshot_key = _snapshot_key(now)
+    progress["snapshot_key"] = snapshot_key
     snapshots.put(snapshot_key, snapshot.dump_rows(rows).encode("utf-8"), content_type="application/json")
 
     with TemporaryDirectory() as tmp:
@@ -308,18 +316,20 @@ def _publish(conn, run_id, started, *, media, site, settings, cdn, force, today,
         to_upload = {k: v for k, v in desired.items() if existing.get(k) != v[1]}
         counts["unchanged"] = len(desired) - len(to_upload)
 
+        # Check the deletion guard before changing any public files.
+        stale = sorted(set(existing) - set(desired))
+        limit = max(MASS_DELETE_MIN, MASS_DELETE_RATIO * len(existing))
+        if stale and len(stale) > limit and not force:
+            return fail(f"refusing to delete {len(stale)} of {len(existing)} objects (use force)")
+
         # (f) uploads; a failure stops before any delete
+        counts["partially_applied"] = bool(to_upload or stale)
         done, error = _upload_all(site, to_upload)
         counts["uploaded"] = done
         if error:
             return fail(error)
 
         # (g) stale objects, guarded against wiping the site
-        stale = sorted(set(existing) - set(desired))
-        limit = max(MASS_DELETE_MIN, MASS_DELETE_RATIO * len(existing))
-        if stale and len(stale) > limit and not force:
-            error = f"refusing to delete {len(stale)} of {len(existing)} objects (use force)"
-            return fail(error, f"{done} uploaded before {error}")
         counts["deleted"], error = _delete_all(site, stale)
         if error:
             return fail(error)
@@ -330,6 +340,7 @@ def _publish(conn, run_id, started, *, media, site, settings, cdn, force, today,
             try:
                 cdn.invalidate(["/*"])
                 cdn_invalidated = True
+                progress["cdn_invalidated"] = True
             except Exception as e:  # noqa: BLE001 - stale cache is not a failed publish
                 cdn_error = str(e)
 
@@ -339,6 +350,7 @@ def _publish(conn, run_id, started, *, media, site, settings, cdn, force, today,
         summary = f"{counts['uploaded']} uploaded, {counts['deleted']} deleted, {counts['unchanged']} unchanged"
         details = {
             **counts,
+            "partially_applied": False,
             "changes": {"added": changes.added, "removed": changes.removed, "changed": changes.changed},
             "cdn_invalidated": cdn_invalidated,
             "cdn_error": cdn_error,

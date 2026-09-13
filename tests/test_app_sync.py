@@ -55,6 +55,34 @@ def client(make_client):
     return make_client()
 
 
+def test_intentionally_unlinked_panel(client, monkeypatch):
+    with client.engine.begin() as conn:
+        repo.update(conn, "bare-place", {"unlinked": True})
+
+    def unexpected(*args, **kwargs):
+        pytest.fail("must not contact Google")
+
+    monkeypatch.setattr(sync_routes, "search_text", unexpected)
+    result = client.post("/places/bare-place/sync")
+    assert result.status_code == 200
+    assert "intentionally unlinked" in result.text
+    page = client.get("/places/bare-place")
+    assert 'name="unlinked" value="1" checked' in page.text
+
+
+def test_invalid_review_stops_before_google(client, monkeypatch):
+    with client.engine.begin() as conn:
+        repo.update(conn, "test-place", {"body": "missing a bold dish"})
+
+    def unexpected(*args, **kwargs):
+        pytest.fail("must not contact Google")
+
+    monkeypatch.setattr(sync_routes, "get_place", unexpected)
+    response = client.post("/places/test-place/sync")
+    assert response.status_code == 200
+    assert "Review validation" in response.text
+
+
 def text(response):
     return html.unescape(response.text)
 

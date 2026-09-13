@@ -32,7 +32,8 @@ def diff_rows(old_rows: list[dict], new_rows: list[dict]) -> Diff:
     new = {r["slug"]: r for r in new_rows}
     changed = {}
     for slug in sorted(old.keys() & new.keys()):
-        keys = (old[slug].keys() | new[slug].keys()) - set(TIMESTAMPS)
+        # Google-link preferences do not change the published restaurant page.
+        keys = (old[slug].keys() | new[slug].keys()) - set(TIMESTAMPS) - {"unlinked"}
         delta = {k: (old[slug].get(k), new[slug].get(k)) for k in sorted(keys) if old[slug].get(k) != new[slug].get(k)}
         if delta:
             changed[slug] = delta

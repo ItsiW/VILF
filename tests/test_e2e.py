@@ -13,7 +13,6 @@ autouse guard in conftest.py fails any HTTP call.
 """
 
 import json
-import shutil
 from datetime import date
 from io import BytesIO
 from pathlib import Path
@@ -59,17 +58,6 @@ FORM = {
 }
 
 
-def make_site_root(root: Path) -> Path:
-    """html/ and about.md from the repo, top-level static files only (not the static/img cache)."""
-    (root / "html").symlink_to(REPO_ROOT / "html")
-    (root / "about.md").symlink_to(REPO_ROOT / "about.md")
-    (root / "static").mkdir()
-    for file in (REPO_ROOT / "static").iterdir():
-        if file.is_file():
-            shutil.copy(file, root / "static" / file.name)
-    return root
-
-
 def jpeg_bytes(w: int, h: int) -> bytes:
     im = Image.new("RGB", (w, h))
     px = im.load()
@@ -81,7 +69,7 @@ def jpeg_bytes(w: int, h: int) -> bytes:
     return buf.getvalue()
 
 
-def test_create_photo_crop_publish(tmp_path, monkeypatch):
+def test_create_photo_crop_publish(tmp_path, monkeypatch, make_site_root):
     (tmp_path / "root").mkdir()
     root = make_site_root(tmp_path / "root")
     settings = Settings(

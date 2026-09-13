@@ -19,11 +19,12 @@ To look at the public site instead of the admin, build it and serve the director
 python3 -m http.server 8080 --directory build
 ```
 
-Open [`localhost:8080`](http://localhost:8080) (if you open `0.0.0.0:8080` the map will not render). `./vilf build --source snapshot --snapshot file.json` renders a JSON dump. Legacy `--source files` and `db import-markdown` are retained for archives recovered from Git history, not normal setup.
+Open [`localhost:8080`](http://localhost:8080) (if you open `0.0.0.0:8080` the map will not render). `./vilf build --source snapshot --snapshot file.json` renders a JSON dump. The old file-based build and Markdown importer have been removed; use current JSON backups for recovery.
 
 The owner's local `.env` connects to the same production database and buckets as the hosted admin: local edits and publishing affect the live site. For isolated development, configure separate SQLite/local storage targets before initializing or restoring. Seed an isolated database from a current JSON backup using `./vilf db restore-snapshot /path/to/backup.json`; this replaces its restaurant rows. Photos are restored separately (see the backup runbook).
 
 ```bash
+uv run ruff check .          # lightweight correctness linting
 uv run pytest                # the whole suite, offline, a few seconds
 ```
 
@@ -33,11 +34,11 @@ Copy `.env.example` to `.env` for the Google keys and any non-default storage; e
 
 `./vilf serve` runs the same FastAPI + htmx app that runs on Cloud Run behind IAP in production.
 
-- **New** looks a restaurant up in Google Places by name and city (or a pasted Google Maps URL), lists the candidates with a flag for ones already reviewed, and prefills the form from the pick. Slugs are derived from the name and never change afterwards.
+- **New** looks a restaurant up in Google Places by name and city (or a pasted Google Maps URL, including `maps.app.goo.gl` short links), lists the candidates with a flag for ones already reviewed, and prefills the form from the pick. Slugs are derived from the name and never change afterwards.
 - **Edit** shows dirty / published / closed chips, a **Preview** of the public page, the form, the photo panel and a "Relink to Google" search. A place that has never been published can be deleted; anything that has been live is marked closed instead (its page stays up with a banner, out of the map and lists).
 - **Photo**: upload a JPEG, PNG or HEIC; the original is stored without EXIF and the four site variants (1200x675 and 426x240, JPEG and WebP) are rendered. Tall photos get a crop slider with a live preview.
-- **Sync** runs check, audit and enrich against Google over the database and shows when they last ran.
-- **Publish** shows what changed since the last snapshot and publishes: validate, snapshot, render, upload changed files, delete stale ones, invalidate the CDN, mark rows published.
+- **Sync** checks saved reviews before calling Google and shows audit history. Places intentionally absent from Google Maps can be marked as such on their edit form; check/audit/enrich skip those entries. CLI audit prints problems as they arrive.
+- **Publish** shows what changed since the last snapshot and publishes: validate, snapshot, render, upload changed files, delete stale ones, invalidate the CDN, mark rows published. The mass-delete guard runs before uploads; a partial-failure message explains when retrying is needed.
 
 ### CLI equivalents
 
@@ -54,6 +55,8 @@ Every admin action has a command, all reading `.env`:
 ```
 
 `spatula`, `check`, `audit` and `enrich` need `GOOGLE_PLACES_API_KEY`; `./vilf --help` and each subcommand's `--help` list every flag.
+
+Coordinates are rounded to seven decimal places when saved (roughly centimetre precision). GitHub CI runs lint and tests; Dependabot opens grouped weekly dependency-update PRs for review, not automatic deployment. Build containers with `docker build --platform linux/amd64 -t vilf-admin .` on a Mac.
 
 ## Infrastructure
 

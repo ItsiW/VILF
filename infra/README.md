@@ -38,7 +38,7 @@ doing and can be re-run.
 | section | creates or changes |
 |---|---|
 | `apis` | enables `run`, `artifactregistry`, `secretmanager`, `iap` |
-| `buckets` | `gs://vilf-media` (us-west1, uniform access, 30 day soft delete, `allUsers` objectViewer); bumps `gs://vilf-org` soft delete to 30 days. The commented seed block (rsync from `gs://vilf-org/img`) is superseded by `./vilf db import-markdown`, step 5 below |
+| `buckets` | `gs://vilf-media` (us-west1, uniform access, 30 day soft delete, `allUsers` objectViewer); bumps `gs://vilf-org` soft delete to 30 days. The commented seed block (rsync from `gs://vilf-org/img`) was superseded by the completed database/media import |
 | `cdn` | backend bucket `vilf-media`: CDN on, `CACHE_ALL_STATIC`, TTL 1 day / max 7 days, response header `X-Vilf-Backend: media` |
 | `service-accounts` | runtime SA `vilf-admin@vilf-com.iam.gserviceaccount.com` |
 | `roles` | `roles/storage.objectAdmin` for the runtime SA on both buckets (bucket level); custom project role `vilfCdnInvalidator` (`compute.urlMaps.invalidateCache` + `compute.globalOperations.get`, the latter so the invalidation operation can be polled) bound to it |
@@ -163,40 +163,14 @@ Rollback: the hello image is still deployable
 and reverting the merge on `develop` brings the rsync workflow back; the public
 site was not modified by this step.
 
-### 5. Seed Neon and the media bucket
+### 5. Initial import (completed; tooling retired)
 
-`import-markdown` reads `places/*.md` and `raw/food/*.jpg` from the checkout,
-writes each photo's EXIF-free original plus the four variants into media
-storage and inserts the rows with their git dates as `published_at`, so nothing
-is dirty afterwards. No byte copy from `gs://vilf-org/img` is needed (the
-commented rsync in `setup-admin.sh` is obsolete). Four photos carry an EXIF
-orientation (`chucks-takeaway`, `hometown-creamery`, `nopalito-to-go-window`,
-`souvla`): the importer applies it, so they will render upright where the live
-site currently shows them rotated. `raw/food/rheas-deli-market.jpg` has no
-review and is reported as an orphan (decide in step 10).
-
-```bash
-export DATABASE_URL="$DIRECT_URL" VILF_MEDIA_STORAGE=gs://vilf-media
-./vilf db init
-./vilf db import-markdown --dry-run      # validates every file, lists orphans, writes nothing
-./vilf db import-markdown                # a few minutes: 246 originals + 984 variants uploaded
-```
-
-Verify:
-
-```bash
-gcloud storage ls gs://vilf-media/originals/ | wc -l          # 246
-gcloud storage ls 'gs://vilf-media/img/**' | wc -l            # 984
-./vilf db snapshot | grep -c '"slug"'                         # 246
-curl -sI https://storage.googleapis.com/vilf-media/img/food/lion-dance.webp | grep -i -e HTTP -e content-type -e cache-control
-```
-
-The admin's `/places` now lists 246 rows, `?filter=dirty` is empty and
-`?filter=nophoto` is empty.
-
-Rollback: `./vilf db import-markdown --replace` re-imports over a bad import;
-`gcloud storage rm -r gs://vilf-media/originals gs://vilf-media/img` and
-`psql "$DIRECT_URL" -c 'truncate places, runs'` empty everything.
+The legacy reviews and originals were imported into Neon and `gs://vilf-media`.
+The Markdown importer and file-based build mode are now removed.
+For recovery use a current private cloud JSON backup or Mac database dump and the
+original-photo backups: see [backup/README.md](backup/README.md).
+Do not restore stale reviews from Git history or rerun the historical destructive
+migration steps.
 
 ### 6. Local equivalence check
 

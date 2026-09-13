@@ -1,7 +1,6 @@
 """Unit tests for scripts/schema.py plus a round-trip over every real place file."""
 
 from datetime import date
-from pathlib import Path
 
 import pytest
 
@@ -21,7 +20,6 @@ from scripts.schema import (
     write_place,
 )
 
-PLACES = Path(__file__).resolve().parent.parent / "places"
 
 VALID = dict(
     name="Test Place",
@@ -69,7 +67,7 @@ def test_constants():
     assert KNOWN_KEYS == [
         "name", "cuisine", "address", "area", "lat", "lon", "phone", "menu",
         "drinks", "visited", "taste", "value", "instagram_published",
-        "city", "place_id", "website", "closed",
+        "city", "place_id", "unlinked", "website", "closed",
     ]
     required = {f.name for f in FIELDS if f.required}
     assert required == {
@@ -285,17 +283,6 @@ def test_write_place_reproduces_canonical_file(tmp_path):
     out = tmp_path / "a16-copy.md"
     write_place(out, meta, body)
     assert out.read_bytes() == A16.encode()
-
-
-@pytest.mark.parametrize("path", sorted(PLACES.glob("*.md")), ids=lambda p: p.name)
-def test_round_trip_every_place(path, tmp_path):
-    meta, body = load_place(path)
-    assert validate_place(meta, body, path.stem) == []
-    tmp = tmp_path / path.name
-    write_place(tmp, meta, body)
-    meta2, body2 = load_place(tmp)
-    assert meta2 == meta
-    assert body2 == body
 
 
 def test_validate_unique():

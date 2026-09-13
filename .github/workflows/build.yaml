@@ -14,4 +14,5 @@ jobs:
           enable-cache: true
       - run: uv python install
       - run: uv sync
+      - run: uv run ruff check .
       - run: uv run pytest

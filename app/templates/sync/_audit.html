@@ -11,6 +11,7 @@
   <p>All {{ report.audited }} audited places are OPERATIONAL.</p>
   {% endif %}
   <p>{{ report.audited }} places audited, {{ report.no_id }} without a place_id (cannot be audited), {{ report.already_closed }} already marked closed (skipped).</p>
+  {% if report.unlinked %}<p>{{ report.unlinked }} intentionally unlinked from Google (skipped).</p>{% endif %}
   {% if marked %}
   <p class="flash">Marked {{ marked | length }} place(s) closed:
     {% for slug in marked %}<a href="/places/{{ slug }}">{{ slug }}</a>{% if not loop.last %}, {% endif %}{% endfor %}

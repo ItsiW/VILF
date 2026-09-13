@@ -10,13 +10,11 @@ from pathlib import Path
 import pytest
 import sqlalchemy as sa
 from click.testing import CliRunner
-from PIL import Image
 
 from scripts import repo, runs
 from scripts.cli import cli
 from scripts.config import settings
 from scripts.db import make_engine
-from scripts.schema import write_place
 from scripts.snapshot import load_rows
 from scripts.storage import LocalStorage
 
@@ -43,7 +41,7 @@ BASE = dict(
 
 @pytest.fixture
 def env(tmp_path, monkeypatch):
-    """A site root (html/static/about) with places/ and raw/food/, settings pointing into tmp."""
+    """A site root (html/static/about) with settings pointing into tmp."""
     root = tmp_path / "root"
     root.mkdir()
     (root / "html").symlink_to(REPO_ROOT / "html")
@@ -52,15 +50,6 @@ def env(tmp_path, monkeypatch):
     for file in (REPO_ROOT / "static").iterdir():
         if file.is_file():
             shutil.copy(file, root / "static" / file.name)
-    (root / "places").mkdir()
-    (root / "raw" / "food").mkdir(parents=True)
-    write_place(root / "places" / "alpha-cafe.md", BASE, "\nGet the **pad thai**.\n")
-    write_place(
-        root / "places" / "beta-bar.md",
-        {**BASE, "name": "Beta Bar", "lat": 37.77, "phone": None, "visited": "2025-01-02"},
-        "\nGet the **larb**.\n",
-    )
-    Image.new("RGB", (40, 30), "red").save(root / "raw" / "food" / "alpha-cafe.jpg")
     monkeypatch.chdir(root)
     url = f"sqlite:///{tmp_path}/cli.db"
     monkeypatch.setenv("DATABASE_URL", url)
@@ -86,8 +75,12 @@ def rows(env):
 def imported(env):
     result = invoke("db", "init")
     assert result.exit_code == 0, result.output
-    result = invoke("db", "import-markdown")
-    assert result.exit_code == 0, result.output
+    with env["engine"].begin() as conn:
+        for slug, meta, body in [
+            ("alpha-cafe", BASE, "Get the **pad thai**."),
+            ("beta-bar", {**BASE, "name": "Beta Bar", "lat": 37.77, "phone": None, "visited": "2025-01-02"}, "Get the **larb**."),
+        ]:
+            repo.insert(conn, repo.meta_to_row(meta, body, slug=slug))
     return result
 
 
@@ -102,7 +95,7 @@ def test_uninitialised_database_is_a_clear_error(env):
     sa.create_engine(f"sqlite:///{db_file}").connect().close()
     result = invoke("db", "snapshot")
     assert result.exit_code == 1 and "database not initialised" in result.output
-    # restore-snapshot and import-markdown initialise the database themselves
+    # restore-snapshot initialises the database themselves
     result = invoke("db", "restore-snapshot", str(REPO_ROOT / "tests" / "fixtures" / "snapshot.json"))
     assert result.exit_code == 0, result.output
     assert len(rows(env)) == 6
@@ -113,28 +106,6 @@ def test_db_init_creates_tables(env):
     assert result.exit_code == 0 and "Initialised sqlite:///" in result.output
     assert set(sa.inspect(env["engine"]).get_table_names()) >= {"places", "runs"}
     assert invoke("db", "init").exit_code == 0  # idempotent
-
-
-def test_import_markdown(env):
-    result = invoke("db", "init")
-    result = invoke("db", "import-markdown", "--dry-run")
-    assert result.exit_code == 0 and "Dry run" in result.output
-    assert rows(env) == []
-    result = invoke("db", "import-markdown")
-    assert result.exit_code == 0, result.output
-    assert "Imported 2 places" in result.output
-    got = rows(env)
-    assert [r["slug"] for r in got] == ["alpha-cafe", "beta-bar"]
-    assert not any(repo.is_dirty(r) for r in got)
-    if HAVE_PHOTOS:
-        assert env["media"].exists("originals/alpha-cafe.jpg")
-        assert got[0]["photo_width"] == 40
-    else:
-        assert "photos skipped" in result.output
-    result = invoke("db", "import-markdown")
-    assert result.exit_code == 1 and "use --replace" in result.output
-    result = invoke("db", "import-markdown", "--replace")
-    assert result.exit_code == 0 and len(rows(env)) == 2
 
 
 def test_snapshot_and_restore_round_trip(env):
@@ -186,12 +157,9 @@ def test_build_snapshot_flag_infers_source(env):
     assert result.exit_code == 2 and "--snapshot" in result.output
 
 
-def test_build_source_files(env):
-    out = env["tmp"] / "out"
-    result = invoke("build", "--source", "files", "--out", str(out))
-    assert result.exit_code == 0, result.output
-    assert "Done building VILF with 2 places" in result.output
-    assert (out / "places" / "beta-bar" / "index.html").is_file()
+def test_legacy_commands_are_removed(env):
+    assert invoke("build", "--source", "files").exit_code == 2
+    assert invoke("db", "import-markdown").exit_code == 2
 
 
 def test_publish_end_to_end(env):
