@@ -35,11 +35,6 @@
   margin-top: 2em;
   margin-bottom: 0;
 }
-.verdict {
-  margin: 0;
-  padding-bottom: 0.4em;
-  font-family: 'Courier New', Courier, monospace;
-}
 </style>
 <link rel="alternate" type="text/markdown" href="/places/{{ slug }}.md">
 <script type="application/ld+json">
@@ -193,7 +188,6 @@
     <a href="tel:{{ phone }}">{{ phone_display }}</a>
     {% endif %}
   </p>
-  <p class="verdict">{{ verdict }}</p>
   <p class="mono-info">Taste: <b>{{ taste_html }}</b></p>
   <p class="mono-info">Value: <b>{{ value_html }}</b></p>
   <p class="mono-info drinks">Booze: <b>{{ drinks_html }}</b></p>

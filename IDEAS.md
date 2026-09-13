@@ -77,12 +77,5 @@ already protect against laptop loss; see `infra/backup/README.md`.
   pinned MapLibre 6.9.0, loaded as a deferred JavaScript module. No Mapbox account
   or token is needed. Retain provider attribution when changing the map style.
 - Add a Dependabot config for github-actions and uv (setup-uv has no floating major tag).
-- Add uv to the Nix dev shell.
 - **Instagram poster.** Untouched, still Selenium (`uv sync --group instagram`) and still
   reads markdown files. Either move to the official Graph API and the database, or drop it.
-- **Infra refactor from `origin/nix-infra`** (Tristan): cleaner auth scripts,
-  shellcheck/shfmt hooks. Never merged; no Nix on this machine to test it. The tofu config
-  is frozen anyway.
-- **Multi-agent workflow speed.** The overhaul ran packages in four sequential phases
-  because several edit `build.py`. The migration used one worktree per package and
-  merged; keep that. Save the runner as a named workflow in `.claude/workflows/`.

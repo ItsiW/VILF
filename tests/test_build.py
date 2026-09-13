@@ -179,7 +179,7 @@ def test_places_json(site):
 def test_verdict_and_markdown_alternate(site):
     _, out, _ = site
     html = page(out, "test-place")
-    assert "Verdict: Good taste, Fine value, booze available." in html
+    assert "Verdict:" not in html
     assert '<link rel="alternate" type="text/markdown" href="/places/test-place.md">' in html
 
 

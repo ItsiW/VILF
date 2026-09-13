@@ -132,7 +132,7 @@ def test_create_photo_crop_publish(tmp_path, monkeypatch):
     # the page and its feeds
     assert site.exists(f"places/{SLUG}/index.html")
     page = site.get(f"places/{SLUG}/index.html").decode("utf-8")
-    assert "Verdict: Phenomenal taste, Good value, booze available." in page
+    assert "Verdict:" not in page
     assert f"/img/food/{SLUG}.webp" in page
     entry = next(p for p in json.loads(site.get("places.json").decode("utf-8")) if p["slug"] == SLUG)
     assert entry["image"] == f"https://vilf.org/img/food/{SLUG}.jpg"
