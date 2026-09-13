@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 VILF (Vegans In Love with Food) is a static site of vegan restaurant reviews for the SF Bay Area at https://vilf.org. The source of truth is a database: one row per restaurant in a `places` table (Postgres on Neon in production, SQLite locally), holding the metadata that used to be YAML frontmatter plus the review body in markdown. A FastAPI + htmx admin app (`app/`) edits rows and photos and publishes: `scripts/publish.py` renders the whole site with the Jinja2 templates in `html/` and mirrors it into the site bucket `gs://vilf-org`. Photos live in the media bucket `gs://vilf-media` and are served at `vilf.org/img/...` because the load balancer routes `/img/*` to that bucket. Restaurant metadata is linked to Google Places by `place_id` and kept in sync through the CLI. There is no framework beyond FastAPI and no linter; `tests/` is an offline pytest suite that exercises the CLI, the app, the importer and publish against recorded fixtures.
 
-Git holds code only after the cutover. Until then `places/*.md` and `raw/food/*.jpg` still exist in the repo and `./vilf db import-markdown` seeds the database from them (the importer copies git commit dates so imported rows count as already published). `IDEAS.md` tracks future work; `infra/README.md` is the migration runbook and says how far the cutover has got. The old `AUDIT_LOG.md` is gone: `check --fix`, `audit`, `import`, `restore` and every `publish` write a row to the `runs` table instead.
+The database cutover is complete. Legacy `places/*.md` and `raw/food/*.jpg` have been removed from the checkout but remain in Git history. Use current cloud/Mac backups for recovery, not a fresh import of stale reviews. The owner's local `.env` points to production Postgres and buckets; SQLite remains the isolated-test/development option. `IDEAS.md` tracks future work; `infra/README.md` records the migration. The old `AUDIT_LOG.md` is gone: maintenance and publish operations write to the `runs` table.
 
 ## Commands
 
@@ -15,7 +15,7 @@ All CLI entry points go through the `./vilf` wrapper (`uv run python -m scripts.
 ```bash
 uv sync                                  # deps into .venv (add --group instagram for the poster)
 ./vilf db init                           # create the tables in DATABASE_URL (default sqlite:///./vilf.db)
-./vilf db import-markdown [--dry-run] [--replace]   # seed from places/ and raw/food/ (photos into VILF_MEDIA_STORAGE, default ./.media)
+./vilf db import-markdown [--dry-run] [--replace]   # legacy recovery only; requires an archive from Git history
 ./vilf serve [--reload]                  # admin app at http://localhost:8000 (no IAP: you are VILF_DEV_USER)
 ./vilf build [--source db|files|snapshot] [--snapshot FILE] [--out build] [--copy-media DIR]   # static build into build/ (wiped first); exits 1 on bad data
 python3 -m http.server 8080 --directory build   # serve the build; use localhost, not 0.0.0.0, or the map won't render
@@ -121,7 +121,7 @@ A `running` runs row is committed on its own connection first; a second publish 
 ## Other scripts
 
 - `scripts/indexnow.py`: submits sitemap URLs modified in the last 2 days to IndexNow (Bing and friends; Google has no equivalent). Publish calls it; the public key lives in `static/<key>.txt`.
-- `scripts/importer.py`: `./vilf db import-markdown`. Refuses to run on a non-empty table without `--replace`, reports photos without a review (`raw/food/rheas-deli-market.jpg` is one) and logs an `import` run.
+- `scripts/importer.py`: legacy archive recovery only. Refuses to run on a non-empty table without `--replace`, reports orphan photos and logs an `import` run.
 - `scripts/instagram_poster.py`, `scripts/image_generator.py`, `scripts/instagram_scratch.ipynb`: Selenium bot posting reviews with `instagram_published: False`. Needs `uv sync --group instagram` and `scripts/credentials.json` (gitignored). Not wired into the CLI, fragile, still reads markdown files.
 
 ## Tests
@@ -131,7 +131,7 @@ A `running` runs row is committed on its own connection first; a second publish 
 ## Infra and deploy
 
 - **Admin app**: Cloud Run service `vilf-admin` (`us-west1`, 0..1 instances, behind IAP, runtime SA `vilf-admin@vilf-com`). `.github/workflows/deploy.yaml` on push to `develop`: pytest, `docker build` and push to `us-west1-docker.pkg.dev/vilf-com/vilf/admin:<sha>`, `gcloud run deploy vilf-admin --image` (nothing else: env, secrets, scaling and IAP are owned by `infra/admin/setup-admin.sh`). It authenticates with the `VILF_DEPLOY_KEY` secret. `build.yaml` runs pytest on PRs. Merging to `develop` deploys the admin; the public site only changes when someone publishes.
-- **Until cutover**: while the admin branch is unmerged, `develop`'s `deploy.yaml` still builds from markdown and `gsutil rsync -d`s `build/` to the live bucket. Never push `develop` until the runbook says so; the merge that lands the admin also switches CI to the app-only deploy.
+- **Cutover complete**: CI deploys the admin, not restaurant content. Public content is published from the database; `/img/*` is served from the media bucket. Legacy files are recoverable from Git history but are no longer a live data source.
 - **`infra/admin/setup-admin.sh <section>`**: `apis`, `buckets` (gs://vilf-media, soft delete on both buckets), `cdn` (backend bucket with `X-Vilf-Backend: media`), `service-accounts`, `roles` (objectAdmin on both buckets, custom `vilfCdnInvalidator`), `registry` (Artifact Registry with cleanup policy), `secrets`, `run` (bootstraps the service with the hello image, sets env and secrets), `iap`, `deployer` (`vilf-deployer@` + `VILF_DEPLOY_KEY`), `urlmap` (routes `/img/*` to the media bucket; exports `urlmap-before.yaml` first), `all-but-urlmap`. Re-runnable.
 - **Frozen**: the 2024 Nix/OpenTofu config (`flake.nix`, `infra/*.nix`) created the project, `gs://vilf-org`, url map `vilf-lb`, certificate, DNS and the old `vilfer` service account (`VILF_CREDS`). Its state is encrypted to a departed collaborator's key: never run tofu.
 - **Backups**: `infra/backup/pg-backup.sh` + launchd plist dump the Neon database nightly at 04:15 into `~/Backups/vilf/` (30 days kept). Restore with `pg_restore`, then publish.

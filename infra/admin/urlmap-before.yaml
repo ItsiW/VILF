@@ -1,0 +1,10 @@
+defaultService: https://www.googleapis.com/compute/v1/projects/vilf-com/global/backendBuckets/vilf-org
+fingerprint: 6Dc5P8lI7g8=
+hostRules:
+- hosts:
+  - admin.vilf.org
+  pathMatcher: vilf-admin
+name: vilf-lb
+pathMatchers:
+- defaultService: https://www.googleapis.com/compute/v1/projects/vilf-com/global/backendServices/vilf-admin-backend
+  name: vilf-admin

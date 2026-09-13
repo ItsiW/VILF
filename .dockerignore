@@ -8,6 +8,9 @@ tests
 .env
 .env.*
 .media
+.media-*
+build-*
+.backups
 .site
 vilf.db
 *.ipynb

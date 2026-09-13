@@ -19,6 +19,7 @@ _TRUE = {"1", "true", "yes", "on"}
 class Settings:
     database_url: str = "sqlite:///./vilf.db"
     media_storage: str = "./.media"
+    backup_storage: str | None = None
     site_storage: str = "./.site"
     site_url: str = "https://vilf.org"
     google_cloud_project: str | None = None
@@ -49,6 +50,7 @@ class Settings:
         return cls(
             database_url=get("DATABASE_URL", cls.database_url),
             media_storage=get("VILF_MEDIA_STORAGE", cls.media_storage),
+            backup_storage=get("VILF_BACKUP_STORAGE"),
             site_storage=get("VILF_SITE_STORAGE", cls.site_storage),
             site_url=get("VILF_SITE_URL", cls.site_url),
             google_cloud_project=get("GOOGLE_CLOUD_PROJECT"),

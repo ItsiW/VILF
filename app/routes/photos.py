@@ -78,6 +78,19 @@ def photo_preview(slug: str, crop_y: float = 0.5, conn=Depends(get_conn), media=
     return Response(data, media_type="image/jpeg", headers={"Cache-Control": "no-store"})
 
 
+@router.get("/places/{slug}/photo/preview-source")
+def photo_preview_source(slug: str, conn=Depends(get_conn), media=Depends(get_media)):
+    """Load one uncropped, lightweight image; slider movement then stays in the browser."""
+    from scripts.images import clean_jpeg, open_photo
+
+    row = _row_or_404(conn, slug)
+    if not row["photo_key"]:
+        raise HTTPException(404, "no photo")
+    im = open_photo(media.get(row["photo_key"]))
+    im.thumbnail((1200, 1200))
+    return Response(clean_jpeg(im), media_type="image/jpeg", headers={"Cache-Control": "no-store"})
+
+
 @router.post("/places/{slug}/photo/crop")
 def crop_photo(
     request: Request, slug: str, crop_y: float = Form(...), conn=Depends(get_conn),

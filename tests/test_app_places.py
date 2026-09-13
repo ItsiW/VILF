@@ -170,9 +170,58 @@ def test_pick_prefills_form(make_client):
     assert 'href="https://maps.google.com/?cid=1"' in html and 'rel="noopener"' in html
 
 
+def test_pick_suggests_editable_sf_neighborhood(client, monkeypatch):
+    from dataclasses import replace
+    place = replace(LION, name="Mini Potstickers", city="San Francisco",
+                    lat=37.7633332, lon=-122.4801045)
+    monkeypatch.setattr(places_routes, "get_place", lambda *a, **kw: place)
+    page = client.post("/places/new/pick", data={"place_id": "mini-test"}).text
+    assert 'name="area" value="Outer Sunset" list="areas"' in page
+    assert "Neighborhood suggested from SF boundaries. You can edit it." in page
+    response = client.post("/places", data={**FORM, "name": "Mini Potstickers",
+        "place_id": "mini-test", "city": "San Francisco", "area": "My preferred area",
+        "lat": "37.7633332", "lon": "-122.4801045"})
+    assert response.status_code == 303, response.text
+    assert row(client, "mini-potstickers")["area"] == "My preferred area"
+
+
 def test_pick_without_embed_key(client):
     html = client.post("/places/new/pick", data={"place_id": "ChIJfixtureLionDance"}).text
+    assert 'name="area" value=""' in html
+    assert "Neighborhood suggested" not in html
     assert "<iframe" not in html and "GOOGLE_MAPS_EMBED_API_KEY" in html
+
+
+def test_autofill_links_and_photo_guidance(client):
+    page = client.post("/places/new/pick", data={"place_id": "ChIJfixtureLionDance"}).text
+    assert 'href="https://example.com/lion-dance"' in page
+    assert 'target="_blank" rel="noopener noreferrer"' in page
+    assert 'data-external-url="website-link"' in page
+    assert 'id="website-link" class="external-link"' in page
+    assert 'id="menu-link" class="external-link"' in page
+    assert "Photo: click Create first" in page
+    assert 'name="place_id" value="ChIJfixtureLionDance" readonly' in page
+
+
+def test_public_site_link_opens_in_new_tab(client):
+    page = client.get("/places").text
+    assert 'href="https://vilf.org/" target="_blank" rel="noopener noreferrer" class="public-site-link"' in page
+    assert page.index('class="public-site-link"') < page.index('href="/places"')
+
+
+def test_save_cannot_change_google_identity(client):
+    original = row(client, "test-place")["place_id"]
+    response = client.post("/places/test-place", data=edit_form(client, "test-place", place_id="tampered"))
+    assert response.status_code == 200
+    assert row(client, "test-place")["place_id"] == original
+    assert 'href="#photo"' in response.text
+
+
+def test_unsafe_website_does_not_become_a_link(client):
+    update(client, "test-place", {"website": "javascript:alert(1)"})
+    page = client.get("/places/test-place").text
+    assert 'href="javascript:' not in page
+    assert 'id="website-link"' in page
 
 
 def test_create_redirects_and_inserts(client):

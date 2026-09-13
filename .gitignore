@@ -18,3 +18,7 @@ __pycache__/
 vilf.db
 .media/
 .site/
+.backups/
+.media-neon/
+build-db/
+build-files/

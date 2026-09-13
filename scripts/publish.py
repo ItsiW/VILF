@@ -251,6 +251,20 @@ def publish(
 
 def _publish(conn, run_id, started, *, media, site, settings, cdn, force, today,
              html_dir, static_dir, about_path) -> PublishResult:
+    from .storage import storage_from_url
+
+    if settings.backup_storage:
+        if settings.backup_storage in (settings.media_storage, settings.site_storage):
+            raise ValueError("backup storage must be separate from public media and site storage")
+        snapshots = storage_from_url(settings.backup_storage)
+        if settings.backup_storage.startswith("gs://"):
+            snapshots.bucket.reload()
+            if snapshots.bucket.iam_configuration.public_access_prevention != "enforced":
+                raise ValueError("backup bucket must enforce public access prevention")
+    elif settings.media_storage.startswith("gs://"):
+        raise ValueError("VILF_BACKUP_STORAGE is required for cloud publishing")
+    else:
+        snapshots = media  # Existing local workflows and fixtures.
     snapshot_key = None
     counts = {"uploaded": 0, "deleted": 0, "unchanged": 0}
     cdn_invalidated = False
@@ -270,12 +284,12 @@ def _publish(conn, run_id, started, *, media, site, settings, cdn, force, today,
     problems = validate_rows(rows)
     if problems:
         return fail("\n".join(problems), f"{len(problems)} validation problem(s)")
-    previous = last_snapshot_rows(conn, media)
+    previous = last_snapshot_rows(conn, snapshots)
 
     # (c) snapshot
     now = datetime.now(UTC)
     snapshot_key = _snapshot_key(now)
-    media.put(snapshot_key, snapshot.dump_rows(rows).encode("utf-8"), content_type="application/json")
+    snapshots.put(snapshot_key, snapshot.dump_rows(rows).encode("utf-8"), content_type="application/json")
 
     with TemporaryDirectory() as tmp:
         out_dir = Path(tmp) / "site"

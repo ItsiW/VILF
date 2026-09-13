@@ -6,6 +6,7 @@ from scripts import publish as publish_mod
 from scripts import repo, runs
 from scripts.config import REPO_ROOT
 from scripts.publish import GcpCdnInvalidator, PublishRunning
+from scripts.storage import storage_from_url
 
 from ..deps import current_user, get_conn, get_media, get_settings, get_site, render
 
@@ -35,9 +36,10 @@ def _pending(conn, media) -> dict:
 
 
 @router.get("/publish")
-def publish_page(request: Request, conn=Depends(get_conn), media=Depends(get_media)):
+def publish_page(request: Request, conn=Depends(get_conn), media=Depends(get_media), settings=Depends(get_settings)):
     template = "publish/_pending.html" if "hx-request" in request.headers else "publish/index.html"
-    return render(request, template, **_pending(conn, media))
+    snapshots = storage_from_url(settings.backup_storage) if settings.backup_storage else media
+    return render(request, template, **_pending(conn, snapshots))
 
 
 @router.post("/publish")

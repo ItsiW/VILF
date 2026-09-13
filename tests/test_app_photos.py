@@ -69,12 +69,28 @@ def test_panel_without_photo_has_upload_only(client):
     assert 'hx-post="/places/draft-place/photo"' in html and 'accept="image/*,.heic"' in html
     assert "photo/preview" not in html and "photo/crop" not in html and "Delete photo" not in html
     assert client.get("/places/nope/photo").status_code == 404
+    assert 'hx-trigger="change[' in html
+    assert 'hx-disabled-elt="#photo-panel input, #photo-panel button"' in html
+    assert 'role="status"' in html
+    assert '>Upload</button>' not in html
+    assert 'this.reset()' in html  # the same file can be chosen again after a failed request
+
+
+def test_preview_source_is_uncropped_and_bounded(client):
+    assert client.get('/places/draft-place/photo/preview-source').status_code == 404
+    upload(client, 'draft-place', png_bytes(800, 1600))
+    response = client.get('/places/draft-place/photo/preview-source')
+    assert response.status_code == 200
+    assert response.headers['cache-control'] == 'no-store'
+    assert Image.open(BytesIO(response.content)).size == (600, 1200)
 
 
 def test_upload_tall_photo(client):
     r = upload(client, "draft-place", png_bytes(800, 1000))
     assert r.status_code == 200
-    assert "/places/draft-place/photo/preview?crop_y=0.5" in r.text
+    assert "/places/draft-place/photo/preview-source?v=" in r.text
+    assert "style.objectPosition" in r.text
+    assert "oninput=\"document.getElementById('crop-preview').src" not in r.text
     assert "/media/img/thumb/draft-place.jpg?v=" in r.text
     assert 'type="range" name="crop_y"' in r.text and "Delete photo" in r.text
     for key in FILES:
@@ -89,7 +105,7 @@ def test_upload_wide_photo_hides_slider(client):
     r = upload(client, "draft-place", png_bytes(1600, 900))
     assert r.status_code == 200
     assert 'type="range"' not in r.text and "nothing to crop" in r.text
-    assert "/places/draft-place/photo/preview?crop_y=0.5" in r.text
+    assert "/places/draft-place/photo/preview-source?v=" in r.text
 
 
 def test_media_route(client):
@@ -115,7 +131,7 @@ def test_crop_updates_variants_and_column(client):
     upload(client, "draft-place", png_bytes(800, 1000))
     before = (client.media_dir / "img/food/draft-place.jpg").read_bytes()
     r = client.post("/places/draft-place/photo/crop", data={"crop_y": "0.1"})
-    assert r.status_code == 200 and "photo/preview?crop_y=0.1" in r.text
+    assert r.status_code == 200 and "object-position: 50% 10.0%" in r.text
     assert row(client, "draft-place")["photo_crop_y"] == 0.1
     assert (client.media_dir / "img/food/draft-place.jpg").read_bytes() != before
     r = client.post("/places/draft-place/photo/crop", data={"crop_y": "7"})

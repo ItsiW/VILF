@@ -35,8 +35,15 @@ jobs:
 
       - run: gcloud auth configure-docker us-west1-docker.pkg.dev --quiet
 
-      - run: docker build -t "$IMAGE" . && docker push "$IMAGE"
+      - run: docker build -t "$IMAGE" .
+
+      - run: docker run --rm "$IMAGE" python -m scripts.check_image
+
+      - run: docker push "$IMAGE"
 
       # Only the image changes here. Service account, secrets, env vars, scaling
       # and IAP are owned by infra/admin/setup-admin.sh; do not add flags.
       - run: gcloud run deploy vilf-admin --region us-west1 --image "$IMAGE" --quiet
+
+      # The backup job shares the app's snapshot format and must stay in sync.
+      - run: gcloud run jobs update vilf-backup --region us-west1 --image "$IMAGE" --quiet

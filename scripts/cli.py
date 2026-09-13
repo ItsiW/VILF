@@ -20,7 +20,7 @@ from .spatula import scrape_and_gen_md
 from .storage import storage_from_url
 
 
-NOT_INITIALISED = "database not initialised: run `./vilf db init`, then `./vilf db import-markdown`"
+NOT_INITIALISED = "database not initialised: confirm DATABASE_URL, then run `./vilf db init`; restore a current backup or add places in the admin"
 
 
 def _engine():
@@ -161,7 +161,7 @@ def snapshot(path):
 @click.pass_context
 def restore_snapshot(ctx, key_or_path, do_publish):
     """Replace every row with the rows of a snapshot (a media storage key or a local file)."""
-    media = _media()
+    media = storage_from_url(settings().backup_storage) if settings().backup_storage else _media()
     from_media = not Path(key_or_path).is_file()
     if from_media:
         try:

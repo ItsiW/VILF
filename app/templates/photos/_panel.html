@@ -1,14 +1,16 @@
 <div id="photo-panel" class="panel">
   {% if error %}<div class="error">{{ error }}</div>{% endif %}
   {% if row.photo_key %}
+  <p class="note">Saved thumbnail</p>
   <img src="/media/img/thumb/{{ row.slug }}.jpg?v={{ row.updated_at | urlencode }}" alt="Current thumbnail" width="426" height="240">
   <p class="note">{{ row.photo_width }}x{{ row.photo_height }} original</p>
   <form hx-post="/places/{{ row.slug }}/photo/crop" hx-target="#photo-panel" hx-swap="outerHTML">
-    <img id="crop-preview" src="/places/{{ row.slug }}/photo/preview?crop_y={{ crop_y }}" alt="Crop preview">
+    <p class="note">Crop preview{% if show_slider %} — changes are not saved until you click Save crop{% endif %}.</p>
+    <img id="crop-preview" src="/places/{{ row.slug }}/photo/preview-source?v={{ row.updated_at | urlencode }}" alt="Crop preview" style="object-position: 50% {{ crop_y * 100 }}%">
     {% if show_slider %}
-    <label>Crop position (top to bottom)</label>
-    <input type="range" name="crop_y" min="0" max="1" step="0.02" value="{{ crop_y }}"
-      oninput="document.getElementById('crop-preview').src = '/places/{{ row.slug }}/photo/preview?crop_y=' + this.value">
+    <label for="crop-position">Crop position (keep top ← → keep bottom)</label>
+    <input type="range" name="crop_y" id="crop-position" min="0" max="1" step="0.02" value="{{ crop_y }}"
+      oninput="document.getElementById('crop-preview').style.objectPosition = '50% ' + (this.value * 100) + '%'">
     <button type="submit">Save crop</button>
     {% else %}
     <p class="note">This photo is 16:9 or wider, so there is nothing to crop vertically.</p>
@@ -17,8 +19,12 @@
   <button type="button" class="danger" hx-post="/places/{{ row.slug }}/photo/delete" hx-target="#photo-panel" hx-swap="outerHTML"
     hx-confirm="Delete the photo?">Delete photo</button>
   {% endif %}
-  <form hx-post="/places/{{ row.slug }}/photo" hx-encoding="multipart/form-data" hx-target="#photo-panel" hx-swap="outerHTML">
+  <form hx-post="/places/{{ row.slug }}/photo" hx-encoding="multipart/form-data" hx-target="#photo-panel" hx-swap="outerHTML"
+    hx-trigger="change[event.target.files &amp;&amp; event.target.files.length > 0]"
+    hx-disabled-elt="#photo-panel input, #photo-panel button" hx-sync="#photo-panel:drop"
+    hx-on::before-request="this.querySelector('[role=status]').textContent = 'Uploading photo and generating thumbnails… Please wait.'"
+    hx-on::after-request="if (!event.detail.successful) this.querySelector('[role=status]').textContent = 'Upload could not be confirmed. Reload to check, or choose the file again to retry.'; this.reset()">
     <label>{{ 'Replace photo' if row.photo_key else 'Upload a photo' }}<input type="file" name="photo" accept="image/*,.heic" required></label>
-    <button type="submit">Upload</button>
+    <p class="note" role="status" aria-live="polite">Choosing a file uploads it automatically.</p>
   </form>
 </div>

@@ -205,6 +205,39 @@ def test_clean_url_strips_tracking_parameters():
     assert clean_url(None) is None
 
 
+def test_key_whitespace_is_trimmed(monkeypatch):
+    monkeypatch.setenv("GOOGLE_PLACES_API_KEY", " test-key\r\n")
+    assert places._api_key() == "test-key"
+
+
+@pytest.mark.parametrize("key", ["   \n", "test\nkey", "test key"])
+def test_invalid_keys_fail_without_disclosure(monkeypatch, key):
+    monkeypatch.setenv("GOOGLE_PLACES_API_KEY", key)
+    with pytest.raises(PlacesError) as error:
+        places._api_key()
+    assert repr(key) not in str(error.value)
+
+
+def test_request_exception_does_not_disclose_key(monkeypatch):
+    import traceback
+    monkeypatch.setenv("GOOGLE_PLACES_API_KEY", "secret-test-key")
+    def fail(*args, **kwargs):
+        raise places.requests.exceptions.InvalidHeader("invalid header: secret-test-key")
+    monkeypatch.setattr(places.requests, "request", fail)
+    with pytest.raises(PlacesError) as error:
+        get_place("abc")
+    assert "secret-test-key" not in str(error.value)
+    assert "secret-test-key" not in "".join(traceback.format_exception(error.value))
+
+
+def test_api_error_redacts_echoed_key(monkeypatch):
+    monkeypatch.setenv("GOOGLE_PLACES_API_KEY", "secret-test-key")
+    monkeypatch.setattr(places.requests, "request", lambda *a, **k: SimpleNamespace(
+        ok=False, status_code=403, json=lambda: {"error": {"message": "Rejected secret-test-key"}}))
+    with pytest.raises(PlacesError, match=r"Rejected \[redacted\]"):
+        get_place("abc")
+
+
 def test_search_text_rejects_bad_max_results(monkeypatch):
     from scripts.places import search_text
 

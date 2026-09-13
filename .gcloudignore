@@ -1,0 +1,25 @@
+# gcloud uses gitignore matching, unlike Docker: anchor archive directories so
+# /places does not also exclude app/templates/places.
+/.git/
+/.venv/
+/venv/
+/.env
+/.env.*
+/.envrc
+/.sops.yaml
+/.media*/
+/.site/
+/.backups/
+/vilf.db
+/build/
+/build-*/
+/static/img/
+/raw/
+/places/
+/.direnv/
+/.canivete/
+/result
+/scripts/credentials.json
+*.ipynb
+__pycache__/
+.pytest_cache/

@@ -25,6 +25,7 @@
       <label>Cuisine<input type="text" name="cuisine" value="{{ val(meta.cuisine) }}" list="cuisines"></label>
       <label>Area (neighborhood)<input type="text" name="area" value="{{ val(meta.area) }}" list="areas"></label>
     </div>
+    {% if area_suggestion %}<p class="note">Neighborhood suggested from SF boundaries. You can edit it.</p>{% endif %}
     <datalist id="cuisines">{% for c in cuisines %}<option value="{{ c }}">{% endfor %}</datalist>
     <datalist id="areas">{% for a in areas %}<option value="{{ a }}">{% endfor %}</datalist>
     <label>Address<input type="text" name="address" value="{{ val(meta.address) }}"></label>
@@ -34,9 +35,14 @@
       <label>Longitude<input type="text" inputmode="decimal" name="lon" value="{{ val(meta.lon) }}"></label>
     </div>
     <label>Phone (+1 and 10 digits)<input type="tel" name="phone" value="{{ val(meta.phone) }}"></label>
-    <label>Menu URL<input type="url" name="menu" value="{{ val(meta.menu) }}"></label>
-    <label>Website (fallback for the Menu link)<input type="url" name="website" value="{{ val(meta.website) }}"></label>
-    <label>Google place id<input type="text" name="place_id" value="{{ val(meta.place_id) }}"></label>
+    <label>Menu URL<input type="url" name="menu" value="{{ val(meta.menu) }}" data-external-url="menu-link"></label>
+    <a id="menu-link" class="external-link" target="_blank" rel="noopener noreferrer"
+      {% if meta.menu and (meta.menu.startswith('https://') or meta.menu.startswith('http://')) %}href="{{ meta.menu }}"{% else %}hidden{% endif %}>Open menu ↗</a>
+    <label>Website (fallback for the Menu link)<input type="url" name="website" value="{{ val(meta.website) }}" data-external-url="website-link"></label>
+    <a id="website-link" class="external-link" target="_blank" rel="noopener noreferrer"
+      {% if meta.website and (meta.website.startswith('https://') or meta.website.startswith('http://')) %}href="{{ meta.website }}"{% else %}hidden{% endif %}>Open website ↗</a>
+    <label>Google Place ID<input type="text" name="place_id" value="{{ val(meta.place_id) }}" readonly></label>
+    {% if mode == 'edit' %}<p class="note">To change this, use Relink to Google below.</p>{% endif %}
     <label>Visited<input type="date" name="visited" value="{{ val(meta.visited) }}"></label>
     <div class="row">
       <label>Taste
@@ -59,7 +65,10 @@
     <label class="inline"><input type="checkbox" name="closed" value="1" {% if meta.closed %}checked{% endif %}> Permanently closed</label>
     <label class="inline"><input type="checkbox" name="instagram_published" value="1" {% if meta.instagram_published %}checked{% endif %}> Posted to Instagram</label>
     {% endif %}
-    <label>Review (markdown; bold at least one dish with **...**)<textarea name="body">{{ body or '' }}</textarea></label>
+    <label>Review (markdown; bold at least one dish with **...**)<textarea name="body" data-markdown-editor>{{ body or '' }}</textarea></label>
+    {% if mode == 'create' %}
+    <p class="note">Photo: click Create first, then upload your main photo in the Photo section on the next page. Thumbnails and other sizes are generated automatically.</p>
+    {% endif %}
     <button type="submit">{{ 'Create' if mode == 'create' else 'Save' }}</button>
   </form>
 </div>

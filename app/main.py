@@ -8,6 +8,7 @@ never touches the real DATABASE_URL.
 
 import importlib
 import importlib.util
+import hashlib
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, FastAPI, HTTPException
@@ -22,9 +23,16 @@ from scripts.schema import TASTE_LABELS, VALUE_LABELS
 from scripts.storage import guess_content_type, storage_from_url
 
 from .deps import current_user, get_media
+from .formatting import human_datetime
 
 APP_DIR = Path(__file__).parent
-ROUTERS = ("places", "photos", "sync", "publish")
+ROUTERS = ("places", "photos", "sync", "publish", "backups")
+
+
+def static_asset_url(name: str) -> str:
+    """Change the asset URL when its contents change, avoiding stale browser CSS/JS."""
+    version = hashlib.sha256((APP_DIR / "static" / name).read_bytes()).hexdigest()[:12]
+    return f"/static/{name}?v={version}"
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -39,7 +47,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.site = storage_from_url(settings.site_storage)
     templates = Environment(loader=FileSystemLoader(str(APP_DIR / "templates")), autoescape=True)
     templates.globals.update(
-        TASTE_LABELS=TASTE_LABELS, VALUE_LABELS=VALUE_LABELS, FILTERS=repo.FILTERS, is_dirty=repo.is_dirty
+        TASTE_LABELS=TASTE_LABELS, VALUE_LABELS=VALUE_LABELS, FILTERS=repo.FILTERS,
+        is_dirty=repo.is_dirty, static_asset_url=static_asset_url, human_datetime=human_datetime,
     )
     app.state.templates = templates
 

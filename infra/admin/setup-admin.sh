@@ -131,7 +131,7 @@ run() {
         --min-instances=0 --max-instances=1 --cpu=1 --memory=1Gi --concurrency=10 \
         --timeout=900 --cpu-boost --service-account="$RUNTIME_SA" \
         --set-secrets=DATABASE_URL=vilf-database-url:latest,GOOGLE_PLACES_API_KEY=vilf-google-places-api-key:latest,GOOGLE_MAPS_EMBED_API_KEY=vilf-maps-embed-api-key:latest \
-        --set-env-vars=VILF_SITE_STORAGE=gs://$SITE_BUCKET,VILF_MEDIA_STORAGE=gs://$MEDIA_BUCKET,VILF_URL_MAP=$URL_MAP,VILF_SITE_URL=https://vilf.org,GOOGLE_CLOUD_PROJECT=$PROJECT,VILF_ADMIN_EMAIL=$OWNER,VILF_INDEXNOW=1
+        --set-env-vars=VILF_SITE_STORAGE=gs://$SITE_BUCKET,VILF_MEDIA_STORAGE=gs://$MEDIA_BUCKET,VILF_BACKUP_STORAGE=gs://vilf-backups,VILF_URL_MAP=$URL_MAP,VILF_SITE_URL=https://vilf.org,GOOGLE_CLOUD_PROJECT=$PROJECT,VILF_ADMIN_EMAIL=$OWNER,VILF_INDEXNOW=1
 }
 
 iap() {

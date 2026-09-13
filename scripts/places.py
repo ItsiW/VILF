@@ -164,11 +164,13 @@ def distance_m(lat1, lon1, lat2, lon2) -> float:
 
 def _api_key() -> str:
     load_dotenv(DOTENV_PATH)  # override=False: a real shell var wins over .env
-    key = os.environ.get(API_KEY_ENV)
+    key = (os.environ.get(API_KEY_ENV) or "").strip()
     if not key:
         raise PlacesError(
             f"Missing Google Places API key: set {API_KEY_ENV} in your environment or in {DOTENV_PATH}"
         )
+    if not re.fullmatch(r"[A-Za-z0-9_-]+", key):
+        raise PlacesError("Google Places API key has invalid characters; check its configuration.")
     return key
 
 
@@ -177,13 +179,15 @@ def _request(method: str, path: str, *, body: dict | None = None, field_mask: st
     headers = {"X-Goog-Api-Key": _api_key(), "X-Goog-FieldMask": field_mask}
     try:
         resp = requests.request(method, BASE_URL + path, headers=headers, json=body, timeout=TIMEOUT)
-    except requests.RequestException as e:
-        raise PlacesError(f"Places API request failed: {e}") from e
+    except requests.RequestException:
+        # Requests errors can include the entire API-key header. Never expose them.
+        raise PlacesError("Places API request failed. Check connectivity and API key configuration, then retry.") from None
     if not resp.ok:
         try:
             message = resp.json()["error"]["message"]
         except (ValueError, KeyError, TypeError):
             message = resp.text[:300]
+        message = str(message).replace(headers["X-Goog-Api-Key"], "[redacted]")
         raise PlacesError(f"Places API {resp.status_code}: {message}")
     return resp.json()
 

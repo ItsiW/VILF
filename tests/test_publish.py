@@ -98,6 +98,28 @@ def run(env, **kw):
     )
 
 
+def test_snapshots_use_separate_backup_storage(env, tmp_path):
+    backup = LocalStorage(tmp_path / "backups")
+    result = run(env, settings=Settings(backup_storage=str(backup.root)))
+    assert result.status == "ok"
+    assert backup.exists(result.snapshot_key)
+    assert not env["media"].listing("snapshots/")
+    assert last_snapshot_rows(env["conn"], backup)
+
+
+def test_cloud_publish_requires_private_backup_setting(env):
+    result = run(env, settings=Settings(media_storage="gs://public-media"))
+    assert result.status == "failed"
+    assert "VILF_BACKUP_STORAGE" in result.error
+    assert not env["site"].listing()
+
+
+def test_publish_rejects_media_bucket_as_backup(env):
+    result = run(env, settings=Settings(media_storage="gs://same", backup_storage="gs://same"))
+    assert result.status == "failed"
+    assert "separate" in result.error
+
+
 def test_first_publish_uploads_everything(env):
     conn, site, media = env["conn"], env["site"], env["media"]
     result = run(env, by_email="me@example.com")

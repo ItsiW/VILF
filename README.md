@@ -1,6 +1,6 @@
 # Vegans In Love with Food™
 
-Vegan restaurant reviews for the SF Bay Area, published at [vilf.org](https://vilf.org). Reviews live in a database and are edited in a small admin app; publishing renders the whole site as static files into a bucket. The markdown files in `places/` and the photos in `raw/food/` are the pre-database archive: they are imported once by `./vilf db import-markdown` and go away after the cutover (see `infra/README.md`).
+Vegan restaurant reviews for the SF Bay Area, published at [vilf.org](https://vilf.org). Reviews live in a database and are edited in the admin app; publishing renders the site as static files into a bucket. Original photos and generated variants live in `gs://vilf-media`. The legacy `places/` and `raw/food/` files have been removed from the checkout; Git history retains them. See `infra/backup/README.md` for current backups and recovery.
 
 ## Running locally
 
@@ -8,9 +8,8 @@ Dependencies are managed with [uv](https://docs.astral.sh/uv/). Run everything f
 
 ```bash
 uv sync                      # .venv with the pinned Python and packages (add --group instagram for the poster)
-./vilf db init               # creates the tables in ./vilf.db (SQLite; see .env.example for Postgres)
-./vilf db import-markdown    # one-time seed from places/*.md and raw/food/*.jpg; photos land in ./.media
-./vilf serve                 # admin app at http://localhost:8000 (no sign-in locally: you are dev@localhost)
+./vilf db init               # only for a new, isolated database; confirm DATABASE_URL first
+uv run uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
 To look at the public site instead of the admin, build it and serve the directory:
@@ -20,7 +19,9 @@ To look at the public site instead of the admin, build it and serve the director
 python3 -m http.server 8080 --directory build
 ```
 
-Open [`localhost:8080`](http://localhost:8080) (if you open `0.0.0.0:8080` the map will not render). `./vilf build --source files` renders the markdown archive instead of the database; `--source snapshot --snapshot file.json` renders a JSON dump.
+Open [`localhost:8080`](http://localhost:8080) (if you open `0.0.0.0:8080` the map will not render). `./vilf build --source snapshot --snapshot file.json` renders a JSON dump. Legacy `--source files` and `db import-markdown` are retained for archives recovered from Git history, not normal setup.
+
+The owner's local `.env` connects to the same production database and buckets as the hosted admin: local edits and publishing affect the live site. For isolated development, configure separate SQLite/local storage targets before initializing or restoring. Seed an isolated database from a current JSON backup using `./vilf db restore-snapshot /path/to/backup.json`; this replaces its restaurant rows. Photos are restored separately (see the backup runbook).
 
 ```bash
 uv run pytest                # the whole suite, offline, a few seconds

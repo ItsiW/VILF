@@ -1,0 +1,10 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    env: [DOCKER_BUILDKIT=1]
+    args: [build, -t, 'us-west1-docker.pkg.dev/$PROJECT_ID/vilf/admin:backup-$BUILD_ID', .]
+  - name: gcr.io/cloud-builders/docker
+    args: [run, --rm, 'us-west1-docker.pkg.dev/$PROJECT_ID/vilf/admin:backup-$BUILD_ID', python, -m, scripts.check_image]
+images:
+  - 'us-west1-docker.pkg.dev/$PROJECT_ID/vilf/admin:backup-$BUILD_ID'
+options:
+  logging: CLOUD_LOGGING_ONLY

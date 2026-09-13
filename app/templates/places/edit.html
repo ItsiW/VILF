@@ -7,6 +7,7 @@
   {% if row.published_at %}<span class="chip published">published {{ row.published_at[:10] }}</span>{% endif %}
   {% if row.closed %}<span class="chip closed">closed</span>{% endif %}
   <a href="/places/{{ slug }}/preview" target="_blank" rel="noopener">Preview</a>
+  <a href="#photo">Photo</a>
 </div>
 {% include "places/_form.html" %}
 

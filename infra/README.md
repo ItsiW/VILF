@@ -4,11 +4,12 @@ Everything lives in GCP project `vilf-com` (number 952410211826), region
 `us-west1`. Changes are made with `gcloud` through `infra/admin/setup-admin.sh`;
 this README is the record of what exists and, below, the migration runbook.
 
-> **Until cutover.** While the admin branch is unmerged, `develop`'s
-> `deploy.yaml` still builds the site from `places/*.md` and rsyncs `build/` to
-> `gs://vilf-org`. Never push `develop` until step 4 of the runbook says so. The
-> merge that lands the admin also replaces that workflow with the app-only
-> deploy, and from then on the public site only changes through Publish.
+> **Cutover status (September 12, 2026 PT).** GitHub `develop` deploys the admin
+> only. Public `/img/*` now routes to `vilf-media`; the explicit `admin.vilf.org`
+> host rule still routes to the IAP-protected admin. Public pages remain in
+> `vilf-org`. Database-driven publishing is verified, including Mini Potstickers.
+> Legacy reviews/photos have been removed from the checkout (recoverable in Git
+> history). Old image objects remain in the site bucket for rollback.
 
 ## What is here
 
@@ -27,7 +28,10 @@ this README is the record of what exists and, below, the migration runbook.
   cleanup policy. `admin/urlmap-before.yaml` appears after the `urlmap` section
   runs; it is the rollback record for the cutover and can be committed (no
   secrets in it).
-- **`backup/`**: the nightly Postgres dump (`pg-backup.sh`) and its launchd job.
+- **[`admin/custom-domain.md`](admin/custom-domain.md)**: `admin.vilf.org` DNS,
+  certificate, hostname routing, verification and rollback.
+- **[`backup/`](backup/README.md)**: private cloud backups and monitoring, restore
+  verification, plus the Mac Postgres dump (`pg-backup.sh`) and its launchd job.
 - **Application config**: `scripts/config.py` (env vars, listed in
   `.env.example`), `Dockerfile` (uvicorn on 8080), `.github/workflows/`.
 
@@ -224,6 +228,15 @@ Rollback: none needed; delete `build-files` and `build-db`.
 
 ### 7. Route `/img/*` to the media bucket
 
+Completed September 12, 2026 PT. The first attempt was rolled back after temporary
+`NoSuchBucket` responses. The same unchanged backend subsequently worked, so the
+rule was reapplied and left to propagate. Verified all 984 image URLs return 200,
+`X-Vilf-Backend: media`, and the exact generation listed in the media bucket.
+The pre-change map is saved in `infra/admin/urlmap-before.yaml`, including
+the admin host rule. Only `/img/*` was invalidated; no Publish or cloud deletion ran.
+The 984 current variants are present. The four extra old variants named
+`rheas-deli-market` are unused; the published review uses `rhea-s-deli-market`.
+
 ```bash
 ./infra/admin/setup-admin.sh urlmap
 ```
@@ -280,7 +293,7 @@ curl -sI https://vilf.org/places/lion-dance.md | grep -i content-type           
 ```
 
 The admin's Publish page shows the run as `ok` with its snapshot key, and
-`gcloud storage ls gs://vilf-media/snapshots/` lists it. A second Publish
+`gcloud storage ls gs://vilf-backups/snapshots/` lists it. A second Publish
 reports 0 uploaded, 0 deleted.
 
 Rollback: the site bucket has 30 day soft delete, so
@@ -302,29 +315,32 @@ tail -1 ~/Library/Logs/vilf-pg-backup.log      # "<ts> ok vilf-<ts>.dump N bytes
 
 Details and restore in *Backups* below. Rollback: `launchctl bootout gui/501/com.itsi.vilf-pg-backup`.
 
-### 10. Cleanup PR
+### 10. Legacy file cleanup
 
-After a week of publishing from the admin without surprises:
+Completed in the working tree September 12, 2026 PT, after successful public
+publishing and fresh backups. All 246 legacy review slugs exist in the 247-row
+database; the extra restaurant is Mini Potstickers. The unused `rheas-` photo
+was discarded separately; the active `rhea-s-` original remains in media/backups.
 
-```bash
-# decide about the orphan photo first: write the Rhea's Deli review in the admin, or let it go
-git rm -r places raw/food
-gh secret delete VILF_CREDS --repo ItsiW/VILF
-gcloud iam service-accounts keys list --iam-account=vilfer@vilf-com.iam.gserviceaccount.com --managed-by=user
-gcloud iam service-accounts delete vilfer@vilf-com.iam.gserviceaccount.com
-```
+Verification before removal:
 
-Leave `--source files` and `scripts/importer.py` in place for now (they cost
-nothing and their tests use fixtures); remove them in a later PR if they rot.
-Update `CLAUDE.md`'s "until cutover" sentences in the same PR. Note the git
-packfile stays large: history keeps every JPEG (see `IDEAS.md`).
+- Cloud snapshot `daily/20260913T022104.888893Z.json` matched all production rows;
+  restored to temporary SQLite and regenerated four variants from an original.
+- Mac dump `vilf-20260913T022049Z.dump` fully decoded with 247 restaurant rows,
+  including Mini Potstickers' September 7 visit date.
+- All 247 Mac originals matched the cloud backup's MD5 checksums.
 
-Verify: `uv run pytest` passes; `./vilf build` (db mode) still renders;
-`gh run list --workflow='Deploy VILF admin' -L1` is green.
+`places/` and `raw/food/` are no longer required by the admin or publishing.
+Legacy importer/file-build support remains for recovery and fixture tests.
+The old standalone Instagram scripts still require the archive and are not
+part of the supported database workflow. Git history retains the removed
+files, so this cleanup does not shrink historical clone size. Roll back the
+file deletion with a revert after commit, or recover files from the preceding
+commit into a separate archive directory.
 
-Rollback: revert the PR (history keeps the files); the `vilfer` account cannot
-be undeleted within its 30 day window without `gcloud iam service-accounts undelete`,
-and by then nothing uses it.
+No database rows, media objects, cloud backups, Git history, GitHub secrets,
+or service accounts were deleted. Retiring the old `VILF_CREDS`/`vilfer`
+credentials is a separate infrastructure cleanup, not part of file removal.
 
 ## CI
 
@@ -338,6 +354,10 @@ and by then nothing uses it.
   app; the public site is only touched when someone clicks Publish there.
 
 ## Backups
+
+Cloud backups are now the primary automatic copy; see [backup/README.md](backup/README.md)
+for the private bucket, daily Cloud Run job, retention, alerts and restore checks.
+The Mac job below is an additional independent copy.
 
 A launchd job dumps the database every night at 04:15 local time into
 `~/Backups/vilf/vilf-<UTC timestamp>.dump` (pg_dump custom format, no owner or
@@ -354,7 +374,8 @@ The plist hard-codes `/Users/itsi/git/vilf/infra/backup/pg-backup.sh`; if the
 checkout moves, edit the path, `bootout` and `bootstrap` again. The script can
 also be run by hand (`PG_DUMP=... ./infra/backup/pg-backup.sh` to override the
 pg_dump path). Every publish also writes a JSON snapshot of the rows to
-`gs://vilf-media/snapshots/`, restorable with `./vilf db restore-snapshot KEY --publish`.
+`gs://vilf-backups/snapshots/`, restorable with `./vilf db restore-snapshot KEY` when
+`VILF_BACKUP_STORAGE=gs://vilf-backups`. Do not publish until recovery is verified.
 
 ## Restore
 
@@ -364,8 +385,9 @@ pg_dump path). Every publish also writes a JSON snapshot of the rows to
 ```
 
 `DIRECT_URL` is the plain `postgresql://` form from step 0 (libpq rejects
-`postgresql+psycopg://`). Then open the admin app
-and Publish so the site and media match the database again. Photo originals
+`postgresql+psycopg://`). Verify the database and restore matching original-photo
+versions/regenerate variants before opening the admin and explicitly publishing.
+Restoring rows or publishing does not itself restore photo bytes. Photo originals
 live in `gs://vilf-media` (30 day soft delete, restorable with
 `gcloud storage restore`) and are not part of the dump.
 

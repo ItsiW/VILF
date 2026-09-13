@@ -4,16 +4,21 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}VILF admin{% endblock %}</title>
-  <link rel="stylesheet" href="/static/admin.css">
+  <link rel="icon" type="image/svg+xml" href="{{ static_asset_url('favicon.svg') }}">
+  <link rel="stylesheet" href="{{ static_asset_url('admin.css') }}">
   <!-- htmx 2.0.10, vendored from https://unpkg.com/htmx.org@2.0.10/dist/htmx.min.js -->
   <script src="/static/htmx.min.js" defer></script>
+  <script src="{{ static_asset_url('url-links.js') }}" defer></script>
+  <script src="{{ static_asset_url('review-editor.js') }}" defer></script>
 </head>
 <body>
   <nav>
+    <a href="https://vilf.org/" target="_blank" rel="noopener noreferrer" class="public-site-link">Open vilf.org ↗</a>
     <a href="/places">Places</a>
     <a href="/places/new">New</a>
     <a href="/sync">Sync</a>
     <a href="/publish">Publish</a>
+    <a href="/backups">Backups</a>
     <span class="user">{{ user or '' }}</span>
   </nav>
   {% if flash %}<div class="flash">{{ flash }}</div>{% endif %}

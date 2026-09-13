@@ -8,6 +8,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from scripts import photos, repo, schema
 from scripts.config import REPO_ROOT
+from scripts.neighborhoods import suggest_area
 from scripts.places import CONTACT_FIELDS, PlacesError, get_place, search_text
 from scripts.render import enrich_place, render_place_page
 from scripts.spatula import BOLD_PROBLEM, find_duplicate, place_to_meta, query_from_maps_url, slugify
@@ -136,17 +137,20 @@ def search_candidates(request: Request, q: str = Form(""), conn=Depends(get_conn
 @router.post("/places/new/pick")
 def pick_candidate(request: Request, place_id: str = Form(...), conn=Depends(get_conn)):
     meta = {key: schema.DEFAULTS.get(key) for key in schema.KNOWN_KEYS}
-    problems, maps_url = [], None
+    problems, maps_url, area_suggestion = [], None, None
     try:
         place = get_place(place_id, fields=CONTACT_FIELDS)
         meta.update(place_to_meta(place))
+        area_suggestion = suggest_area(place.lat, place.lon)
+        if area_suggestion:
+            meta["area"] = area_suggestion
         maps_url = place.maps_url
     except PlacesError as e:
         problems = [str(e)]
     meta["visited"] = date.today().isoformat()
     return render(
         request, "places/_form.html", mode="create", meta=meta, body="", form_open=True,
-        maps_url=maps_url, problems=problems, **_lists(conn),
+        maps_url=maps_url, problems=problems, area_suggestion=area_suggestion, **_lists(conn),
     )
 
 
@@ -180,6 +184,8 @@ def edit_place(request: Request, slug: str, flash: str | None = None, conn=Depen
 async def save_place(request: Request, slug: str, conn=Depends(get_conn)):
     row = _row_or_404(conn, slug)
     meta, body = _form_meta(await request.form())
+    # Google identity changes only through the explicit relink workflow.
+    meta["place_id"] = row["place_id"]
     candidate = dict(row, **meta, body=body)
     errors, warnings = _validate(conn, candidate, old_slug=slug)
     if errors:
