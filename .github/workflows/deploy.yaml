@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: astral-sh/setup-uv@v10.0.1
+      - uses: astral-sh/setup-uv@v10.1.0
         with:
           enable-cache: true
 
@@ -34,11 +34,11 @@ jobs:
 
       - run: docker run --rm "$IMAGE" python -m scripts.check_image
 
-      - uses: google-github-actions/auth@v2
+      - uses: google-github-actions/auth@v3
         with:
           credentials_json: "${{ secrets.VILF_DEPLOY_KEY }}"
 
-      - uses: google-github-actions/setup-gcloud@v2
+      - uses: google-github-actions/setup-gcloud@v3
 
       - run: gcloud auth configure-docker us-west1-docker.pkg.dev --quiet
 
